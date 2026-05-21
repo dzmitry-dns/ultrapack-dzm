@@ -77,6 +77,7 @@ Process skills (u-prefixed to dodge Claude Code built-ins):
 Discipline skills:
 - `up:test-driven-development` — write failing test → make change → test passes.
 - `up:git-worktrees` — guidance for using git worktrees.
+- `up:job-guardian` — babysit a long-running process (training run, batch job) while the user is away: launch contract, immediate-crash gate, stability poll, recoverable→fix/resume vs unrecoverable→reversible teardown + notify. Runs under the `up:handsoff` contract.
 - `up:handsoff` — Shared contract for hands-off mode (activated via `/up:make handsoff <description>`): safety principles, decision log, no-default rule, end-of-task summary. Referenced by `/up:make` and every process skill.
 
 ### Commands

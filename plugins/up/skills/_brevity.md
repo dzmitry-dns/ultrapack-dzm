@@ -37,6 +37,17 @@ Applies to anything that outlives the conversation: code, comments, docstrings, 
    - DO: `// integer overflow here caused the 2026-02 billing incident` — timeless reason, still useful after the fix.
    - DO: agent description "Implement one phase of an approved plan — code, tests, commit." — stands alone, describes purpose.
 
+## Compression
+
+Applies to the prose you write — task-file sections, summaries, PR bodies, and your own responses:
+
+- **Say it once.** If a point is restated later, cut the restatement, not the elaboration.
+- **One name per concept.** Don't alias the same thing two ways in one piece of writing.
+- **No self-narration.** "Let me…", "what this means is…", "so the plan is…" — drop the framing, state the thing.
+- **No hedge words.** "honest", "actually", "basically", "essentially" add nothing.
+- **One closing question max.** Don't soften it with a second.
+- **Lede first.** Verdict in sentence 1, then the evidence.
+
 ## Checklist before saving
 
 - Can any subsection be removed entirely because its content is "none" or the default?
