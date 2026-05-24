@@ -79,19 +79,20 @@ ssh pod 'tail -f /workspace/run.log' | grep -E --line-buffered \
 Now poll on a cadence. Each tick is a real check, not a heartbeat:
 
 <required>
-1. Read fresh evidence: tail the log, check PID/container, pull the latest metric.
-2. Classify: progressing / done / anomaly. Progress means the health signal advanced *since last tick* — same step count after 5 min is a hang, treat as anomaly.
-3. Progressing → schedule the next tick, say nothing.
-4. Done → Phase 5 (tear down if the user wants the resource released; notify).
-5. Anomaly → Phase 4.
-6. Each tick, check budget/stop conditions. Hit one → stop, tear down per contract, notify.
+1. Re-read the contract file first — session memory may have compacted or this may be a fresh wake. The file is the source of truth for launch command, log path, health/done signals, recovery playbook, budget, and teardown.
+2. Read fresh evidence: tail the log, check PID/container, pull the latest metric.
+3. Classify: progressing / done / anomaly. Progress means the health signal advanced *since last tick* — same step count after 5 min is a hang, treat as anomaly.
+4. Progressing → schedule the next tick, say nothing.
+5. Done → Phase 5 (tear down if the user wants the resource released; notify).
+6. Anomaly → Phase 4.
+7. Each tick, check budget/stop conditions. Hit one → stop, tear down per contract, notify.
 </required>
 
 ### Poll mechanics
 
 The harness cannot notify you about remote pod state — you must re-wake yourself. Two ways:
 
-- `ScheduleWakeup` re-wakes this session on a delay. The user's "every 5–10 min" maps to **270s** — just under the 5-min prompt-cache TTL, so each tick stays cheap. (Picking 300s pays the cache miss without buying a longer wait; see the ScheduleWakeup guidance.) Use a longer fallback delay (1200s+) only when nothing changes that fast.
+- `ScheduleWakeup` re-wakes this session on a delay. The wakeup `prompt` must point at the contract file — e.g. `"Job guardian tick: read docs/jobs/<slug>.md and run Phase 3."` — so the next tick reloads the contract regardless of session state. The user's "every 5–10 min" maps to **270s** — just under the 5-min prompt-cache TTL, so each tick stays cheap. (Picking 300s pays the cache miss without buying a longer wait; see the ScheduleWakeup guidance.) Use a longer fallback delay (1200s+) only when nothing changes that fast.
 - `Monitor` (persistent) pushes log lines to you as events — good for tight watching of an active log, with a filter covering progress *and* failure signatures (above). For an ephemeral remote pod where the SSH tail can drop, prefer `ScheduleWakeup` polling as the durable mechanism and use `Monitor` only as an additive watch.
 
 Don't block the session on long foreground `sleep`s. Schedule the next tick and yield.
