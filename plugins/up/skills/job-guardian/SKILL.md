@@ -62,17 +62,12 @@ Launch with output redirected to the log file. Then **do not leave** until you'v
 
 <required>
 1. Launch; record PID / container id and the log path.
-2. Watch the first 1–5 min actively (a `Monitor` on the log tail, or a few short-interval reads). Wait for the *health* signal to fire at least once — first step logged, first batch through, first rows written — not merely "no error yet."
+2. `ScheduleWakeup` 270s. On wake, read the contract file, then tail the log and pull the latest metric directly. Confirm the *health* signal has fired — first step logged, first batch through, first rows written — not merely "no error yet."
 3. If it crashed or never reached the health signal: triage now (Phase 4). Do not start the long poll on a job that never got off the ground.
 4. Only once you've seen real progress: declare stable and enter Phase 3.
 </required>
 
-A `Monitor` over the log is the natural crash gate — but its filter must match failure signatures, not just the success marker, or a crashloop reads as silence:
-
-```
-ssh pod 'tail -f /workspace/run.log' | grep -E --line-buffered \
-  'step=|loss=|Traceback|Error|CUDA|OOM|Killed|FAILED|assert|NaN'
-```
+Do not gate the crash window on a `Monitor` grep filter waiting for a success token — the line you're watching for may never be emitted (silent hang, different format, redirected stream), and the gate then waits forever. Always wake on the timer and read the full tail yourself.
 
 ## Phase 3 — Stability poll loop
 
@@ -90,12 +85,12 @@ Now poll on a cadence. Each tick is a real check, not a heartbeat:
 
 ### Poll mechanics
 
-The harness cannot notify you about remote pod state — you must re-wake yourself. Two ways:
+The harness cannot notify you about remote pod state — you must re-wake yourself.
 
-- `ScheduleWakeup` re-wakes this session on a delay. The wakeup `prompt` must point at the contract file — e.g. `"Job guardian tick: read docs/jobs/<slug>.md and run Phase 3."` — so the next tick reloads the contract regardless of session state. The user's "every 5–10 min" maps to **270s** — just under the 5-min prompt-cache TTL, so each tick stays cheap. (Picking 300s pays the cache miss without buying a longer wait; see the ScheduleWakeup guidance.) Use a longer fallback delay (1200s+) only when nothing changes that fast.
-- `Monitor` (persistent) pushes log lines to you as events — good for tight watching of an active log, with a filter covering progress *and* failure signatures (above). For an ephemeral remote pod where the SSH tail can drop, prefer `ScheduleWakeup` polling as the durable mechanism and use `Monitor` only as an additive watch.
-
-Don't block the session on long foreground `sleep`s. Schedule the next tick and yield.
+- **Always `ScheduleWakeup` at 270s.** Fixed cadence. Just under the 5-min prompt-cache TTL, so each tick stays cheap. Do not stretch to 300s+ "because the job is long" — the cache miss costs more than the saved tick, and a longer interval delays catching a hang. Do not shorten either — 270s is the cadence.
+- The wakeup `prompt` must point at the contract file — e.g. `"Job guardian tick: read docs/jobs/<slug>.md and run Phase 3."` — so the next tick reloads the contract regardless of session state.
+- **Never wait on a `Monitor` grep filter as the primary signal.** Grep waiting for specific tokens (`step=`, `loss=`, success markers) silently misses when the log format shifts, the line is buffered, or the stream is redirected — and you wait forever. Wake on the timer, read the tail, decide. `Monitor` is fine as an additive watch for known failure signatures (`Traceback|OOM|NaN|Killed`) but it never replaces the 270s tick.
+- Don't block the session on long foreground `sleep`s. Schedule the next tick and yield.
 
 ## Phase 4 — Triage: recoverable or not
 
@@ -136,3 +131,5 @@ On unrecoverable: capture the failure (last log lines, error, what you tried), t
 - Let the contract file drift from current instructions — update it the moment guidance changes.
 - Burn budget on a hung job because liveness ≠ progress.
 - Block the session on long foreground sleeps instead of `ScheduleWakeup`.
+- Wait on a `Monitor` grep for a success token as the gate — it misses and you wait forever. Wake at 270s, read the tail.
+- Stretch or shrink the 270s cadence. Fixed.
