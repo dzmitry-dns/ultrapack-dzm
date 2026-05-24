@@ -1,9 +1,21 @@
 ---
 name: ureview
-description: Use after verify passes to get an independent check on the work. Dispatches up:reviewer (critical, high-confidence filter), processes its findings fairly (no performative agreement, no reflexive acceptance), fills the task file's `## Conclusion`.
+description: Use after verify passes for the future maintainer's audit — sit in the chair of the person who'll touch this code in 3-6 months and ask "what will bite us later?" at the decision level. Surfaces wrong abstractions, load-bearing-but-unobvious shapes, next-change traps, drift from surrounding code; raises a Scope flag if the whole change looks like the wrong call. Dispatches up:reviewer (critical, high-confidence filter), processes findings fairly, fills the task file's `## Conclusion`.
 ---
 
 # Review
+
+Review's stance: the future maintainer's audit. Sit in the chair of the person who'll touch this code in 3-6 months and ask the headline question — what will bite us later?
+
+The job is to spot the design or structural choice that will force a nasty rewrite when someone next has to extend, migrate, or refactor. Catch the shape you'll regret in 6 months while it's still cheap to change.
+
+Four angles the audit looks for, all under the same headline:
+- Wrong abstraction / premature commit — a shape that fits today's case but will break under the N+1 case, forcing the whole thing to be ripped out.
+- Load-bearing but unobvious — an implicit invariant, default, or ordering that the next maintainer will violate by accident, then spend days debugging.
+- Bites the next change — a check in the wrong layer, a mutable default, an enum that'll silently accept new values; fine now, painful at the next touch.
+- Inconsistent with surrounding code — duplicates an existing helper, leaks an abstraction, drifts naming, or couples to untouched code, compounding the next refactor's cost.
+
+Review has license to question scope, surfacing it as a flag for the user. If review notices "this whole change may have been the wrong call" or "the design rests on a premise that looks wrong now that the code exists," it goes into the Conclusion as a `Scope flag` for the user to act on. Review surfaces; redesign belongs to udesign.
 
 Review is a process, not just a section. Its end product is the `## Conclusion` section of the task file, filled in based on an independent code review and the work that was done.
 
@@ -17,7 +29,7 @@ Review is a process, not just a section. Its end product is the `## Conclusion` 
 ## Brevity
 
 <required>
-Before writing the `## Conclusion`, read `plugins/up/skills/_brevity.md`. Apply its five principles. `Outcome:` is ≤1 sentence + the commit SHA — never re-narrate the diff. Omit subsections whose content would be "none" / "clean" / "no deviations" / "no findings" / the default: `Plan adherence`, `Review findings`, `Future work`, `Verified by`, `Deviations from plan`, `Known risks`. `Invariants:`, `Assumptions check:`, and `Unknowns outcome:` stay when the task had any IV / AS / UK — they carry audit value even on pass. The Exception clause still holds: findings, deviations, risks, violated assumptions, and deferrals always carry evidence and "why".
+Before writing the `## Conclusion`, read `plugins/up/skills/_brevity.md`. Apply its five principles. `Outcome:` is ≤1 sentence + the commit SHA — never re-narrate the diff. Omit subsections whose content would be "none" / "clean" / "no deviations" / "no findings" / the default: `Plan adherence`, `Review findings`, `Scope flag`, `Future work`, `Verified by`, `Deviations from plan`, `Known risks`. `Invariants:`, `Assumptions check:`, and `Unknowns outcome:` stay when the task had any IV / AS / UK — they carry audit value even on pass. The Exception clause still holds: findings, deviations, risks, violated assumptions, and deferrals always carry evidence and "why".
 </required>
 
 ## Two roles, two attitudes
@@ -138,6 +150,9 @@ Plan adherence: <deviations>   (omit entire subsection if no deviations)
 Review findings:   (omit entire subsection if no Critical or Important)
 - Critical: <resolved, how>
 - Important: <resolved or explicitly deferred with justification>
+
+Scope flag:   (omit unless reviewer raised one — never auto-act; surface verbatim for the user)
+- <reviewer's flag, 1-2 sentences>
 
 Future work:   (omit entire subsection if none — do not write "none")
 - <item> — Justification: <Design-scope line> OR <new fact discovered>

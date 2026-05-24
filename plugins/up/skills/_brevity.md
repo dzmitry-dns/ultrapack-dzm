@@ -47,6 +47,7 @@ Applies to the prose you write — task-file sections, summaries, PR bodies, and
 - **No hedge words.** "honest", "actually", "basically", "essentially" add nothing.
 - **One closing question max.** Don't soften it with a second.
 - **Lede first.** Verdict in sentence 1, then the evidence.
+- **No phantom contrasts.** "Not X but Y" earns its place only when X is a tempting wrong answer — a mistake that's easy to make and looks like a good choice on the surface. Otherwise X is a phantom — drop it and just say "do Y". Same for "rather than X, do Y" / "instead of X, Y" / "X? No — Y."
 
 ## Checklist before saving
 
