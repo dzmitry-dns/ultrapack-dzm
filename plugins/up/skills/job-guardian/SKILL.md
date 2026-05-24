@@ -11,9 +11,9 @@ You are taking custody of a process the user will not be watching. Their trust i
 
 ## Away by default
 
-Assume the user is asleep or gone the moment they hand you the job. You cannot ask anything mid-flight. This skill runs under the `handsoff` contract: infer the contract from context, take the safest reversible path, never invent a value where none exists, and log every choice for one end-of-task review.
+Assume the user is gone the moment they hand you the job — before launch, during the run, after teardown. You do not ask questions, ever. Not at intake, not mid-flight, not at the end. This skill runs under the `handsoff` contract: infer the contract from context, take the safest reversible path, never invent a value where none exists, and log every choice for one end-of-task review.
 
-- **Never block on a question.** If a required fact has a conservative reading from context, use it and log the choice. If it has none, do not guess (handsoff no-default rule).
+- **Never ask a question.** Not even at intake. If a required fact has a conservative reading from context, use it and log the choice. If it has none, do not guess (handsoff no-default rule).
 - **Structural blocker before launch → stop, don't launch.** Log it under `### Deferred (needs user input)` and notify. A pod you didn't start costs nothing; a job launched on a guessed config can burn hours.
 - **Ambiguity while running → take the reversible side.** Pause/checkpoint over kill, `stop` over destroy, keep-alive over a recovery you're unsure of. When unsure whether an action is reversible, assume it isn't.
 - **Tell the user at the end.** Surface the decision log and any deferred items in the terminal notification + written record (Phase 5). That review replaces the questions you didn't ask.
@@ -42,7 +42,15 @@ You cannot guard a process whose health you can't define. Derive these from what
 8. **Notify-on** — terminal events that pull the user back: done, torn down, gave up. Routine progress does not.
 </required>
 
-Write the contract into the task file or a short note so a fresh session (or the user at 7am) can read what you committed to. Inferred facts go in the decision log; unresolved ones under `### Deferred (needs user input)`.
+### Contract file (mandatory)
+
+Always write the contract to a file before launch — no exceptions, even for "quick" jobs. The file is what a fresh session (or the user at 7am) reads to know what you committed to; skipping it means the run is unguarded the moment this session compacts or dies.
+
+- Path: `docs/jobs/<slug>.md`. If a task file exists for this work, append the contract there instead under `## Job guardian contract`.
+- Contents: all 8 contract items above, the launch timestamp, PID/container id once known, log path, and the two handsoff lists (`### Hands-off decisions`, `### Deferred (needs user input)`).
+- Do not launch until the file is written. The file is the gate.
+
+**Keep the file live.** Any time the instructions change — user sends new guidance, you revise the recovery playbook, budget shifts, teardown command updates, a deferred item gets resolved — update the file immediately and log the change under `### Hands-off decisions` with a timestamp. The file is the single source of truth for the contract; if it disagrees with what you're actually doing, the file wins or you fix it.
 
 ## Phase 1 — Setup
 
@@ -122,6 +130,8 @@ On unrecoverable: capture the failure (last log lines, error, what you tried), t
 - Restart a deterministic crash past the attempt cap.
 - Destroy a pod (`remove`/terminate) the user didn't explicitly name — `stop` ends the spend reversibly.
 - Tear down a pod holding the only copy of checkpoints/logs before pulling them off.
-- Ask the user anything mid-flight — they're away; infer + log, or defer + stop.
+- Ask the user anything — at intake, mid-flight, or at teardown. They're away. Infer + log, or defer + stop.
+- Launch without the contract file written. No file, no launch.
+- Let the contract file drift from current instructions — update it the moment guidance changes.
 - Burn budget on a hung job because liveness ≠ progress.
 - Block the session on long foreground sleeps instead of `ScheduleWakeup`.
