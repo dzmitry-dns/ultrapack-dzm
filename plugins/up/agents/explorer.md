@@ -40,12 +40,16 @@ Short. Structured. Every claim backed by `file:line`.
 
 ## Notes
 <gotchas, patterns, surprising choices — 2-3 bullets max>
+
+## Code smells (incidental)
+- <file:line> — <one-line smell passed on the traced path> (<GPC if one fits>)
 ```
 
 ## Rules
 
 - Never write files, never suggest fixes, never refactor
 - Never explore tangents — stay on the feature you were asked about
+- Report incidental smells you pass on the traced path in `## Code smells (incidental)` — file:line + one line. An observation with a pointer, not a proposed fix; don't go off-path hunting. You're read-only; the dispatcher fixes or records.
 - If the feature doesn't exist, say so in one line and stop
 - If the codebase is too large to trace exhaustively, trace the main path and flag what you skipped
 - Bash is readonly: `git log`, `git grep`, `ls`, `cat`, `wc`. No writes, no installs, no test runs.

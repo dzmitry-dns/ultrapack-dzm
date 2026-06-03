@@ -11,8 +11,20 @@ GPC1–GPC8. Apply to every task unless clearly irrelevant. Deviations name the 
 - **GPC7 — Plan for debugging.** Assume every new piece of functionality will need to be debugged. Design it so future-you can diagnose without a rewrite: structured logs at seams, meaningful IDs threaded through (request id, run id, sample id), state-transition logging for long-running processes, deterministic-where-possible execution, and a way to reproduce a single failing case in isolation. "We'll add logging when it breaks" means you'll add logging in production at 2am.
 - **GPC8 — DRY, reuse first.** Before writing new code, search for existing helpers, utilities, or patterns that already solve it — extend or call them rather than parallel-implementing. Duplicated logic across two call sites is a smell; three is a bug. Reuse wins over re-creation; the exception is when reuse would force a premature abstraction that mixes concerns (then prefer explicit over DRY per GPC2).
 
+## Incidental code smells
+
+While exploring code for a task you'll pass smells unrelated to the change — a 200-line function, a duplicated helper, a leaked layer boundary. Two outcomes, no third:
+
+- In task scope, or a genuinely easy and low-risk win → fix it (Boy-Scout rule, GPC2/GPC8). The fix lands in the diff; nothing to record.
+- Out of scope and non-trivial — a wide rename, a risky refactor, a new test surface → don't balloon the task. Record it, one line, in the task file's `## Code smells` section:
+
+  `- <file:line> — <smell, one sentence> (<GPC it offends, if one fits>)`
+
+A pointer plus a sentence; the next reader opens the line. Recorded smells are `Future work` candidates decided at review — recording one does not authorize fixing it now.
+
 ## How to use
 
 - `up:udesign` — surface GPC tradeoffs (layering, SSOT, fail-fast, debuggability) as Design decisions; reference by ID. Task-specific PCs only when deviating from a GPC or adding a rule the GPCs don't cover.
 - `up:uplan` — every phase consistent with GPCs; deviating bullets cite the GPC and why.
 - `up:udebug` — anti-whack-a-mole: name the pattern behind a bug and grep for the same shape before closing (not a GPC, same family).
+- Incidental code smells — `up:udesign` / `up:uplan` fold an in-scope or easy fix into the design/plan, else record to `## Code smells`; `up:uexecute` fixes in-scope/easy ones, records the rest; `up:explorer` / `up:implementer` report passed smells in their output for the dispatcher to act on.

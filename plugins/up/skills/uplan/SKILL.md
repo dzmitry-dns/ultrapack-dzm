@@ -42,7 +42,7 @@ Before writing the Plan, read `plugins/up/skills/_brevity.md`. Apply its five pr
 
 <required>
 1. Read the task file's `## Design`, `### Invariants` (IV), `### Principles` (PC), `### Assumptions` (AS), `### Unknowns` (UK). Know what you're planning for.
-2. Sketch the file structure — which files change, which are new, which classes/methods.
+2. Sketch the file structure — which files change, which are new, which classes/methods. Fold an in-scope or easy-win smell you pass into a phase; record the rest to `## Code smells` (see `_principles.md` → Incidental code smells).
 3. Break into phases. Each phase is a coherent commit.
 4. Write phase-by-phase plan entries. Concrete locations, per-file bullets, interfaces.
 5. Write test strategy (per task's TDD decision).

@@ -22,7 +22,7 @@ Before any creative work: new features, component builds, behavior changes, arch
 <required>
 Follow these steps in order. Do not combine or skip.
 
-1. Explore project context — how it works now, what's been tried, existing patterns, recent commits. Inform the ideal; don't let current state constrain it. No exceptions.
+1. Explore project context — how it works now, what's been tried, existing patterns, recent commits. Inform the ideal; don't let current state constrain it. No exceptions. Record incidental code smells you pass — if one is in scope or an easy win, note it for the plan to fix, else add it to `## Code smells` (see `_principles.md` → Incidental code smells).
 2. Scope check — split into multiple tasks now if the ask is too large.
 3. Ask clarifying questions, one at a time. Prefer multiple choice.
 4. Propose 2–3 approaches. Each with explicit tradeoffs and unknowns.

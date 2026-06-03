@@ -242,6 +242,10 @@ Implementer made `compute_at_k_cursor_l2` raise on empty input to honor "no sile
 Fix one spot, commit, reviewer finds four more siblings, two rounds of fixups, noisier history, tighter-in-some-places-not-others inconsistency in the file.
 </bad-example>
 
+## Incidental code smells
+
+Implementers and `up:explorer` report smells they pass; you also hit them while reading code to coordinate. For each: fix it in the same commit when it's in task scope or an easy, low-risk win (Boy-Scout); otherwise append it to the task file's `## Code smells` section — `file:line — one-line smell` — and leave it for review's Future-work call. Don't let out-of-scope smells balloon the change. See `_principles.md` → Incidental code smells.
+
 ## Don't modify upstream specs or external design docs
 
 <required>

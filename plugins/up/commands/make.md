@@ -66,6 +66,9 @@ Template:
 ## Verify
 <empty — filled by up:uverify>
 
+## Code smells
+<empty — file:line + one-line smell passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
+
 ## Conclusion
 <empty — filled by up:ureview>
 

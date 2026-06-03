@@ -40,6 +40,7 @@ If anything critical is missing or ambiguous, **stop and ask before writing code
 - Any silent fallback introduced? (`.get(k, default)` with non-genuine defaults, `try/except pass`, invented placeholders.) If yes → remove, let it raise.
 - Any IV violated or AS invalidated by what you found in the code? If yes → flag in report under Assumption status.
 - **Consistency sweep.** If you tightened a rule or changed a pattern in one place, grep the diff and the wider repo for the same pattern. Apply the change everywhere in the same commit.
+- **Incidental smells.** A trivial smell inside your `Owns` paths — fix it in the same commit and note a one-line Boy-Scout deviation. A smell outside `Owns`, or one needing a non-trivial change — report it under Incidental code smells, don't fix.
 - Tests run and pass? Smoke run captured?
 
 ## Forbidden
@@ -70,6 +71,9 @@ Commit: <sha> <message>
 Deviations from the phase text (if any):
 - <what changed vs. the plan bullet, and why>
 
+Incidental code smells (passed but not fixed — out of `Owns` or non-trivial):
+- <file:line> — <one-line smell> (<GPC if one fits>)
+
 Assumption status (only if any IV/AS was invalidated or now looks shaky):
 - AS<N> — <what you observed that contradicts it>
 
@@ -92,6 +96,9 @@ Staged files: <path>, <path>
 
 Deviations from the phase text (if any):
 - <what changed vs. the plan bullet, and why>
+
+Incidental code smells (passed but not fixed — out of `Owns` or non-trivial):
+- <file:line> — <one-line smell> (<GPC if one fits>)
 
 Assumption status (only if any IV/AS was invalidated or now looks shaky):
 - AS<N> — <what you observed that contradicts it>
