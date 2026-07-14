@@ -20,17 +20,19 @@ If the target is something you can inspect — a file, a diff, an error, a conve
 
 Treat the reader as only vaguely remembering prior context, not tracking every detail of this conversation. Don't lean on "as discussed above.", use as few context-dependent terms as possible, speak plainly.
 
-### 3. Pick the depth
+### 3. Pick the core
 
-Decide the structure: what's the shortest chain of inferential steps that gets to real understanding? Pick the level of detail actually achievable in one message. Don't overreach into exhaustive detail. Don't underreach into a vague summary.
+Find the one mechanism that actually answers the question — the shallowest depth that lands real understanding. Everything else is a thread (step 5), not a paragraph. If you're about to explain a second mechanism, a caveat, or a red herring, that's a thread.
 
 ### 4. Write it
 
-One message. Plain language, like explaining out loud to a smart colleague. No wall of text, no invented terminology. When a term is unavoidable, unpack it in plain words. Terse and plain aren't opposites — cut words, not the explanation.
+Lede first: sentence one is the answer, no runup, no "here's the picture" framing. Then the evidence. Plain language, like explaining out loud to a smart colleague. No invented terminology; when a term is unavoidable, unpack it in plain words. Terse and plain aren't opposites — cut words, not the explanation.
+
+Length: 1-4 paragraphs. If it's growing past that, you're explaining too much at once — move layers to threads.
 
 ### 5. Offer next threads
 
-If necessary, end with 1-3 follow-up threads worth going deeper on, named but not answered. Skip this if the explanation is already complete and nothing meaningfully deeper remains.
+If necessary, end with 1-3 follow-up threads worth going deeper on, named but not answered. This is the release valve: the second mechanism, the caveat, the tangent all go here so the body stays short. Skip only if nothing meaningfully deeper remains.
 
 ## Rules
 
