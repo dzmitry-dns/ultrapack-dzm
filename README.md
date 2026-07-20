@@ -126,7 +126,7 @@ The agent takes the safest reversible path at every step: it works on a dedicate
 
 ## Fork note
 
-This is a fork of [btseytlin/ultrapack](https://github.com/btseytlin/ultrapack) — credit to the upstream author, Boris Tseitlin, for the original design. Fork policy (versioning, model overrides, and the rule against editing plugin files in the marketplace cache) lives in [CLAUDE.md](CLAUDE.md).
+This is a fork of [btseytlin/ultrapack](https://github.com/btseytlin/ultrapack) — credit to the upstream author, Boris Tseitlin, for the original design. Fork policy (what gets PR'd upstream vs. stays in the fork) and versioning conventions live in [CLAUDE.md](CLAUDE.md).
 
 ## License
 
