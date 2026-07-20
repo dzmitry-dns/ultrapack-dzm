@@ -1,7 +1,10 @@
 {
   "name": "ultrapack",
   "owner": {
-    "name": "Boris Tseitlin"
+    "name": "Dzmitry Sviryn"
+  },
+  "metadata": {
+    "repository": "https://github.com/dzmitry-dns/ultrapack-dzm"
   },
   "plugins": [
     {

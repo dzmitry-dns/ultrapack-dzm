@@ -21,6 +21,10 @@ Internal plugin name: `up`. Slash/skill invocations use the `up:` prefix: `/up:m
 - **Minimal** — only skills we actually use; no speculative additions
 - **Doc-only** — no runtime code, no unit tests; verification is install-and-invoke
 
+## Fork policy
+
+This repo is a fork of `btseytlin/ultrapack`. Generic fixes (bugs, broken refs, docs errors) get PR'd upstream to `btseytlin/ultrapack`. Opinionated features and owner-specific preferences (model policy, workflow tweaks) stay in this fork. Periodically cherry-pick relevant upstream changes from `upstream/main`.
+
 ## Versioning
 
 Plugin version lives in `plugins/up/.claude-plugin/plugin.json`. Always bump the patch digit (`x.y.Z`) when merging, finalizing, or otherwise landing changes on `main`. Default to patch; ask before bumping minor (`x.Y.z`) or major (`X.y.z`).
