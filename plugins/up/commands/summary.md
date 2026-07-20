@@ -4,7 +4,7 @@ description: Produce a summary so another session can continue with zero context
 
 # /up:summary
 
-Prepare a handoff summary so another agent session can continue this work without the current conversation. Drafting is delegated to the `up:summarizer` subagent (pinned to Sonnet) so the expensive main-session model doesn't write the long structured prose. The subagent locates this session's JSONL transcript on disk using a distinctive phrase you pass to it, then reads it directly.
+Prepare a handoff summary so another agent session can continue this work without the current conversation. Drafting is delegated to the `up:summarizer` subagent, cheaper than the main-session model, so the expensive main-session model doesn't write the long structured prose. The subagent locates this session's JSONL transcript on disk using a distinctive phrase you pass to it, then reads it directly.
 
 ## Process
 
