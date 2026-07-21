@@ -70,6 +70,17 @@ HEAD_SHA: <current HEAD>
 Working directory: <absolute path>
 ```
 
+### 1b. Optional second dispatch — `up:requirements-reviewer`
+
+A requirements-level audit that catches "built cleanly, but not the right thing". Suggest it for Medium+ or high-stakes changes; the user opts in — never auto-run it, and it complements (never replaces) `up:reviewer`.
+
+Dispatch with ONLY:
+- The verbatim original requirement — the user's own words that started the task, unparaphrased. Source it from the session's original ask; in a fresh session, ask the user to paste it. Never reconstruct it from the task file.
+- `BASE_SHA` and `HEAD_SHA`
+- Working directory
+
+Never pass the task file, plan, design, or rationale — the agent's blindness to the implementer's worldview is the point. Its findings join the same loop below; keep only requirement-vs-delivery deltas (code-quality overlap belongs to `up:reviewer`).
+
 ### 2. Read feedback without reacting
 
 Receive the reviewer's output. Do not immediately reply with fixes or pushback. Classify first:
