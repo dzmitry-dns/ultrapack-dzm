@@ -1,6 +1,6 @@
 # Jira Adapter — draft-then-approve Status sync
 
-**Status:** validating
+**Status:** validating — merged to main 5053d48 2026-07-21; awaiting v0.3.27 reinstall + Jira-configured dogfood run
 **Branch:** jira-adapter
 **Goal:** In a Jira-configured consumer project, an /up:make run whose task crosses a drafting transition produces a correct thin-layer Jira draft (description = 1-2 sentence what+why + acceptance checklist + task-file pointer; comment = one plain-language line per phase) handed to the owner for approval, and nothing reaches Jira without that approval; in unconfigured projects the flow is byte-identical to today. Full confirmation needs a dogfood run in the owner's Jira-configured project (cccc, real CATS ticket) — install-and-invoke in this repo is only the local proxy.
 
