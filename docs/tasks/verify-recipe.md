@@ -1,6 +1,6 @@
 # Project verify recipe
 
-**Status:** reviewing — verify passed 2026-07-21 (7 CKs held)
+**Status:** validating — review clean 2026-07-21 (1 Important fixed, 64101d9); goal gated on post-merge install-and-invoke
 **Branch:** verify-recipe
 **Depends on:** docs/roadmap.md:90
 **Goal:** `up:uverify` reads a consumer-declared `## Verify recipe` CLAUDE.md section (bare `- <command>` lines, same parse convention as `## Jira adapter`) and runs it as the smoke baseline instead of guessing; projects without the section keep byte-identical heuristic behavior; grep-proof: parse convention consistent with ujira's config wording.
@@ -63,4 +63,18 @@ Smoke: `jq` on plugin.json + header-structure grep (5 phases intact, single inse
 Goal: proxy only — grep-proofs and the cccc dry-parse covered the wording; live invoke in a consumer project remains after ship
 
 ## Conclusion
-<empty — filled by up:ureview>
+
+Outcome: recipe-first Phase 3 landed (a77ae40 + review fix 64101d9, bump 11f7609); live invoke in a consumer project remains after the post-merge marketplace update.
+
+Invariants:
+- IV1 — diff vs main touches only the Phase 3 intro; four heuristic bullets byte-identical (CK4)
+- IV2 — wording mirrors ujira's parse convention (CK1); review tightened the smoke literal to the bare `- smoke:` form so the sole-parse-target claim stays true
+- IV3 — `deferred` reuses Phase 4 verdict vocabulary; attack list explicitly preserved (CK5)
+
+### Assumptions check
+- AS1 — held — cccc's recipe (roadmap:26) maps to three bare command lines + `- smoke:` line + DB-gated prose step (CK2)
+
+Review findings:
+- Important: undashed `smoke: <description>` literal contradicted the sole-parse-target rule — the exact folded-key trap ujira warns about; resolved in 64101d9 (dash added in both occurrences)
+
+Verified by: install-and-invoke smoke deferred to post-merge `/plugin marketplace update ultrapack` + `/reload-plugins`; grep-proofs and cccc dry-parse stood in (see Verify)
