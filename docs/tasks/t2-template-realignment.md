@@ -1,6 +1,6 @@
 # T2 — Template & flow realignment
 
-**Status:** reviewing
+**Status:** validating
 **Branch:** t2-template-realignment
 **Goal:** The pack's template and flow match observed usage (157-file census): template carries Prior art / Rollback / Rollout / Jira / Depends-on slots and the `<enum> — <annotation>` status format with `shipped` + `reference`; Conclusion gets dated post-merge log + Deferred-as-scope-parking; verify has a CK-lite tier; epic folder convention blessed; hands-off mode and implementer-sonnet fully removed; wave machinery lives only in `skills/uexecute/waves.md`; grep proves zero dangling references. Confirmed by reinstalling the updated pack and a `/up:make` pass showing the new template and no hands-off/worktree prompts.
 
@@ -130,7 +130,32 @@ Goal: proxy only — structural install-readiness verified; real reinstall + `/u
 - `skills/ureview/SKILL.md:29-35` — restates `_brevity` content locally instead of pointing (same pattern as uexecute:19-26); defensible locality, left as-is.
 
 ## Conclusion
-<empty — filled by up:ureview>
+
+Outcome: pack realigned per census — hands-off and implementer-sonnet removed, template/status model rebuilt, waves single-homed, CK-lite tier added; reinstall + `/up:make` pass remains for Goal confirmation. HEAD 62f313c.
+
+Invariants:
+- IV1 — CK1 grep sweep, 0 hits
+- IV2 — CK2 grep, wave terms only in waves.md
+- IV3 — CK3 grep, enum listed only in make.md
+- IV4 — CK4, stage skills reference sections by name only
+- IV5 — CK5 + CK8 greps, 0 refs to deleted artifacts
+- IV6 — CK6, `_brevity`/`_principles`/reviewer/implementer have no diff vs main
+
+### Assumptions check
+- AS1 — held — make.md resume-check states "Ignore header fields you don't recognize"
+- AS2 — held — same `${CLAUDE_PLUGIN_ROOT}` mechanism T1's smoke proved for `_brevity.md`; final confirmation at reinstall
+- AS3 — unverifiable here — doc-only repo, no trivial-phase dispatch ran; validated at first real use
+
+### Unknowns outcome
+- UK1 — resolved — uexecute 205 (target ~220), uplan 183 (~170), waves.md 135
+- UK2 — still-open — CK-lite threshold validated over fork usage
+- UK3 — still-open — cccc `workflow.md` realignment is out-of-repo follow-up (T3)
+
+Review findings:
+- Important: uplan Format carried two rollback-named headings (`### Risks / rollback` vs new `### Rollback`) — fixed, dev-time heading renamed `### Risks` (62f313c)
+- Important: make.md terminal state offered "cleanup" finish action dropped from step 12 — fixed, now `(merge, PR, or move on)` (62f313c)
+
+Verified by: install smoke was structural proxy only — real `/plugin` reinstall + `/up:make` template check pending (Goal)
 
 ### Deviations from plan
 - PH2: also edited Worktree references at `uexecute/SKILL.md:15,32` beyond the 2.x bullets — consistency pass for the dropped `**Worktree:**` header (IV5).
