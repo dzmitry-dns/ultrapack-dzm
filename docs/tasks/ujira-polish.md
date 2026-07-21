@@ -1,6 +1,6 @@
 # ujira V1.1 polish — dogfood follow-ups
 
-**Status:** executing
+**Status:** reviewing
 **Branch:** ujira-polish
 **Depends on:** docs/tasks/jira-adapter.md (`### Follow-up — 2026-07-21`)
 **Goal:** `plugins/up/skills/ujira/SKILL.md` unambiguously describes three description-draft behaviors (matches → skip, stale-field-only → targeted update, doesn't match → replace) and blesses bare `- key: value` lines as the sole config parse target; grep-proof of consistency with `make.md` ujira hooks is clean. Doc-only contract clarification — no separate dogfood run gates this.
@@ -70,7 +70,25 @@ Doc-only — verification is read-through + grep-proof:
 - Banned-content list unchanged and reachable from the targeted-update path (IV1).
 
 ## Verify
-<empty — filled by up:uverify>
+
+**Result:** passed
+
+Happy-path:
+- CK1 — hunt a verdict without a rendering / rendering without a verdict, incl. no-MCP path — held: skip=no item, update=`Description (update: <field>):`, replace=block item 3; no-read fallback (SKILL.md:100) composes with "compare on later triggers"
+- CK2 — make the config section violate its own parse rule — held: fenced example is bare lines; backticked key-docs bullets live in the pack SKILL.md, outside any consumer `## Jira adapter` section
+
+Negative:
+- CK3 — grep plugin for leftover binary-match language (`doesn't match the contract`, `no longer matches reality`, `replace-or-skip`) — held: clean
+
+Invariants / assumptions:
+- CK4 (IV3, AS1) — make.md hooks (39, 112, 147) vs SKILL.md behaviors — held: hooks name *when* drafting happens, never match semantics; AS1 held, no make.md edit needed
+- CK5 (IV1) — reach targeted update while dodging the banned list — held: "Banned in any draft" (SKILL.md:52) covers the update path
+- CK6 (IV2) — find an auto-apply path for targeted updates — held: update renders as block item 3, per-block approve/edit/skip unchanged
+
+Interfaces:
+- CK7 — manifests — held: plugin.json valid JSON at 0.3.28, marketplace.json pins no version
+
+Smoke: SKILL.md frontmatter well-formed (name + description), section structure intact — doc-only change loads as a skill file.
 
 ## Conclusion
 <empty — filled by up:ureview>
