@@ -29,7 +29,7 @@ Review is a process, not just a section. Its end product is the `## Conclusion` 
 ## Brevity
 
 <required>
-Before writing the `## Conclusion`, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its five principles. `Outcome:` is ≤1 sentence + the commit SHA — never re-narrate the diff. Omit subsections whose content would be "none" / "clean" / "no deviations" / "no findings" / the default: `Plan adherence`, `Review findings`, `Scope flag`, `Future work`, `Verified by`, `Deviations from plan`, `Known risks`. `Invariants:`, `Assumptions check:`, and `Unknowns outcome:` stay when the task had any IV / AS / UK — they carry audit value even on pass. The Exception clause still holds: findings, deviations, risks, violated assumptions, and deferrals always carry evidence and "why".
+Before writing the `## Conclusion`, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its five principles. `Outcome:` is ≤1 sentence + the commit SHA — never re-narrate the diff. Omit subsections whose content would be "none" / "clean" / "no deviations" / "no findings" / the default: `Plan adherence`, `Review findings`, `Scope flag`, `Future work`, `Deferred`, `Verified by`, `Deviations from plan`, `Known risks`. `Invariants:`, `Assumptions check:`, and `Unknowns outcome:` stay when the task had any IV / AS / UK — they carry audit value even on pass. The Exception clause still holds: findings, deviations, risks, violated assumptions, and deferrals always carry evidence and "why".
 
 `## Code smells` is shared across stages, not a Conclusion subsection: at task end delete the header if it stayed empty (brevity 1). Leave recorded smells in their own section; promote one to `Future work` only if this task decides to schedule its fix — don't duplicate.
 </required>
@@ -157,10 +157,15 @@ Scope flag:   (omit unless reviewer raised one — never auto-act; surface verba
 Future work:   (omit entire subsection if none — do not write "none")
 - <item> — Justification: <Design-scope line> OR <new fact discovered>
 
+### Deferred   (omit if nothing was parked — scope intentionally punted out of this task)
+- <what> → <ticket | task file>
+
 Verified by: <only non-default items: deferred smokes, manual checks the next reader needs to know about>   (omit if only the routine reviewer+verify ran)
 ```
 
 A violated AS is always material — it means the design rested on a premise that turned out false. Record evidence and, if it invalidates the outcome, either redo the affected phase or surface it to the user.
+
+After `done`/`shipped`, the Conclusion is a living log: post-merge reality gets appended as dated subsections — `### Follow-up — <date>`, `### Scope change — <date>` — never by rewriting the original review record.
 
 ## Receiving feedback — rules
 

@@ -12,7 +12,7 @@ Implement the approved `## Plan` from `docs/tasks/<slug>.md`. You are the dispat
 <required>
 1. Read the full task file — Design, Invariants (IV), Principles (PC), Assumptions (AS), Unknowns (UK), Plan. Plan is not optional reading.
 2. Scan the plan for ambiguity, missing dependencies, or contradictory steps. Raise now, not after writing half the code.
-3. Verify branch + worktree. Check `git rev-parse --show-toplevel` and `git branch --show-current` match the task file's `**Branch:**` and `**Worktree:**` headers. If mismatched: stop and ask.
+3. Verify the working copy. Check `git branch --show-current` matches the task file's `**Branch:**` header, and `git rev-parse --show-toplevel` is the repo (or worktree) the user intends. If mismatched: stop and ask.
 4. Build the checklist — one todo per plan phase (or per task if phases are coarse). Use TodoWrite.
 </required>
 
@@ -29,7 +29,7 @@ The Exception clause still holds: deviations, deferrals, and known risks always 
 <system-reminder>
 Editing the wrong repository is one of the most common bugs. Before any write, confirm:
 
-- `pwd` matches the task file's `**Worktree:**` (or the main repo if `none`)
+- `pwd` is inside the intended checkout (the main repo, or the worktree if one was created via `up:git-worktrees`)
 - `git branch --show-current` matches `**Branch:**`
 
 When you dispatch a subagent (`up:explorer`, `up:researcher`), pass the intended working directory explicitly in the prompt. Subagents do not inherit your `cwd` reliably across harnesses.

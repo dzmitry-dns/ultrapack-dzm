@@ -75,7 +75,8 @@ References to Design entities use IDs (IV3, AS1, UK2) — never re-quote the ful
 Required when relevant (omit the subsection when it would say "single phase, no deps", "none", or similar):
 - Test strategy: behaviors to cover. If `TDD: yes`, list the failing tests to write first.
 - Order + dependencies: phases, what blocks what
-- Open questions / risks / rollback: what could go wrong, how to back out
+- Open questions / risks: what could go wrong, how to back out during development
+- Rollout / Rollback: when the change ships to a live system — how it lands (order, flags, migrations) and how it backs out post-ship
 - Interfaces: declare cross-phase contracts when ≥2 phases share a signature / anchor / API shape. Omit for single-phase plans.
 - Interface graph: declare phase shape when ≥2 phases exist. Omit for single-phase plans.
 
@@ -109,6 +110,12 @@ Approach: <1-2 sentences>
 ### Risks / rollback   (optional — omit if none non-trivial)
 - RK1 — <one-sentence risk and mitigation>
 - RK2 — <...>
+
+### Rollout   (optional — only when the change ships to a live system)
+<how it lands: order, feature flags, migrations, verification gates>
+
+### Rollback   (optional — only when the change ships to a live system)
+<how to back out post-ship: revert / disable path, and what data it touches>
 
 ### Interfaces   (optional — omit for single-phase plans)
 - IF1 — `<signature>` — <contract sentence>

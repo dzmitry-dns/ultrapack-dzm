@@ -28,7 +28,7 @@ Before any creative work: new features, component builds, behavior changes, arch
 <required>
 Follow these steps in order. Do not combine or skip.
 
-1. Explore project context — how it works now, what's been tried, existing patterns, recent commits. Inform the ideal; don't let current state constrain it. No exceptions. Record incidental code smells you pass — if one is in scope or an easy win, note it for the plan to fix, else add it to `## Code smells` (see `_principles.md` → Incidental code smells).
+1. Explore project context — how it works now, what's been tried, existing patterns, recent commits. Inform the ideal; don't let current state constrain it. No exceptions. Prior art is part of this step: scan `docs/tasks/` (and `docs/tasks/archive/` if present) for related past tasks; cite `file:line` for anything that informs this design, or record "none found" — the citations land in `### Prior art`. Record incidental code smells you pass — if one is in scope or an easy win, note it for the plan to fix, else add it to `## Code smells` (see `_principles.md` → Incidental code smells).
 2. Scope check — split into multiple tasks now if the ask is too large.
 3. Ask clarifying questions, one at a time. Prefer multiple choice.
 4. Propose 2–3 approaches. Each with explicit tradeoffs and unknowns.
@@ -36,7 +36,7 @@ Follow these steps in order. Do not combine or skip.
 6. Present the design in sections. Get per-section approval.
 7. Identify invariants (IV), principles (PC), assumptions (AS), and unknowns (UK).
 8. Decide TDD — yes or no, with reason. Use `up:test-driven-development`'s applicability rule.
-9. Write to task file — set the `**Goal:**` header (the definition of done — see below), then `## Design`, `### Invariants`, `### Principles`, `### Assumptions`, `### Unknowns`.
+9. Write to task file — set the `**Goal:**` header (the definition of done — see below), then `## Design`, `### Prior art`, `### Invariants`, `### Principles`, `### Assumptions`, `### Unknowns`.
 10. Self-review for placeholders, contradictions, scope, ambiguity. Fix inline.
 11. Wait for user approval before invoking `up:uplan`.
 </required>
@@ -173,6 +173,9 @@ TDD: no (reason: one-off migration script; no reusable logic)
 <purpose, scope, chosen approach, key decisions, tradeoffs that settled it>
 <TDD: yes|no (reason)>
 
+### Prior art
+- `docs/tasks/archive/<file>.md:<line>` — <what it informs here>   (or the single line "none found")
+
 ### Invariants
 - IV1 — <specific thing that must hold>
 - IV2 — <...>
@@ -197,7 +200,7 @@ TDD: no (reason: one-off migration script; no reusable logic)
 - Follow existing patterns. Targeted improvements only if they serve this task.
 - Isolation. Units with one clear purpose; interfaces understandable without reading internals.
 - No code yet. Design's output is words, not code.
-- Omit empty subsections. `### Invariants`, `### Principles`, `### Assumptions`, `### Unknowns` are pre-seeded by the `/up:make` template. Delete any that end up with no entries — never leave a placeholder like `<empty>`, "none", or "n/a". See `_brevity.md` principle 1.
+- Omit empty subsections. `### Invariants`, `### Principles`, `### Assumptions`, `### Unknowns` are pre-seeded by the `/up:make` template. Delete any that end up with no entries — never leave a placeholder like `<empty>`, "none", or "n/a". See `_brevity.md` principle 1. Exception: `### Prior art` always stays — "none found" is a result proving the consultation happened, not a placeholder.
 
 ## Terminal state
 
