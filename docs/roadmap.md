@@ -49,12 +49,12 @@ Task-file census (157 files, ~124 archived):
 3. **Data over doctrine.** The template follows observed usage (157-file census), not aspiration. Features with ~0 adoption get cut or demoted, not documented harder.
 4. **The owner's profile is first-class** — web stack, Jira, bun/Playwright smoke — not tape in global CLAUDE.md.
 
-## Open questions (owner decisions, resolve before T2)
+## Open questions — resolved by owner 2026-07-21
 
-1. **Cut hands-off mode from the main flow?** Zero adoption in 82 files. Cutting removes the `handsoff` skill + per-stage deltas (large simplification). `job-guardian` would inline its own autonomy contract. Recommendation: cut.
-2. **Worktrees:** default off in `/up:make` step 6 (census: always `none`)? Keep the skill for on-demand use? Recommendation: default off, keep skill.
-3. **Interface graph:** cut entirely vs. move to an optional reference file? Recommendation: move out of `uexecute` mainline into a reference; revisit cutting after 2-3 months of fork usage.
-4. **job-guardian:** keep (pod/training-shaped; owner's work is web)? Could re-shape toward "babysit a deploy/migration". Recommendation: keep but de-ML the examples in T1.
+1. **Hands-off mode: cut.** Zero adoption in 82 files. Remove the `handsoff` skill + per-stage deltas from all stage skills; `job-guardian` inlines its own autonomy contract.
+2. **Worktrees: default off, keep skill.** `/up:make` stops asking (step 6), `**Worktree:**` leaves the template; `git-worktrees` stays for on-demand use.
+3. **Interface graph: move to an optional reference file**, out of `uexecute` mainline; revisit cutting after 2-3 months of fork usage.
+4. **job-guardian: keep** (de-ML'd in T1 — deploy/migration/backfill-shaped now).
 
 ## Tracks
 
