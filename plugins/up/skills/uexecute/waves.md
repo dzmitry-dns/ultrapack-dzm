@@ -56,16 +56,11 @@ If a wave reduces to one phase, skip dispatch and edit inline via the serial loo
 
 Before dispatching a wave, verify the `@` sets of all phases in that wave are pairwise disjoint. On overlap: halt, tell the user which paths conflict between which phases, and do not dispatch.
 
-### Choosing the implementer agent
+### Choosing the implementer model
 
-Two implementer agents are available:
+Every phase dispatches `up:implementer`. For a trivial phase — unambiguously mechanical and well-localized: single-file typo or copy fix, mechanical rename, import/lint cleanup, version/changelog bump, doc edit with no behavioral claims — pass dispatch-time `model: sonnet` on the Agent call and append the scope-check paragraph to the dispatch prompt (below). Dispatch without the override unless every criterion is met; if unsure, don't override.
 
-- `up:implementer` — default. Use for any phase requiring judgment: multi-file changes, new logic, TDD, introducing or changing an interface, anything where reading multiple files informs the implementation.
-- `up:implementer-sonnet` — trivial phases only. Use when the phase is unambiguously mechanical and well-localized: single-file typo or copy fix, mechanical rename, import/lint cleanup, version/changelog bump, doc edit with no behavioral claims.
-
-Default to `up:implementer`. Pick `up:implementer-sonnet` only when every criterion is met. If unsure, pick `up:implementer`.
-
-If `up:implementer-sonnet` returns `NEEDS_CONTEXT` with `escalate: up:implementer`, re-dispatch the same phase to `up:implementer` — its scope check correctly bounced a non-trivial phase.
+If a sonnet-dispatched implementer returns `NEEDS_CONTEXT` reporting the phase isn't trivial, re-dispatch the same phase without the `model: sonnet` override — the scope check correctly bounced a non-trivial phase.
 
 ### Dispatch prompt
 
@@ -92,6 +87,16 @@ Commit mode: defer
 Owns: <comma-separated paths from the graph's @>
 Implements: <IF<n>, ...>                                    (if this phase produces any)
 Consumes: <IF<n>, ...>                                      (if this phase consumes any)
+```
+
+For `model: sonnet` dispatches, append the scope-check paragraph to the prompt:
+
+```
+Scope check: this phase was dispatched as trivial. Before writing, sanity-check that it
+really is — single file or tightly localized, mechanical (no design judgment), no new
+logic, no TDD. If the phase requires reading multiple files to make a decision,
+introducing or changing an interface, or any non-mechanical reasoning, stop and report
+NEEDS_CONTEXT stating why it isn't trivial. Do not silently push through.
 ```
 
 ### Dispatching the wave

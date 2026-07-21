@@ -9,11 +9,7 @@ Review's stance: the future maintainer's audit. Sit in the chair of the person w
 
 The job is to spot the design or structural choice that will force a nasty rewrite when someone next has to extend, migrate, or refactor. Catch the shape you'll regret in 6 months while it's still cheap to change.
 
-Four angles the audit looks for, all under the same headline:
-- Wrong abstraction / premature commit — a shape that fits today's case but will break under the N+1 case, forcing the whole thing to be ripped out.
-- Load-bearing but unobvious — an implicit invariant, default, or ordering that the next maintainer will violate by accident, then spend days debugging.
-- Bites the next change — a check in the wrong layer, a mutable default, an enum that'll silently accept new values; fine now, painful at the next touch.
-- Inconsistent with surrounding code — duplicates an existing helper, leaks an abstraction, drifts naming, or couples to untouched code, compounding the next refactor's cost.
+The four audit angles — wrong abstraction / premature commit, load-bearing but unobvious, bites the next change, inconsistent with surrounding code — are defined in `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md`, their single home.
 
 Review has license to question scope, surfacing it as a flag for the user. If review notices "this whole change may have been the wrong call" or "the design rests on a premise that looks wrong now that the code exists," it goes into the Conclusion as a `Scope flag` for the user to act on. Review surfaces; redesign belongs to udesign.
 
