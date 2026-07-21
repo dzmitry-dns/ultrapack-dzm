@@ -79,7 +79,9 @@ If an attack failed to land in an earlier session — re-run it. State drifts; w
 
 The smoke is the most basic attack hypothesis: the change is broken enough that it doesn't even run end-to-end in its real shape.
 
-Run the shortest full path:
+Recipe first: if the consumer project's `CLAUDE.md` has a `## Verify recipe` section, run it as the smoke baseline. Bare `- <command>` lines are the sole parse target (surrounding prose is welcome — same convention as `## Jira adapter`): run them in order, freshly, before the smoke. A `smoke: <description>` line names the end-to-end smoke to run. A step the prose gates on unavailable infra (a test DB, a device) that can't run here → record it as `deferred` with the reason — never silently skip it. The recipe feeds this phase only; the attack list above still gets built and run.
+
+No recipe (or no `smoke:` line) — infer the shortest full path:
 
 - CLI change → invoke the command with representative input
 - API change → `curl` against a running server
