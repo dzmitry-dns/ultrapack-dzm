@@ -84,6 +84,7 @@ Process skills (`u`-prefixed to dodge Claude Code built-ins):
 - `up:ureview` — dispatch an independent reviewer, process its findings fairly, and fill the Conclusion.
 - `up:udebug` — four-phase root-cause investigation (reproduce → pattern-match → hypothesize → fix); no symptom patches.
 - `up:udocument` — discipline for writing docs: lead with why, kill stale content, lists over tables, no aspirational content.
+- `up:ujira` — draft-then-approve Jira sync: thin-layer drafts at Status transitions, owner approves before anything reaches Jira; config lives in the consumer project's CLAUDE.md.
 
 Discipline skills:
 

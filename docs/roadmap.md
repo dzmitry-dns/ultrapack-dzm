@@ -85,7 +85,7 @@ Task-file census (157 files, ~124 archived):
 - [x] Fold the SSOT dedup here (single home for reviewer stance, dispatch contract) — it's the same files being rewritten anyway.
 
 ### T3 — Daily-driver features
-- [ ] **Jira adapter:** on Status transitions, *draft* the thin-layer Jira update (description = what+why + acceptance + task-file pointer; comment = one plain line per phase) and hand to the owner for approval — MCP is read-only for writes by policy. Config in project CLAUDE.md.
+- [x] **Jira adapter:** on Status transitions, *draft* the thin-layer Jira update (description = what+why + acceptance + task-file pointer; comment = one plain line per phase) and hand to the owner for approval — MCP is read-only for writes by policy. Config in project CLAUDE.md.
 - [ ] **Requirements-review:** optional second dispatch in `ureview` — verbatim original requirement + BASE_SHA/HEAD_SHA only; auto-suggested for Medium+. Fold `~/.claude/agents/requirements-reviewer.md` into the pack.
 - [ ] **Project verify recipe:** `uverify`/`/up:make` read a per-project smoke recipe (cccc: `bun type-check`, `bun test:unit`, `bun run build`, dev smoke; integration gated on test DB; UI via Playwright/chrome MCP click-through) instead of guessing.
 - [ ] **Plan-approval gates as config:** fold cccc's "3+ files / DB migration / new API surface ⇒ plan approval" into `/up:make` as a project-configurable gate; shrink `workflow.md` accordingly.
