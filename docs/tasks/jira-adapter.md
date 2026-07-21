@@ -159,3 +159,5 @@ Dogfood passed end-to-end (CATS-1521, cccc): both drafting pauses fired exactly 
 Pack follow-ups surfaced:
 - SKILL.md should state how to treat a description that matches the contract structurally except for a stale pointer — "matches" is not binary.
 - Config section doubles as docs and live config in consumer CLAUDE.md; SKILL.md should bless bare `- key: value` lines as the canonical parse target so surrounding prose can't break discovery.
+
+Both implemented in `docs/tasks/ujira-polish.md` (v0.3.28, 2026-07-21).
