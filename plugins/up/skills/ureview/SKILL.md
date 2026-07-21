@@ -9,11 +9,7 @@ Review's stance: the future maintainer's audit. Sit in the chair of the person w
 
 The job is to spot the design or structural choice that will force a nasty rewrite when someone next has to extend, migrate, or refactor. Catch the shape you'll regret in 6 months while it's still cheap to change.
 
-Four angles the audit looks for, all under the same headline:
-- Wrong abstraction / premature commit — a shape that fits today's case but will break under the N+1 case, forcing the whole thing to be ripped out.
-- Load-bearing but unobvious — an implicit invariant, default, or ordering that the next maintainer will violate by accident, then spend days debugging.
-- Bites the next change — a check in the wrong layer, a mutable default, an enum that'll silently accept new values; fine now, painful at the next touch.
-- Inconsistent with surrounding code — duplicates an existing helper, leaks an abstraction, drifts naming, or couples to untouched code, compounding the next refactor's cost.
+The four audit angles — wrong abstraction / premature commit, load-bearing but unobvious, bites the next change, inconsistent with surrounding code — are defined in `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md`, their single home.
 
 Review has license to question scope, surfacing it as a flag for the user. If review notices "this whole change may have been the wrong call" or "the design rests on a premise that looks wrong now that the code exists," it goes into the Conclusion as a `Scope flag` for the user to act on. Review surfaces; redesign belongs to udesign.
 
@@ -29,7 +25,7 @@ Review is a process, not just a section. Its end product is the `## Conclusion` 
 ## Brevity
 
 <required>
-Before writing the `## Conclusion`, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its five principles. `Outcome:` is ≤1 sentence + the commit SHA — never re-narrate the diff. Omit subsections whose content would be "none" / "clean" / "no deviations" / "no findings" / the default: `Plan adherence`, `Review findings`, `Scope flag`, `Future work`, `Verified by`, `Deviations from plan`, `Known risks`. `Invariants:`, `Assumptions check:`, and `Unknowns outcome:` stay when the task had any IV / AS / UK — they carry audit value even on pass. The Exception clause still holds: findings, deviations, risks, violated assumptions, and deferrals always carry evidence and "why".
+Before writing the `## Conclusion`, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its five principles. `Outcome:` is ≤1 sentence + the commit SHA — never re-narrate the diff. Omit subsections whose content would be "none" / "clean" / "no deviations" / "no findings" / the default: `Plan adherence`, `Review findings`, `Scope flag`, `Future work`, `Deferred`, `Verified by`, `Deviations from plan`, `Known risks`. `Invariants:`, `Assumptions check:`, and `Unknowns outcome:` stay when the task had any IV / AS / UK — they carry audit value even on pass. The Exception clause still holds: findings, deviations, risks, violated assumptions, and deferrals always carry evidence and "why".
 
 `## Code smells` is shared across stages, not a Conclusion subsection: at task end delete the header if it stayed empty (brevity 1). Leave recorded smells in their own section; promote one to `Future work` only if this task decides to schedule its fix — don't duplicate.
 </required>
@@ -101,9 +97,7 @@ Before any fix goes in, tell the user what you decided for each finding. One lin
 - your verdict (fix / push back / defer),
 - if fixing: the exact change you are about to make.
 
-In interactive mode, this is a short summary — the user can interject, then you apply the fixes.
-
-In hands-off mode, see `up:handsoff` for the contract. Stage-specific delta: announce and apply in the same step — no pause for interjection. The restate → verify → evaluate → decide process from step 3 is still required. Each applied fix is logged as `- ureview: fixed <finding> — <what changed>` under `### Hands-off decisions`. Low-confidence / ambiguous findings go to `### Deferred (needs user input)` and are not auto-fixed. Fixes must honor the safety principles (no destructive edits, no force-push, additive over subtractive).
+This is a short summary — the user can interject, then you apply the fixes.
 </required>
 
 <bad-example>
@@ -159,10 +153,15 @@ Scope flag:   (omit unless reviewer raised one — never auto-act; surface verba
 Future work:   (omit entire subsection if none — do not write "none")
 - <item> — Justification: <Design-scope line> OR <new fact discovered>
 
+### Deferred   (omit if nothing was parked — scope intentionally punted out of this task)
+- <what> → <ticket | task file>
+
 Verified by: <only non-default items: deferred smokes, manual checks the next reader needs to know about>   (omit if only the routine reviewer+verify ran)
 ```
 
 A violated AS is always material — it means the design rested on a premise that turned out false. Record evidence and, if it invalidates the outcome, either redo the affected phase or surface it to the user.
+
+After `done`/`shipped`, the Conclusion is a living log: post-merge reality gets appended as dated subsections — `### Follow-up — <date>`, `### Scope change — <date>` — never by rewriting the original review record.
 
 ## Receiving feedback — rules
 
@@ -192,10 +191,6 @@ Pushback is legitimate when:
 - Merge with open Critical or Important findings
 - Skip the Conclusion write-up
 - Run review on yourself (always use the subagent — preserve independence)
-
-## Hands-off mode
-
-See `up:handsoff` for the full contract. Stage-specific delta is embedded in step 4 above: announce-and-apply without the user interjection pause; high-confidence actionable findings are fixed in-line and logged under `### Hands-off decisions`; low-confidence / ambiguous findings go to `### Deferred (needs user input)`. All applied fixes must honor the safety principles (no destructive edits, no force-push, additive over subtractive).
 
 ## Terminal state
 

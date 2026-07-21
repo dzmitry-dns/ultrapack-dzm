@@ -11,10 +11,10 @@ You are taking custody of a process the user will not be watching. Their trust i
 
 ## Away by default
 
-Assume the user is gone the moment they hand you the job — before launch, during the run, after teardown. You do not ask questions, ever. Not at intake, not mid-flight, not at the end. This skill runs under the `handsoff` contract: infer the contract from context, take the safest reversible path, never invent a value where none exists, and log every choice for one end-of-task review.
+Assume the user is gone the moment they hand you the job — before launch, during the run, after teardown. You do not ask questions, ever. Not at intake, not mid-flight, not at the end. Operating contract: infer everything from context, take the safest reversible path, never invent a value where none exists, and log every choice for one end-of-run review.
 
-- **Never ask a question.** Not even at intake. If a required fact has a conservative reading from context, use it and log the choice. If it has none, do not guess (handsoff no-default rule).
-- **Structural blocker before launch → stop, don't launch.** Log it under `### Deferred (needs user input)` and notify. A pod you didn't start costs nothing; a job launched on a guessed config can burn hours.
+- **Never ask a question.** Not even at intake. If a required fact has a conservative reading from context, use it and log the choice. If it has none, do not guess.
+- **Structural blocker before launch → stop, don't launch.** Log it under the record's `### Needs user input` and notify. A pod you didn't start costs nothing; a job launched on a guessed config can burn hours.
 - **Ambiguity while running → take the reversible side.** Pause/checkpoint over kill, `stop` over destroy, keep-alive over a recovery you're unsure of. When unsure whether an action is reversible, assume it isn't.
 - **Tell the user at the end.** Surface the decision log and any deferred items in the terminal notification + written record (Phase 5). That review replaces the questions you didn't ask.
 
@@ -33,7 +33,7 @@ For remote work, launch the process detached (`nohup` or a container, so it surv
 You cannot guard a process whose health you can't define. Derive these from what the user gave you and the repo (their instructions, configs, the job script, env, prior runs), per Away by default.
 
 <required>
-1. **Launch command** — exact command, working dir, env. Take it as the user wrote it (handsoff rigid path); never reword it into something "equivalent." Output must be captured to a file (GPC5; never run-then-grep).
+1. **Launch command** — exact command, working dir, env. Take it as the user wrote it; never reword it into something "equivalent." Output must be captured to a file (GPC5; never run-then-grep).
 2. **Liveness signal** — how you know it's still running (PID alive, container up, log mtime advancing).
 3. **Health signal** — how you know it's making *progress*, not just alive: step / iteration count climbing, rows written increasing, queue draining, throughput > 0. A hung process is alive but not healthy. If the log gives no progress signal you can read, that's a structural blocker — say so before launch, don't guess one.
 4. **Done signal** — what successful completion looks like (exit 0, a `done`/`complete` marker in the log, expected row count reached, checkpoint N saved).
@@ -48,10 +48,10 @@ You cannot guard a process whose health you can't define. Derive these from what
 Always write the contract to a file before launch — no exceptions, even for "quick" jobs. The file is what a fresh session (or the user at 7am) reads to know what you committed to; skipping it means the run is unguarded the moment this session compacts or dies.
 
 - Path: `docs/jobs/<slug>.md`. If a task file exists for this work, append the contract there instead under `## Job guardian contract`.
-- Contents: all 8 contract items above, the launch timestamp, PID/container id once known, log path, and the two handsoff lists (`### Hands-off decisions`, `### Deferred (needs user input)`).
+- Contents: all 8 contract items above, the launch timestamp, PID/container id once known, log path, and the two decision lists (`### Decisions` — every inferred choice, one line each; `### Needs user input` — blockers you stopped on).
 - Do not launch until the file is written. The file is the gate.
 
-**Keep the file live.** Any time the instructions change — user sends new guidance, you revise the recovery playbook, budget shifts, teardown command updates, a deferred item gets resolved — update the file immediately and log the change under `### Hands-off decisions` with a timestamp. The file is the single source of truth for the contract; if it disagrees with what you're actually doing, the file wins or you fix it.
+**Keep the file live.** Any time the instructions change — user sends new guidance, you revise the recovery playbook, budget shifts, teardown command updates, a deferred item gets resolved — update the file immediately and log the change under `### Decisions` with a timestamp. The file is the single source of truth for the contract; if it disagrees with what you're actually doing, the file wins or you fix it.
 
 ## Phase 1 — Setup
 
@@ -116,7 +116,7 @@ On unrecoverable: capture the failure (last log lines, error, what you tried), t
 <required>
 1. Preserve outputs first — pull checkpoints, logs, results off the pod *before* any teardown, in case teardown destroys the disk.
 2. Release the resource (done, gave up, budget hit) with the reversible teardown (`stop`, not destroy). Verify it actually released (pod stopped) — a teardown you didn't confirm is not done (GPC5).
-3. Write the record: outcome, final metrics or error, recovery actions taken, where logs/checkpoints live, plus the two handsoff lists — `### Hands-off decisions` (every inferred choice, one line each) and `### Deferred (needs user input)`.
+3. Write the record: outcome, final metrics or error, recovery actions taken, where logs/checkpoints live, plus the two decision lists — `### Decisions` and `### Needs user input`.
 4. `PushNotification` on the contracted terminal events, lead with what the user acts on: `"migration done: 1.2M rows in 14 min, host released"`, `"job died — OOM, 3 restarts failed, container stopped, log saved"`. Not routine progress.
 </required>
 

@@ -51,7 +51,7 @@ Before writing the Plan, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply 
 8. Backwards-compat check — restate Design's compat risks in concrete plan terms.
 9. Self-review inline (placeholders, consistency, invariants, spec coverage).
 10. Scope-creep / simpler-way check — see below. This is the final step before handoff.
-11. Present the plan to the user. In interactive mode, wait for approval, then invoke `up:uexecute`. In hands-off mode (task-file `**Mode:** hands-off`), auto-invoke `up:uexecute` after presenting, and log `- uplan: plan auto-approved (hands-off)` to `## Conclusion → ### Hands-off decisions`.
+11. Present the plan to the user, wait for approval, then invoke `up:uexecute`.
 </required>
 
 ## Required contents
@@ -75,9 +75,9 @@ References to Design entities use IDs (IV3, AS1, UK2) — never re-quote the ful
 Required when relevant (omit the subsection when it would say "single phase, no deps", "none", or similar):
 - Test strategy: behaviors to cover. If `TDD: yes`, list the failing tests to write first.
 - Order + dependencies: phases, what blocks what
-- Open questions / risks / rollback: what could go wrong, how to back out
-- Interfaces: declare cross-phase contracts when ≥2 phases share a signature / anchor / API shape. Omit for single-phase plans.
-- Interface graph: declare phase shape when ≥2 phases exist. Omit for single-phase plans.
+- Open questions / risks: what could go wrong, how to back out during development
+- Rollout / Rollback: when the change ships to a live system — how it lands (order, flags, migrations) and how it backs out post-ship
+- Interfaces + Interface graph: only when a multi-phase plan should execute with parallel dispatch — declaration format, semantics, and the graph self-review live in `${CLAUDE_PLUGIN_ROOT}/skills/uexecute/waves.md`. Omit otherwise.
 
 Optional:
 - Code snippets: only for the most critical component per phase. If tempted to include full code, you're over-planning.
@@ -106,36 +106,22 @@ Approach: <1-2 sentences>
 ### Order & dependencies   (optional — omit for single-phase or obviously-sequential plans)
 <what blocks what, parallelizable phases>
 
-### Risks / rollback   (optional — omit if none non-trivial)
+### Risks   (optional — omit if none non-trivial)
 - RK1 — <one-sentence risk and mitigation>
 - RK2 — <...>
 
-### Interfaces   (optional — omit for single-phase plans)
-- IF1 — `<signature>` — <contract sentence>
-- IF2 [blocks] — `<signature>` — <contract sentence> (consumer must wait for producer; see "Blocking interfaces" below)
+### Rollout   (optional — only when the change ships to a live system)
+<how it lands: order, feature flags, migrations, verification gates>
 
-### Interface graph   (optional — omit for single-phase plans)
-- PH1              -> IF1, IF2   @ plugins/up/skills/foo/SKILL.md
-- PH2  IF1         -> IF3        @ plugins/up/skills/bar/SKILL.md
-- PH3  IF2, IF3 ->               @ plugins/up/agents/baz/AGENT.md
+### Rollback   (optional — only when the change ships to a live system)
+<how to back out post-ship: revert / disable path, and what data it touches>
+
+### Interfaces + ### Interface graph   (optional — only for parallel dispatch; format in uexecute/waves.md)
 ```
 
-## When to declare interfaces
+## Interfaces for parallel dispatch
 
-- An interface is a cross-phase contract: a function/method signature, a shared SKILL.md section anchor, or any API shape that one phase produces and another phase consumes.
-- The consume arrow (`IF<N> ->`) means runtime coupling — one phase's output is the other phase's input. Doc-only phases that merely reference a prior phase's plan text are sources, not consumers; leave the consume side empty (the line starts with `PH<N>  -> <produces>`).
-- `@ <paths>` marks the filesystem boundary for each phase. Paths declared by phases in the same wave must be disjoint; `up:uexecute` uses this to detect boundary violations after each commit.
-- Waves are derived from the graph by topo-sort over `[blocks]` edges only — non-blocking IF edges (the default) do not create wave boundaries, since the IF declaration is sufficient context for the consumer. Phases linked only by non-blocking IFs land in the same wave and run in parallel. Do not hand-declare waves; declare the graph and the blocking flags, and let the executor derive them.
-- Omit both `### Interfaces` and `### Interface graph` for single-phase plans.
-
-## Blocking interfaces
-
-By default, an IF is non-blocking: its declared signature is the contract, and a consumer can be implemented in parallel with the producer (the wiring check reconciles any drift after the wave). Mark an IF `[blocks]` when:
-
-- The consumer needs the producer's actual output, not just the signature — e.g. a generated config file, an applied DB migration, a fixture that must exist on disk, a doc anchor that must resolve at lint time.
-- The producer is large, risky, or critical enough that the planner does not want dependent work running concurrently — better to land it, verify it, then build on top. Planner/dispatcher discretion.
-
-Use `[blocks]` sparingly — every block reduces parallelism. The default of non-blocking is correct for ordinary code interfaces (function signatures, class shapes, SKILL.md anchors) where the IF declaration carries the contract.
+A multi-phase plan MAY declare `### Interfaces` and `### Interface graph` so `up:uexecute` can dispatch independent phases concurrently. The declaration format, blocking semantics, and wave derivation live in one place: `${CLAUDE_PLUGIN_ROOT}/skills/uexecute/waves.md`. Read it before declaring; declare only when parallel execution is actually wanted — serial plans omit both subsections.
 
 ## Self-review (inline, no subagent)
 
@@ -145,7 +131,7 @@ Use `[blocks]` sparingly — every block reduces parallelism. The default of non
 3. Consistency — method/class names match across bullets; later phases' interfaces reference what earlier phases define.
 4. Leanness — plan size should fit the task. If it exceeds ~1 screen per day of expected work, trim.
 5. IV / AS coverage — each IV and AS has a referencing bullet somewhere (by ID).
-6. If `### Interface graph` is present: every phase declares `@ <paths>`; paths declared by phases in the same wave are disjoint (where waves are derived by topo-sort over `[blocks]` edges); every IF consumed by any phase is defined in `### Interfaces`; every IF defined is produced by exactly one phase; every `[blocks]` annotation has a stated reason in the IF's contract sentence.
+6. If `### Interface graph` is present: run the "Planner self-review for the graph" checklist in `${CLAUDE_PLUGIN_ROOT}/skills/uexecute/waves.md`.
 </required>
 
 Fix issues inline. No re-review loop.
@@ -192,10 +178,6 @@ Before handing off to the user, check:
 
 If this check surfaces real simplifications, rewrite the plan. Don't stack warnings on top of a bloated plan.
 
-## Hands-off mode
-
-See `up:handsoff` for the full contract. Stage-specific delta: skip the approval wait — present the plan highlights, log `- uplan: plan auto-approved` to `### Hands-off decisions`, invoke `up:uexecute` directly. Self-review, scope-creep check, and backwards-compat restatement are unchanged. Ambiguities that would require a user call go to `### Deferred (needs user input)` and the plan stops — do not guess around them.
-
 ## Terminal state
 
-Plan written, self-reviewed, scope-checked. Interactive: present highlights, wait for approval, invoke `up:uexecute`. Hands-off: present highlights, log auto-approval, invoke `up:uexecute`.
+Plan written, self-reviewed, scope-checked. Present highlights, wait for approval, invoke `up:uexecute`.

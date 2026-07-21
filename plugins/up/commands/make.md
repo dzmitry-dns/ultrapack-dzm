@@ -1,5 +1,5 @@
 ---
-description: Orchestrate the full ultrapack workflow — slug, task file, design, plan, execute, verify, review. Size-aware, resume-ready. Prefix args with `handsoff` for hands-off mode (fewer prompts, conservative defaults, decision log).
+description: Orchestrate the full ultrapack workflow — slug, task file, design, plan, execute, verify, review. Size-aware, resume-ready.
 ---
 
 # /up:make
@@ -10,17 +10,17 @@ Drives a task through the full ultrapack workflow: one task file at `docs/tasks/
 
 The user's description of the task follows the command. May be a one-liner ("fix the flaky login test") or a paragraph. Use it as the seed for the slug and the initial framing for `up:udesign`.
 
-Hands-off activation: if the first whitespace-delimited token of the arguments is the literal string `handsoff`, enable hands-off mode. Strip that token before deriving the slug or framing for design. Any other spelling (`hands-off`, `handsOff`, `--handsoff`) is treated as part of the description — only the bare token `handsoff` activates. See `## Hands-off mode` below for behavior.
-
 ## Flow
 
 ### 1. Slug
 
-Derive a kebab-case slug from the description, 3 words max (e.g. "flaky-login-test"), and proceed.
+Derive a kebab-case slug from the description, 3 words max (e.g. "flaky-login-test"), and proceed. If the work belongs to a named epic (the user says so, or a matching `docs/tasks/<epic>/` folder exists), place the file at `docs/tasks/<epic>/<slug>.md` — see "Epics" below.
 
 ### 2. Resume check
 
-Before creating a new task file, check if `docs/tasks/<slug>.md` already exists.
+Before creating a new task file, check if the slug already exists — scan `docs/tasks/**/*.md` (tasks may live in epic folders).
+
+Status format: `<enum> — <optional annotation>`. The enum is everything before the first ` — `; the annotation is free text (dates, PR links, ship notes). Enum values: `design`, `planning`, `executing`, `reviewing`, `validating`, `done`, `shipped`, plus `reference` for epic overview files. Reopening a task = setting Status back to an earlier enum value with a dated annotation (e.g. `executing — reopened 2026-08-01, edge case CATS-1204`). Ignore header fields you don't recognize — older files may carry retired ones.
 
 - Exists: read `**Status:**` from the header. Resume from the next stage:
   - `design` → continue design
@@ -28,13 +28,15 @@ Before creating a new task file, check if `docs/tasks/<slug>.md` already exists.
   - `executing` → run `up:uexecute`
   - `reviewing` → run `up:ureview`
   - `validating` → re-check the Goal with the user (step 11); on confirmation → `done`
-  - `done` → ask the user what they want to do (start a follow-up, re-open, view conclusion)
+  - `done` / `shipped` → ask the user what they want to do (start a follow-up, re-open, view conclusion)
+  - `reference` → not a task — an epic overview; ask which child task the user means
+  - anything else → ask the user how to proceed
 - Doesn't exist: proceed to step 3.
-- Multiple in-flight tasks: if more than one `docs/tasks/*.md` has Status ≠ `done`, list them and ask which one the user means (or whether this is a new task).
+- Multiple in-flight tasks: if more than one task file has Status ≠ `done` / `shipped` / `reference`, list them and ask which one the user means (or whether this is a new task).
 
 ### 3. Create task file
 
-Create `docs/tasks/<slug>.md` from the template. Status = `design`. Branch = `main` (placeholder until step 5). No worktree. Mode = `hands-off` if the keyword was present, else `interactive`. Goal = a first draft of the observable success condition from the description; `up:udesign` finalizes it, or `up:make` sets it directly when Design is skipped (trivial/small).
+Create `docs/tasks/<slug>.md` from the template. Status = `design`. Branch = `main` (placeholder until step 5). Goal = a first draft of the observable success condition from the description; `up:udesign` finalizes it, or `up:make` sets it directly when Design is skipped (trivial/small).
 
 Template:
 
@@ -43,12 +45,15 @@ Template:
 
 **Status:** design
 **Branch:** main
-**Worktree:** none
+**Jira:** <ticket id/link — omit the line if none>
+**Depends on:** <task file or ticket — omit the line if none>
 **Goal:** <observable success condition that defines done — note if confirming it needs a real-world run or user sign-off beyond the diff>
-**Mode:** <interactive|hands-off>
 
 ## Design
 <empty — filled by up:udesign>
+
+### Prior art
+<empty — filled by up:udesign: file:line citations from docs/tasks/ and archive/, or "none found">
 
 ### Invariants
 <empty — IV1, IV2, … : hard constraints that must hold>
@@ -63,7 +68,7 @@ Template:
 <empty — UK1, UK2, … : open questions left to plan / execute; conclusion must report whether each resolved>
 
 ## Plan
-<empty — filled by up:uplan>
+<empty — filled by up:uplan; gains ### Rollout / ### Rollback when the change ships to a live system>
 
 ## Verify
 <empty — filled by up:uverify>
@@ -72,14 +77,12 @@ Template:
 <empty — file:line + one-line smell passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
 
 ## Conclusion
-<empty — filled by up:ureview>
-
-### Hands-off decisions
-<empty — populated only when Mode is hands-off>
-
-### Deferred (needs user input)
-<empty — populated only when Mode is hands-off and a choice had no conservative default>
+<empty — filled by up:ureview; after done/shipped grows dated ### Follow-up — <date> / ### Scope change — <date> entries and ### Deferred scope-parking>
 ```
+
+### Epics — folder convention
+
+A multi-task workstream gets a folder: `docs/tasks/<epic>/` holding `overview.md` at `**Status:** reference` (what the epic is, links to its child task files) plus one normal task file per child. Children are designed, executed, and resumed individually; the overview is never resumed and never carries a Goal.
 
 ### 4. Size classification
 
@@ -89,32 +92,24 @@ Based on the task description, classify size:
 - Small — single file or single concept change. Skip Design. Plan runs.
 - Medium / Large — full flow.
 
-Interactive mode: default to Medium silently. Jump to Trivial/Small only when the user's wording signals it — e.g. "quickly", "fast", "just", "one-line", "typo", "rename". Confirm before skipping any stage. When genuinely ambiguous, ask.
-
-Hands-off mode: do not confirm. Default to Medium (full flow) unless the scope is unambiguously Trivial (true one-liner in one file). Never auto-pick Small or auto-skip Design — Design is the one interactive stage preserved in hands-off. Append the choice to `## Conclusion → ### Hands-off decisions` as `- size: <classification> — <rationale>`.
+Default to Medium silently. Jump to Trivial/Small only when the user's wording signals it — e.g. "quickly", "fast", "just", "one-line", "typo", "rename". Confirm before skipping any stage. When genuinely ambiguous, ask.
 
 ### 5. Design stage (unless skipped)
 
 Invoke `up:udesign`. It populates `## Design`, `### Invariants` (IV), `### Principles` (PC), `### Assumptions` (AS), `### Unknowns` (UK), and records `TDD: yes / no (reason)`. Status → `planning`.
 
-### 6. Branch & worktree decision
+### 6. Branch decision
 
 After Design (or immediately for trivial/small tasks), decide:
 
-- Complex / long-running / touches many files → suggest a dedicated branch + worktree. Use `up:git-worktrees`.
-- Easy fix / small scope → suggest working on current branch (usually `main`).
+- Complex / long-running / touches many files → suggest a dedicated branch.
+- Easy fix / small scope → suggest working on the current branch (usually `main`).
 
-Interactive mode: always confirm with the user.
-
-Hands-off mode: default to the safest reversible option — always a dedicated branch + worktree via `up:git-worktrees`, never direct edits to `main`/`master`. Log the branch name and worktree path under `## Conclusion → ### Hands-off decisions`. The only exception: if `up:git-worktrees` itself fails (e.g. no gitignored worktree path available), log the failure under `### Deferred (needs user input)` and stop — do not silently fall back to working on `main`.
-
-If a branch is created, update the task file's `**Branch:**` and `**Worktree:**` headers.
+Always confirm with the user. If a branch is created, update the task file's `**Branch:**` header. When the work additionally needs filesystem isolation (a second live checkout), `up:git-worktrees` covers it on demand.
 
 ### 7. Plan stage (unless skipped)
 
 Invoke `up:uplan`. It populates `## Plan`. Status → `executing`.
-
-In hands-off, `up:uplan` auto-proceeds to `up:uexecute` without an approval prompt. It logs `- uplan: plan auto-approved (hands-off)` to `### Hands-off decisions`.
 
 ### 8. Execute stage
 
@@ -141,13 +136,12 @@ If the Goal is still pending, proceed to step 12 to offer finish actions — the
 
 Once `done`, run the docs-refresh check (see below).
 
+`shipped` comes after `done`: set it when the merge/deploy is confirmed real, with the evidence in the annotation (e.g. `shipped — merged PR #294, prod 2026-08-03`). If the finish action chosen at step 12 completes the merge and nothing else gates the ship, set it there; otherwise a later session (or the owner) flips it when reality catches up.
+
 ### 12. Finish
 
-Hands-off mode — first: print the `## Conclusion → ### Hands-off decisions` list (and `### Deferred (needs user input)` if non-empty) to the user and ask verbatim: "Here's what I did to make it hands-off. Want to change anything?" Wait for the user's response before continuing.
-
-Then (both modes) present options to the user:
+Present options to the user:
 - Merge / open PR (if on a branch)
-- Clean up worktree
 - Move on
 
 Execute only after the user chooses.
@@ -177,26 +171,20 @@ Rules:
 
 Stop and ask the user when:
 
-- Size classification is genuinely unclear (interactive only; in hands-off, default to Medium)
+- Size classification is genuinely unclear
 - User has expressed a preference (branch, scope, TDD) that conflicts with the auto-inference
 - Any stage's skill returns a blocker
 
 ## Rules
 
-- Never skip Review (both modes)
-- Never auto-merge or auto-push — the user chooses at step 12 (both modes)
+- Never skip Review
+- Never auto-merge or auto-push — the user chooses at step 12
 - Never mark `done` until the Goal is confirmed achieved (step 11) — verified + reviewed is not done
-- Never create a worktree without confirming in interactive mode
-- Never edit `main` / `master` directly in hands-off (see `up:handsoff` safety principles)
+- Never create a worktree without confirming with the user
 - Keep the task file as the single source of truth — each stage reads it, each stage writes to it
 - External spec / design docs (e.g. anything under `docs/specs/`) are read-only during execute. If a stage finds the spec is wrong, surface it to the user — don't mutate it silently
 - Don't assume prior session memory — the next agent may be a fresh context reading only the task file
-- In hands-off, never invent a default for an ambiguous argument — see `up:handsoff` no-default rule
-
-## Hands-off mode
-
-Activated by prefixing `/up:make` arguments with the literal token `handsoff`. The full contract — safety principles (worktree-first, reversible-first, no destructive ops, no push), decision log format, deferred log, no-default rule, end-of-task summary — lives in `up:handsoff`. Read that skill once when the task file's `**Mode:**` header is `hands-off`; the references in step 4, step 6, step 7, step 12 above are the stage-specific touches on top of it.
 
 ## Terminal state
 
-Task file Status = `done` (Goal confirmed achieved, step 11), Conclusion filled, user has chosen a finish action (merge, PR, cleanup, or defer). In hands-off, the user has also reviewed the `### Hands-off decisions` list.
+Task file Status = `done` (Goal confirmed achieved, step 11), Conclusion filled, user has chosen a finish action (merge, PR, or move on).
