@@ -187,4 +187,4 @@ Stop and ask the user when:
 
 ## Terminal state
 
-Task file Status = `done` (Goal confirmed achieved, step 11), Conclusion filled, user has chosen a finish action (merge, PR, cleanup, or defer).
+Task file Status = `done` (Goal confirmed achieved, step 11), Conclusion filled, user has chosen a finish action (merge, PR, or move on).

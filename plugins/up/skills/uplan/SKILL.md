@@ -106,7 +106,7 @@ Approach: <1-2 sentences>
 ### Order & dependencies   (optional — omit for single-phase or obviously-sequential plans)
 <what blocks what, parallelizable phases>
 
-### Risks / rollback   (optional — omit if none non-trivial)
+### Risks   (optional — omit if none non-trivial)
 - RK1 — <one-sentence risk and mitigation>
 - RK2 — <...>
 
