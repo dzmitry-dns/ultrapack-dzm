@@ -1,6 +1,6 @@
 # ujira V1.1 polish — dogfood follow-ups
 
-**Status:** reviewing
+**Status:** validating
 **Branch:** ujira-polish
 **Depends on:** docs/tasks/jira-adapter.md (`### Follow-up — 2026-07-21`)
 **Goal:** `plugins/up/skills/ujira/SKILL.md` unambiguously describes three description-draft behaviors (matches → skip, stale-field-only → targeted update, doesn't match → replace) and blesses bare `- key: value` lines as the sole config parse target; grep-proof of consistency with `make.md` ujira hooks is clean. Doc-only contract clarification — no separate dogfood run gates this.
@@ -91,4 +91,20 @@ Interfaces:
 Smoke: SKILL.md frontmatter well-formed (name + description), section structure intact — doc-only change loads as a skill file.
 
 ## Conclusion
-<empty — filled by up:ureview>
+
+Outcome: Goal achieved — three-verdict matching, targeted-update rendering + apply path, and canonical config format all land in SKILL.md; make.md hooks grep-proof clean. Commits ee4d73a (contract), 6e785a2 (apply path), c60ed49 (bump 0.3.28).
+
+Invariants:
+- IV1 — "Banned in any draft" covers the targeted-update path unchanged (CK5)
+- IV2 — targeted update renders inside the draft block; per-block approve/edit/skip untouched (CK6)
+- IV3 — hooks at make.md:39/112/147 name *when* drafting fires, never match semantics (CK4)
+- IV4 — fenced config example is bare `- key: value` lines, conforms to its own rule (CK2)
+
+### Assumptions check
+- AS1 — held — no make.md edit needed; grep-proof at verify (CK4)
+
+### Unknowns outcome
+- UK1 — resolved — distinct rendering `Description (update: <field>):`; reusing the replace shape would hide skip-vs-clobber from the owner
+
+Review findings:
+- Important: targeted-update fragment had no defined apply path — `mcp`'s "apply exactly that draft" would clobber the description down to the fragment. Resolved in 6e785a2: splice-into-live-description rule covering both apply modes.
