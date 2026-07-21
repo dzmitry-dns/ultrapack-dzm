@@ -24,7 +24,7 @@ The pack ships no Jira config. Consumers declare it in their project `CLAUDE.md`
 
 ```markdown
 ## Jira adapter
-- project: CATS
+- project: PROJ
 - site: https://org.atlassian.net
 - apply: manual
 ```
@@ -59,7 +59,7 @@ Two drafting moments per `/up:make` session; each draft covers every transition 
 1. Status → `executing` — rides the plan-approval pause. Ticket transition proposal (e.g. To Do → In Progress), one start comment, and a description draft when the current ticket description doesn't match the contract.
 2. Terminal pause — `/up:make` step 12 finish menu, or session end. One comment line per phase crossed since the last sync (validating / done / shipped), plus a ticket transition proposal when done or shipped.
 
-Sync state lives in the `**Jira:**` header annotation: `**Jira:** CATS-123 — synced executing 2026-07-21`. Update it after the owner approves or skips a draft; everything after the recorded enum is not yet synced. Internal churn (design → planning) never drafts.
+Sync state lives in the `**Jira:**` header annotation: `**Jira:** PROJ-123 — synced executing 2026-07-21`. Update it after the owner approves or skips a draft; everything after the recorded enum is not yet synced. Internal churn (design → planning) never drafts.
 
 Manual invocation (`/up:ujira`): same rules — read the header annotation, draft whatever is unsynced, hand over.
 
@@ -68,7 +68,7 @@ Manual invocation (`/up:ujira`): same rules — read the header annotation, draf
 One block per ticket, copy-paste-ready (plain text that Jira renders as-is):
 
 ```
-Jira draft — CATS-123 (docs/tasks/<slug>.md)
+Jira draft — PROJ-123 (docs/tasks/<slug>.md)
 
 1. Transition: In Progress
 2. Comment:
