@@ -97,6 +97,8 @@ Owner responds per block: approve / edit (owner returns corrected text) / skip. 
 - `manual` (default): after approval, output the block for the owner to paste into Jira. The agent never calls a Jira write tool — approval does not change that.
 - `mcp`: after approval of a specific draft, apply exactly that draft via the Atlassian MCP write tools and report each action's result. No approval, no write; partial approval applies only the approved items.
 
+A targeted update is a fragment, and Jira's description is one field: applying it means splicing the replacement into the live description and writing the field back whole (`mcp`), or editing just that field in the Jira editor (`manual`) — never writing the fragment as the new description.
+
 Reads — fetching the current ticket description and status before drafting — are fine in both modes when an MCP is available. When it isn't, draft from the task file alone and say the ticket state wasn't checked.
 
 ## Rules
