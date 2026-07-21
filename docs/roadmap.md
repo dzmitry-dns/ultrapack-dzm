@@ -74,15 +74,15 @@ Task-file census (157 files, ~124 archived):
 - [ ] Remove dangling `remote-ssh`/`ml-experiments` refs from job-guardian (inline the needed minimum); de-ML its examples; fix the stale 270s cache-TTL rationale (cadence matches what's being watched).
 - [ ] README refresh (models, fork install path), `plugin.json` keywords cleanup.
 
-### T2 — Template & flow realignment (data-driven; biggest value)
-- [ ] Template additions: `### Prior art` (+ udesign step: consult `docs/tasks/archive/`, cite file:line or "none found"), `### Rollback` + `### Rollout` in Plan, `**Jira:**` + `**Depends on:**` headers.
-- [ ] Status realism: bless `**Status:** <enum> — <freeform annotation>`; extend terminal lifecycle to model merge/deploy-gated reality (e.g. `validating` → `shipped`), align resume-check in `/up:make`.
-- [ ] Conclusion: blessed dated post-merge log (`### Follow-up — <date>`, `### Scope change — <date>`); task files are living changelogs in practice.
-- [ ] Repurpose `### Deferred` as scope-parking (`→ <ticket>`); drop the user-input-gate framing (dies with hands-off).
-- [ ] Verify tiering: Small tasks get CK-lite (e.g. ≥3 attacks + smoke, one screen) so adversarial verify happens at all; full protocol for Medium+. Census shows heavy protocol → perfunctory skips.
-- [ ] Epic convention: bless feature folders (`docs/tasks/<epic>/` with `overview.md`, `Status: reference`) for multi-task workstreams.
-- [ ] Execute per Open questions 1-3: cut hands-off, worktree default off, interface graph out of `uexecute` mainline. Shrink `uexecute` accordingly.
-- [ ] Fold the SSOT dedup here (single home for reviewer stance, dispatch contract) — it's the same files being rewritten anyway.
+### T2 — Template & flow realignment (data-driven; biggest value) — shipped 2026-07-21, v0.3.26, docs/tasks/t2-template-realignment.md
+- [x] Template additions: `### Prior art` (+ udesign step: consult `docs/tasks/archive/`, cite file:line or "none found"), `### Rollback` + `### Rollout` in Plan, `**Jira:**` + `**Depends on:**` headers.
+- [x] Status realism: bless `**Status:** <enum> — <freeform annotation>`; extend terminal lifecycle to model merge/deploy-gated reality (e.g. `validating` → `shipped`), align resume-check in `/up:make`.
+- [x] Conclusion: blessed dated post-merge log (`### Follow-up — <date>`, `### Scope change — <date>`); task files are living changelogs in practice.
+- [x] Repurpose `### Deferred` as scope-parking (`→ <ticket>`); drop the user-input-gate framing (dies with hands-off).
+- [x] Verify tiering: Small tasks get CK-lite (e.g. ≥3 attacks + smoke, one screen) so adversarial verify happens at all; full protocol for Medium+. Census shows heavy protocol → perfunctory skips.
+- [x] Epic convention: bless feature folders (`docs/tasks/<epic>/` with `overview.md`, `Status: reference`) for multi-task workstreams.
+- [x] Execute per Open questions 1-3: cut hands-off, worktree default off, interface graph out of `uexecute` mainline. Shrink `uexecute` accordingly.
+- [x] Fold the SSOT dedup here (single home for reviewer stance, dispatch contract) — it's the same files being rewritten anyway.
 
 ### T3 — Daily-driver features
 - [ ] **Jira adapter:** on Status transitions, *draft* the thin-layer Jira update (description = what+why + acceptance + task-file pointer; comment = one plain line per phase) and hand to the owner for approval — MCP is read-only for writes by policy. Config in project CLAUDE.md.
