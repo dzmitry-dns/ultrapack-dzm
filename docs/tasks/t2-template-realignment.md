@@ -1,6 +1,6 @@
 # T2 — Template & flow realignment
 
-**Status:** validating
+**Status:** shipped — merged 330db6e, v0.3.26 reinstall + /up:make smoke passed 2026-07-21
 **Branch:** t2-template-realignment
 **Goal:** The pack's template and flow match observed usage (157-file census): template carries Prior art / Rollback / Rollout / Jira / Depends-on slots and the `<enum> — <annotation>` status format with `shipped` + `reference`; Conclusion gets dated post-merge log + Deferred-as-scope-parking; verify has a CK-lite tier; epic folder convention blessed; hands-off mode and implementer-sonnet fully removed; wave machinery lives only in `skills/uexecute/waves.md`; grep proves zero dangling references. Confirmed by reinstalling the updated pack and a `/up:make` pass showing the new template and no hands-off/worktree prompts.
 
