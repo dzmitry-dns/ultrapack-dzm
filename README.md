@@ -110,6 +110,7 @@ Stages delegate focused work to subagents, each with fresh context. Roles:
 | `up:explorer` | Read-only codebase tracing: entry points, call chain, 3–5 essential files with `file:line` refs. |
 | `up:implementer` | Per-phase implementer in parallel waves: code, tests, commit, self-review. |
 | `up:reviewer` | Independent review against the Plan, Invariants, and Assumptions; confidence-filtered, severity-tiered. |
+| `up:requirements-reviewer` | Opt-in second reviewer: verbatim requirement + diff only, blind to plan and design — catches "built cleanly, but not the right thing". |
 | `up:researcher` | General-purpose investigation across the web, library docs, and the current codebase. |
 | `up:summarizer` | Drafts the handoff prose for `/up:summary`; gathers repo state, never writes to disk. |
 
