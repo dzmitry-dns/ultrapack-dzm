@@ -1,6 +1,6 @@
 # Requirements-review fold-in
 
-**Status:** reviewing
+**Status:** done — Goal confirmed via verify CK1-CK6 2026-07-21
 **Branch:** requirements-review
 **Depends on:** docs/roadmap.md:89
 **Goal:** The pack ships `up:requirements-reviewer` (agent) and `up:ureview` offers it as an optional second dispatch — verbatim original requirement + BASE_SHA/HEAD_SHA only, auto-suggested for Medium+ tasks; README lists the agent; grep-proof: no pack file still points at `~/.claude/agents/requirements-reviewer.md`.
@@ -61,4 +61,22 @@ Grep-proof: no pack reference to the user-level agent path; ureview names the ag
 Smoke: agent frontmatter well-formed (name/tools/model), ureview section renders between steps 1 and 2 — doc-only change loads as plugin files.
 
 ## Conclusion
-<empty — filled by up:ureview>
+
+Outcome: Goal achieved — pack ships `up:requirements-reviewer`, ureview offers it as opt-in second dispatch, README row in, grep-proof clean. Commits 3565579 (agent), 8ebc3b1 (wiring), 8187573 (bump 0.3.29).
+
+Invariants:
+- IV1 — dispatch list is requirement + SHAs + cwd only; agent body forbids `docs/tasks/**` (CK3)
+- IV2 — "the user opts in — never auto-run it" in ureview 1b (CK4)
+- IV3 — body byte-identical below frontmatter, only description reworded (CK6)
+
+### Assumptions check
+- AS1 — held — `up:` namespacing keeps pack and user-level copies distinct while both exist
+
+### Unknowns outcome
+- UK1 — resolved — verbatim requirement comes from the session's ask; fresh session asks the user to paste it, never reconstructs from the task file
+
+Scope flag:
+- Fold-in leaves a byte-identical duplicate at `~/.claude/agents/requirements-reviewer.md`, and the user's global CLAUDE.md still instructs "Invoke only when the user explicitly asks for it" — conflicting with ureview's suggest-for-Medium+ path. Both files are outside this repo; the two copies will drift.
+
+### Deferred
+- Retire `~/.claude/agents/requirements-reviewer.md` and reconcile the global CLAUDE.md Ultrapack note → owner, after 0.3.29 installs.
