@@ -112,3 +112,8 @@ Backwards-compat (restated): PH1 removes token parsing — `handsoff` becomes pl
 
 ## Conclusion
 <empty — filled by up:ureview>
+
+### Deviations from plan
+- PH2: also edited Worktree references at `uexecute/SKILL.md:15,32` beyond the 2.x bullets — consistency pass for the dropped `**Worktree:**` header (IV5).
+- PH4.2 applied in `skills/uexecute/waves.md` ("Choosing the implementer model"), not `uexecute/SKILL.md:82-93` — PH3's extraction had already moved the agent-choice section there.
+- PH3.1: dropped the extracted text's cross-references to the source task's IDs (PC4, IV2, AS1, IF3, IF5, IF6) — they point into another task's ID space, orphaned in a standalone waves.md (`_brevity` p.6).
