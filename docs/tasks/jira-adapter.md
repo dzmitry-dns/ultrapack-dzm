@@ -1,6 +1,6 @@
 # Jira Adapter — draft-then-approve Status sync
 
-**Status:** executing
+**Status:** reviewing
 **Branch:** jira-adapter
 **Goal:** In a Jira-configured consumer project, an /up:make run whose task crosses a drafting transition produces a correct thin-layer Jira draft (description = 1-2 sentence what+why + acceptance checklist + task-file pointer; comment = one plain-language line per phase) handed to the owner for approval, and nothing reaches Jira without that approval; in unconfigured projects the flow is byte-identical to today. Full confirmation needs a dogfood run in the owner's Jira-configured project (cccc, real CATS ticket) — install-and-invoke in this repo is only the local proxy.
 
@@ -99,7 +99,31 @@ Coalescing state (settles "undrafted transitions since last draft" mechanics): t
 Backwards-compat: greenfield — new skill plus config-gated additive lines in make.md (IV4); no existing consumer behavior changes.
 
 ## Verify
-<empty — filled by up:uverify>
+
+**Result:** passed
+
+Happy-path:
+- CK1 — Gate's "no output, no prompts" vs make step-3 ticket prompt contradiction — held (explicit exception carve-out in Gate)
+- CK2 — terminal draft misread as requiring all three block actions — held (Triggers defines per-draft contents)
+
+Negative:
+- CK3 — an unconfigured project sees Jira prompts (IV4) — held (all three make.md hooks config-gated: lines 39, 112, 147)
+- CK4 — dangling cross-references (`up:ujira` ↔ make step numbers) — held
+
+Invariants / assumptions:
+- CK5 (IV1) — hunt for a write path that skips approval — held (manual: no write tool ever; mcp: per-draft approval gates each write)
+- CK6 (IV2) — contract detail leaked into make.md hooks — held (name-only references)
+- CK7 (IV3) — real project key shipped in pack — broke: `CATS` in ujira SKILL.md:27,62,71; fixed 06122c9 (neutralized to `PROJ`, swept pre-existing `CATS-1204` in make.md:23); re-run held (grep clean)
+- CK8 (IV5) — non-doc artifacts in diff — held (diff = 5 .md + plugin.json version)
+- CK9 (AS2/template drift) — sync annotation breaks `**Jira:**` header consumers — held (annotation is free text by T2 convention; resume-check tolerates)
+
+Interfaces:
+- CK10 — SKILL.md frontmatter invalid — held (name + description, single-line, parseable)
+- CK11 — plugin.json / marketplace.json broken by bump — held (`jq` parses both; marketplace pins no version)
+
+Smoke: structural proxy — manifests parse, frontmatter valid, all refs resolve; real install-and-invoke not run (installed cache is v0.3.26 from GitHub; swap is remove-then-add, disruptive mid-session)
+
+Goal: proxy only — full confirmation needs reinstall of v0.3.27 + a dogfood /up:make run in the owner's Jira-configured project (cccc, real ticket)
 
 ## Code smells
 <empty — file:line + one-line smell passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
