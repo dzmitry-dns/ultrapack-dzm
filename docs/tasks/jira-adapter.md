@@ -1,6 +1,6 @@
 # Jira Adapter — draft-then-approve Status sync
 
-**Status:** reviewing
+**Status:** validating
 **Branch:** jira-adapter
 **Goal:** In a Jira-configured consumer project, an /up:make run whose task crosses a drafting transition produces a correct thin-layer Jira draft (description = 1-2 sentence what+why + acceptance checklist + task-file pointer; comment = one plain-language line per phase) handed to the owner for approval, and nothing reaches Jira without that approval; in unconfigured projects the flow is byte-identical to today. Full confirmation needs a dogfood run in the owner's Jira-configured project (cccc, real CATS ticket) — install-and-invoke in this repo is only the local proxy.
 
@@ -125,8 +125,29 @@ Smoke: structural proxy — manifests parse, frontmatter valid, all refs resolve
 
 Goal: proxy only — full confirmation needs reinstall of v0.3.27 + a dogfood /up:make run in the owner's Jira-configured project (cccc, real ticket)
 
-## Code smells
-<empty — file:line + one-line smell passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
-
 ## Conclusion
-<empty — filled by up:ureview; after done/shipped grows dated ### Follow-up — <date> / ### Scope change — <date> entries and ### Deferred scope-parking>
+
+Outcome: adapter landed in pack v0.3.27 (branch head 9b050ec); Goal pending real-world validation — reinstall + a dogfood /up:make run in a Jira-configured project.
+
+Invariants:
+- IV1 — CK5: only write path is `mcp` mode after per-draft approval; `manual` never writes.
+- IV2 — CK6: contract + banned list single-homed in SKILL.md; make.md hooks are name-only.
+- IV3 — CK7: broke (real project key in examples), fixed 06122c9, re-run clean.
+- IV4 — CK3: all three make.md hooks config-gated; no config ⇒ zero output.
+- IV5 — CK8: diff is 5 .md files + plugin.json version only.
+
+### Assumptions check
+- AS1 — unverifiable until dogfood — no Jira MCP exercised in this repo; design never requires writes, reads degrade explicitly.
+- AS2 — held for V1 — single-ticket linkage; reviewer's scope flag covers the multi-ticket gap.
+- AS3 — held — owner chose draft-then-approve pacing at design.
+
+### Unknowns outcome
+- UK1 — resolved — config contract (`## Jira adapter`: project/site/apply) documented in SKILL.md.
+- UK2 — still-open — merge-vs-replace for descriptions settles at first dogfood on a real ticket; V1 presents a replacement the owner edits.
+- UK3 — still-open, accepted — standalone skill invocations don't draft; revisit if it bites.
+
+Scope flag:
+- Sync state persisted as free text inside the identity-bearing `**Jira:**` header couples mutable workflow state to a stable identity slot: a human-edited or absent annotation makes everything recompute as unsynced (re-proposed drafts, backstopped only by owner review), and a multi-ticket task has no room for per-ticket progress. A dedicated structured sync line would be cheaper to add now than to retrofit once consumers depend on the header shape.
+
+Future work:
+- Ticket-creation drafting (config present, no ticket yet) — Justification: Design's V1 scope cut, "parked as follow-up".
