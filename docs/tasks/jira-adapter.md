@@ -1,6 +1,6 @@
 # Jira Adapter — draft-then-approve Status sync
 
-**Status:** validating — merged to main 5053d48 2026-07-21; awaiting v0.3.27 reinstall + Jira-configured dogfood run
+**Status:** shipped — merged 5053d48, v0.3.27 installed, dogfood CATS-1521 passed 2026-07-21
 **Branch:** jira-adapter
 **Goal:** In a Jira-configured consumer project, an /up:make run whose task crosses a drafting transition produces a correct thin-layer Jira draft (description = 1-2 sentence what+why + acceptance checklist + task-file pointer; comment = one plain-language line per phase) handed to the owner for approval, and nothing reaches Jira without that approval; in unconfigured projects the flow is byte-identical to today. Full confirmation needs a dogfood run in the owner's Jira-configured project (cccc, real CATS ticket) — install-and-invoke in this repo is only the local proxy.
 
@@ -151,3 +151,11 @@ Scope flag:
 
 Future work:
 - Ticket-creation drafting (config present, no ticket yet) — Justification: Design's V1 scope cut, "parked as follow-up".
+
+### Follow-up — 2026-07-21
+
+Dogfood passed end-to-end (CATS-1521, cccc): both drafting pauses fired exactly at `executing` + finish, never on internal churn; thin-layer contract held in every draft; `manual` mode made zero Jira writes (one `getJiraIssue` read, contract-allowed); sync annotation updated twice (`synced executing`, `synced done`). AS1 held. UK2 resolved: replace-or-skip handled a contract-matching description correctly via skip, but "almost matches, one stale field" (an outdated `Details:` pointer) has no good option — replace clobbers human-written acceptance wording, skip leaves the stale field; field-level merge is the missing primitive.
+
+Pack follow-ups surfaced:
+- SKILL.md should state how to treat a description that matches the contract structurally except for a stale pointer — "matches" is not binary.
+- Config section doubles as docs and live config in consumer CLAUDE.md; SKILL.md should bless bare `- key: value` lines as the canonical parse target so surrounding prose can't break discovery.
