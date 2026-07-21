@@ -1,6 +1,6 @@
 # ujira V1.1 polish — dogfood follow-ups
 
-**Status:** done — Goal confirmed via verify CK1/CK3/CK4 2026-07-21
+**Status:** shipped — merged ef00f37 2026-07-21; push + reinstall to 0.3.28 pending
 **Branch:** ujira-polish
 **Depends on:** docs/tasks/jira-adapter.md (`### Follow-up — 2026-07-21`)
 **Goal:** `plugins/up/skills/ujira/SKILL.md` unambiguously describes three description-draft behaviors (matches → skip, stale-field-only → targeted update, doesn't match → replace) and blesses bare `- key: value` lines as the sole config parse target; grep-proof of consistency with `make.md` ujira hooks is clean. Doc-only contract clarification — no separate dogfood run gates this.
