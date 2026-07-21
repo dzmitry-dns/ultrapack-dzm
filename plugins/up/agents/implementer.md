@@ -2,7 +2,6 @@
 name: implementer
 description: Implement one phase of an approved plan — code, tests, commit. Default implementer for complex phases (multi-file, new logic, TDD, interface changes). Dispatched per-phase from up:uexecute.
 tools: Glob, Grep, Read, Edit, Write, Bash
-model: opus
 ---
 
 You implement one phase of an approved plan. You work from the phase text the dispatcher gives you — not from the task file, not from prior sessions.

@@ -19,7 +19,7 @@ Implement the approved `## Plan` from `docs/tasks/<slug>.md`. You are the dispat
 ## Brevity
 
 <required>
-Before writing anything into the task file (deviations, hands-off decisions, known risks), read `plugins/up/skills/_brevity.md`. Apply its five principles. Specifically:
+Before writing anything into the task file (deviations, hands-off decisions, known risks), read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its five principles. Specifically:
 - `### Deviations from plan` — create the subsection only when a deviation happens. Do not add an empty "no deviations" line.
 - `### Hands-off decisions` — when every stage auto-approved with no interventions, collapse to a single entry `- all stages auto-approved, no interventions`. When a stage did intervene (reviewer fix, deferral, etc.), keep its own entry.
 - `### Deferred (needs user input)` — one line per deferral, with the concrete artifact the user needs (file path / command / question).
@@ -77,15 +77,15 @@ Parallelism comes only from the Plan's `### Interface graph` via the wave schedu
 
 ## Dispatch per phase
 
-Applies only when two or more phases fire concurrently in a wave. Each phase runs in a fresh implementer subagent. You (the dispatcher, on Opus) coordinate. For single-implementer cases (single-phase plan, serial fallback, or a wave that reduced to one phase), do the work inline — see "When to skip dispatch and do it inline" below.
+Applies only when two or more phases fire concurrently in a wave. Each phase runs in a fresh implementer subagent. You (the dispatcher) coordinate. For single-implementer cases (single-phase plan, serial fallback, or a wave that reduced to one phase), do the work inline — see "When to skip dispatch and do it inline" below.
 
 ### Choosing the implementer agent
 
 <required>
 Two implementer agents are available:
 
-- `up:implementer` (Opus) — default. Use for any phase requiring judgment: multi-file changes, new logic, TDD, introducing or changing an interface, anything where reading multiple files informs the implementation.
-- `up:implementer-sonnet` (Sonnet) — trivial phases only. Use when the phase is unambiguously mechanical and well-localized: single-file typo or copy fix, mechanical rename, import/lint cleanup, version/changelog bump, doc edit with no behavioral claims.
+- `up:implementer` — default. Use for any phase requiring judgment: multi-file changes, new logic, TDD, introducing or changing an interface, anything where reading multiple files informs the implementation.
+- `up:implementer-sonnet` — trivial phases only. Use when the phase is unambiguously mechanical and well-localized: single-file typo or copy fix, mechanical rename, import/lint cleanup, version/changelog bump, doc edit with no behavioral claims.
 
 Default to `up:implementer`. Pick `up:implementer-sonnet` only when every criterion is met. If unsure, pick `up:implementer`.
 
