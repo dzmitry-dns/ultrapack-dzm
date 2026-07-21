@@ -1,6 +1,6 @@
 # T2 — Template & flow realignment
 
-**Status:** executing
+**Status:** reviewing
 **Branch:** t2-template-realignment
 **Goal:** The pack's template and flow match observed usage (157-file census): template carries Prior art / Rollback / Rollout / Jira / Depends-on slots and the `<enum> — <annotation>` status format with `shipped` + `reference`; Conclusion gets dated post-merge log + Deferred-as-scope-parking; verify has a CK-lite tier; epic folder convention blessed; hands-off mode and implementer-sonnet fully removed; wave machinery lives only in `skills/uexecute/waves.md`; grep proves zero dangling references. Confirmed by reinstalling the updated pack and a `/up:make` pass showing the new template and no hands-off/worktree prompts.
 
@@ -105,7 +105,26 @@ Approach: six serial commits — eradicate hands-off first, rebuild the template
 Backwards-compat (restated): PH1 removes token parsing — `handsoff` becomes plain description text (design-accepted, 0/82 adoption); PH2.2 makes resume-check ignore unknown legacy headers so the 6 local + 157 cccc files need no migration (AS1). No other consumer-visible surface changes.
 
 ## Verify
-<empty — filled by up:uverify>
+
+**Result:** passed
+
+Invariants / assumptions:
+- CK1 (IV1) — `grep -ri 'handsoff\|hands-off' plugins/up/` — held (0 hits)
+- CK2 (IV2) — wave-machinery grep (`topo-sort`, `Wave 1:`, `pairwise disjoint`, `[blocks]`) outside waves.md — held (0 hits)
+- CK3 (IV3) — enum-listing grep outside make.md — held (only individual status mentions, e.g. ureview's `done`/`shipped` log rule)
+- CK4 (IV4) — template restatement hunt in udesign/uplan — held (name-references and uplan's own Plan-format slots only)
+- CK5 (IV5) — grep for `implementer-sonnet`, `**Mode:**`, `**Worktree:**`, `### Hands-off decisions`, `### Deferred (needs user input)` — held (0 hits)
+- CK6 (IV6) — `git diff main..HEAD` on `_brevity.md`, `_principles.md`, `reviewer.md`, `implementer.md` — held (untouched)
+
+Interfaces:
+- CK7 — waves.md standalone read: orphan cross-task IDs, "see above" refs — held (only generic IF/IV placeholders in format examples)
+- CK8 — dangling anchors to renamed "Choosing the implementer agent"; all `waves.md` pointers resolve — held
+- CK9 — make.md resume-check enum vs template vs steps 11–12 — held (consistent, `shipped` documented once)
+- CK10 — `jq -r .version plugin.json` → `0.3.26` — held
+
+Smoke: manifests parse (`jq`), frontmatter sweep over all skills/agents/commands clean, `skills/handsoff/` and `agents/implementer-sonnet.md` absent from tree
+
+Goal: proxy only — structural install-readiness verified; real reinstall + `/up:make` pass showing the new template remains for the user
 
 ## Code smells
 - `skills/ureview/SKILL.md:29-35` — restates `_brevity` content locally instead of pointing (same pattern as uexecute:19-26); defensible locality, left as-is.
