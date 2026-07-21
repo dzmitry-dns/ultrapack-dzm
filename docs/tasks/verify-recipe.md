@@ -1,6 +1,6 @@
 # Project verify recipe
 
-**Status:** planning — parked 2026-07-21; plan ready; draft commits a77ae40 (PH1) + 11f7609 (PH2, bump 0.3.30) on this branch await review
+**Status:** reviewing — verify passed 2026-07-21 (7 CKs held)
 **Branch:** verify-recipe
 **Depends on:** docs/roadmap.md:90
 **Goal:** `up:uverify` reads a consumer-declared `## Verify recipe` CLAUDE.md section (bare `- <command>` lines, same parse convention as `## Jira adapter`) and runs it as the smoke baseline instead of guessing; projects without the section keep byte-identical heuristic behavior; grep-proof: parse convention consistent with ujira's config wording.
@@ -40,7 +40,27 @@ Approach: one insertion in uverify Phase 3 — recipe-first, heuristics as fallb
 Grep-proof: uverify's parse wording consistent with ujira's ("bare", "parse target", prose-allowed); fallback path explicit (IV1); `deferred` vocabulary reused from the existing CK verdicts (IV3); no other pack file needs the recipe (make.md delegates verify wholesale).
 
 ## Verify
-<empty — filled by up:uverify>
+
+**Result:** passed
+
+Happy-path:
+- CK1 — parse wording diverges from ujira precedent — held: `ujira/SKILL.md:32` "only bare `- key: value` lines are parsed… Surrounding prose is welcome" ↔ new `uverify/SKILL.md:82` "Bare `- <command>` lines are the sole parse target (surrounding prose is welcome…)"
+- CK2 (AS1) — cccc recipe (roadmap:26) doesn't fit the format — held: maps to three bare command lines + `smoke:` line + DB-gated prose step → `deferred`
+
+Negative:
+- CK3 — recipe present but no `smoke:` line / prose-only section lands undefined — held: fallback intro covers it explicitly ("No recipe (or no `smoke:` line) — infer…")
+
+Invariants:
+- CK4 (IV1) — heuristic list mutated beyond the intro — held: diff vs main is 3 content lines, all in the intro; four heuristic bullets byte-identical
+- CK5 (IV3) — new text invents a verdict word — held: `deferred` reuses Phase 4 vocabulary (line 105); attack list explicitly preserved ("feeds this phase only")
+- CK6 — another pack file contradicts recipe-first — held: `## Verify recipe` appears only in uverify; make.md:130 and ureview:170 reference verify's smoke neutrally, no duplicate inference
+
+Interfaces:
+- CK7 — manifest broken by bump — held: `jq .version` → 0.3.30; marketplace.json carries no version pin
+
+Smoke: `jq` on plugin.json + header-structure grep (5 phases intact, single insertion at Phase 3) — deferred for install-and-invoke: real uverify run against a consumer `## Verify recipe` needs the post-merge marketplace update + reload
+
+Goal: proxy only — grep-proofs and the cccc dry-parse covered the wording; live invoke in a consumer project remains after ship
 
 ## Conclusion
 <empty — filled by up:ureview>
