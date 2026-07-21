@@ -1,6 +1,6 @@
 # Jira Adapter — draft-then-approve Status sync
 
-**Status:** planning
+**Status:** executing
 **Branch:** jira-adapter
 **Goal:** In a Jira-configured consumer project, an /up:make run whose task crosses a drafting transition produces a correct thin-layer Jira draft (description = 1-2 sentence what+why + acceptance checklist + task-file pointer; comment = one plain-language line per phase) handed to the owner for approval, and nothing reaches Jira without that approval; in unconfigured projects the flow is byte-identical to today. Full confirmation needs a dogfood run in the owner's Jira-configured project (cccc, real CATS ticket) — install-and-invoke in this repo is only the local proxy.
 
@@ -54,7 +54,49 @@ TDD: no (reason: doc-only pack, no runtime code; verification is install-and-inv
 - UK3 — Standalone skill invocations (e.g. `/up:uplan` run directly) cross transitions without drafting; acceptable while dogfood is make-driven — revisit if it bites.
 
 ## Plan
-<empty — filled by up:uplan; gains ### Rollout / ### Rollback when the change ships to a live system>
+
+Approach: one new skill file owns the entire draft contract; `make.md` gets three one-line, config-gated touch points that reference it by name; docs and version bump close the branch. Serial, three phases.
+
+UK1 settled — consumer CLAUDE.md config contract (documented in the skill, shipped nowhere):
+
+```markdown
+## Jira adapter
+- project: CATS
+- site: https://<org>.atlassian.net   (optional — link rendering / MCP site lookup)
+- apply: manual                        (optional — manual | mcp; absent = manual)
+```
+
+Coalescing state (settles "undrafted transitions since last draft" mechanics): the `**Jira:**` header annotation records sync progress — `**Jira:** CATS-123 — synced executing 2026-07-21` — updated after the owner approves or skips a draft; free-text annotation per the T2 status format, no new header.
+
+### PH1 — up:ujira skill
+
+- **1.1** `plugins/up/skills/ujira/SKILL.md` (create)
+  - Frontmatter description: invoked from `/up:make` at its trigger points or manually via `/up:ujira`; never self-triggers in unconfigured projects (RK1).
+  - Sections: Config discovery (the `## Jira adapter` contract above; no config section or no `**Jira:**` header ⇒ silent no-op — respects IV3, IV4); Draft contract (thin-layer rules + banned content list — IV2); Triggers & coalescing (start draft at Status → `executing`, terminal draft at finish; annotation mechanism above — PC1, PC2); Draft block format (per-ticket copy-paste-ready block: transition, comment(s), description replacement; approve / edit / skip protocol); Apply modes (`manual` — paste-ready output, agent never writes; `mcp` — apply via Atlassian MCP only after per-draft approval — IV1, AS1); Terminal state.
+  - Epic rule one-liner: `overview.md` at `reference` never drafts (AS2).
+- Commit: `feat(ujira): draft-then-approve Jira adapter skill`
+
+### PH2 — make.md trigger hooks
+
+- **2.1** `plugins/up/commands/make.md:39-50` (modify) — step 3: one line — if consumer CLAUDE.md has a `## Jira adapter` section and the new task has no `**Jira:**` header, prompt once for a ticket id or skip.
+- **2.2** `plugins/up/commands/make.md:110-112` (modify) — step 7: one line — on Status → `executing`, if Jira is configured invoke `up:ujira` (start draft rides the plan-approval pause).
+- **2.3** `plugins/up/commands/make.md:141-147` (modify) — step 12: one line in the options list — if Jira is configured, present the `up:ujira` terminal draft alongside the finish options.
+- Hooks name `up:ujira` and carry zero contract detail (RK2; single home per Design).
+- Commit: `feat(make): up:ujira trigger hooks — ticket link, start draft, terminal draft`
+
+### PH3 — docs + version
+
+- **3.1** `README.md:86` (modify) — one bullet after `up:udocument`: draft-then-approve Jira sync, config in consumer CLAUDE.md.
+- **3.2** `docs/roadmap.md:88` (modify) — tick the T3 Jira-adapter item.
+- **3.3** `plugins/up/.claude-plugin/plugin.json:3` (modify) — version `0.3.26` → `0.3.27` (repo policy: patch bump on landing).
+- Commit: `docs(ujira): README + roadmap; bump 0.3.27`
+
+### Risks
+- RK1 — Frontmatter description could make Claude invoke `up:ujira` spontaneously in non-Jira projects; mitigation: description names its two entry paths explicitly and the skill opens with the silent no-op gate.
+- RK2 — make.md hooks could accrete contract detail over time, recreating the rejected inline option; mitigation: hooks are name-only references, contract lives solely in SKILL.md.
+- RK3 — Sync annotation on the `**Jira:**` header could collide with human annotations; mitigation: annotation is free text by T2 convention, `synced <enum> <date>` is short and appended, owner edits freely.
+
+Backwards-compat: greenfield — new skill plus config-gated additive lines in make.md (IV4); no existing consumer behavior changes.
 
 ## Verify
 <empty — filled by up:uverify>
