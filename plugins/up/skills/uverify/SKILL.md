@@ -11,6 +11,15 @@ Verify's verdict either advances the workflow to `up:ureview` or bounces it back
 
 Steelman the critique: don't fish for cases that pass — fish for the case that would bite a future reader, on-call, or downstream user. If you didn't try to break it, you didn't verify it.
 
+## Tier
+
+Infer the tier from the task's artifacts — no header declares it:
+
+- **CK-lite** — plan has ≤2 phases and the diff is small. At least 3 attacks — one happy-path, one negative, one invariant or interface — plus the smoke. Verify summary fits one screen.
+- **Full** — anything larger: the complete attack list across all four families below.
+
+CK-lite trims the list, not the stance: each attack is still a break hypothesis run freshly in this message, and any `broke` still bounces to execute.
+
 ## Brevity
 
 <required>
