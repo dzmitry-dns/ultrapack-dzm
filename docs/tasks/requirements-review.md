@@ -1,6 +1,6 @@
 # Requirements-review fold-in
 
-**Status:** planning
+**Status:** reviewing
 **Branch:** requirements-review
 **Depends on:** docs/roadmap.md:89
 **Goal:** The pack ships `up:requirements-reviewer` (agent) and `up:ureview` offers it as an optional second dispatch — verbatim original requirement + BASE_SHA/HEAD_SHA only, auto-suggested for Medium+ tasks; README lists the agent; grep-proof: no pack file still points at `~/.claude/agents/requirements-reviewer.md`.
@@ -48,7 +48,17 @@ Approach: copy the agent into the pack with entry-path wording adapted, add one 
 Grep-proof: no pack reference to the user-level agent path; ureview names the agent exactly as the file's frontmatter `name`; README row present; agent file carries no task-file/plan references (IV1).
 
 ## Verify
-<empty — filled by up:uverify>
+
+**Result:** passed
+
+- CK1 — grep pack + README for the user-level agent path — held: only `docs/roadmap.md:89` (the roadmap item itself) references it
+- CK2 — agent name consistency — held: frontmatter `requirements-reviewer`, referenced as `up:requirements-reviewer` in ureview + README (same pattern as other agents)
+- CK3 (IV1) — hunt a leak path for task-file/plan into the dispatch — held: dispatch list is requirement + SHAs + cwd only; agent body forbids reading `docs/tasks/**`
+- CK4 (IV2) — hunt auto-run language — held: "the user opts in — never auto-run it" (ureview:75)
+- CK5 — manifest — held: valid JSON, 0.3.29
+- CK6 (IV3) — diff pack agent body vs user-level source — held: identical below frontmatter; only description reworded (entry path)
+
+Smoke: agent frontmatter well-formed (name/tools/model), ureview section renders between steps 1 and 2 — doc-only change loads as plugin files.
 
 ## Conclusion
 <empty — filled by up:ureview>
