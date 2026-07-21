@@ -192,17 +192,13 @@ TDD: no (reason: one-off migration script; no reusable logic)
 
 ## Rules
 
-- One question per message. No batching. (Hands-off: ask only when genuinely blocking; prefer conservative defaults logged in the task file.)
+- One question per message. No batching.
 - YAGNI ruthlessly. Cut anything not needed for the stated goal.
 - Follow existing patterns. Targeted improvements only if they serve this task.
 - Isolation. Units with one clear purpose; interfaces understandable without reading internals.
 - No code yet. Design's output is words, not code.
 - Omit empty subsections. `### Invariants`, `### Principles`, `### Assumptions`, `### Unknowns` are pre-seeded by the `/up:make` template. Delete any that end up with no entries — never leave a placeholder like `<empty>`, "none", or "n/a". See `_brevity.md` principle 1.
 
-## Hands-off mode
-
-See `up:handsoff` for the full contract. Stage-specific delta: Design is still the one interactive stage — run the full process. The only relaxation is "one question per message" → "ask only when genuinely blocking; prefer a conservative default". Log each defaulted answer as `- udesign: <what> — <rationale>` in `### Hands-off decisions`; log no-default gaps under `### Deferred (needs user input)`.
-
 ## Terminal state
 
-User has approved the Design section and the `**Goal:**` header (interactive) or both have been written and self-reviewed (hands-off) → invoke `up:uplan`. Do not write code. Do not invoke any other skill.
+User has approved the Design section and the `**Goal:**` header → invoke `up:uplan`. Do not write code. Do not invoke any other skill.

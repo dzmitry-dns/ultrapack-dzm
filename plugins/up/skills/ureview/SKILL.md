@@ -101,9 +101,7 @@ Before any fix goes in, tell the user what you decided for each finding. One lin
 - your verdict (fix / push back / defer),
 - if fixing: the exact change you are about to make.
 
-In interactive mode, this is a short summary — the user can interject, then you apply the fixes.
-
-In hands-off mode, see `up:handsoff` for the contract. Stage-specific delta: announce and apply in the same step — no pause for interjection. The restate → verify → evaluate → decide process from step 3 is still required. Each applied fix is logged as `- ureview: fixed <finding> — <what changed>` under `### Hands-off decisions`. Low-confidence / ambiguous findings go to `### Deferred (needs user input)` and are not auto-fixed. Fixes must honor the safety principles (no destructive edits, no force-push, additive over subtractive).
+This is a short summary — the user can interject, then you apply the fixes.
 </required>
 
 <bad-example>
@@ -192,10 +190,6 @@ Pushback is legitimate when:
 - Merge with open Critical or Important findings
 - Skip the Conclusion write-up
 - Run review on yourself (always use the subagent — preserve independence)
-
-## Hands-off mode
-
-See `up:handsoff` for the full contract. Stage-specific delta is embedded in step 4 above: announce-and-apply without the user interjection pause; high-confidence actionable findings are fixed in-line and logged under `### Hands-off decisions`; low-confidence / ambiguous findings go to `### Deferred (needs user input)`. All applied fixes must honor the safety principles (no destructive edits, no force-push, additive over subtractive).
 
 ## Terminal state
 

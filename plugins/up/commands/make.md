@@ -1,5 +1,5 @@
 ---
-description: Orchestrate the full ultrapack workflow — slug, task file, design, plan, execute, verify, review. Size-aware, resume-ready. Prefix args with `handsoff` for hands-off mode (fewer prompts, conservative defaults, decision log).
+description: Orchestrate the full ultrapack workflow — slug, task file, design, plan, execute, verify, review. Size-aware, resume-ready.
 ---
 
 # /up:make
@@ -9,8 +9,6 @@ Drives a task through the full ultrapack workflow: one task file at `docs/tasks/
 ## Arguments
 
 The user's description of the task follows the command. May be a one-liner ("fix the flaky login test") or a paragraph. Use it as the seed for the slug and the initial framing for `up:udesign`.
-
-Hands-off activation: if the first whitespace-delimited token of the arguments is the literal string `handsoff`, enable hands-off mode. Strip that token before deriving the slug or framing for design. Any other spelling (`hands-off`, `handsOff`, `--handsoff`) is treated as part of the description — only the bare token `handsoff` activates. See `## Hands-off mode` below for behavior.
 
 ## Flow
 
@@ -34,7 +32,7 @@ Before creating a new task file, check if `docs/tasks/<slug>.md` already exists.
 
 ### 3. Create task file
 
-Create `docs/tasks/<slug>.md` from the template. Status = `design`. Branch = `main` (placeholder until step 5). No worktree. Mode = `hands-off` if the keyword was present, else `interactive`. Goal = a first draft of the observable success condition from the description; `up:udesign` finalizes it, or `up:make` sets it directly when Design is skipped (trivial/small).
+Create `docs/tasks/<slug>.md` from the template. Status = `design`. Branch = `main` (placeholder until step 5). Goal = a first draft of the observable success condition from the description; `up:udesign` finalizes it, or `up:make` sets it directly when Design is skipped (trivial/small).
 
 Template:
 
@@ -45,7 +43,6 @@ Template:
 **Branch:** main
 **Worktree:** none
 **Goal:** <observable success condition that defines done — note if confirming it needs a real-world run or user sign-off beyond the diff>
-**Mode:** <interactive|hands-off>
 
 ## Design
 <empty — filled by up:udesign>
@@ -73,12 +70,6 @@ Template:
 
 ## Conclusion
 <empty — filled by up:ureview>
-
-### Hands-off decisions
-<empty — populated only when Mode is hands-off>
-
-### Deferred (needs user input)
-<empty — populated only when Mode is hands-off and a choice had no conservative default>
 ```
 
 ### 4. Size classification
@@ -89,9 +80,7 @@ Based on the task description, classify size:
 - Small — single file or single concept change. Skip Design. Plan runs.
 - Medium / Large — full flow.
 
-Interactive mode: default to Medium silently. Jump to Trivial/Small only when the user's wording signals it — e.g. "quickly", "fast", "just", "one-line", "typo", "rename". Confirm before skipping any stage. When genuinely ambiguous, ask.
-
-Hands-off mode: do not confirm. Default to Medium (full flow) unless the scope is unambiguously Trivial (true one-liner in one file). Never auto-pick Small or auto-skip Design — Design is the one interactive stage preserved in hands-off. Append the choice to `## Conclusion → ### Hands-off decisions` as `- size: <classification> — <rationale>`.
+Default to Medium silently. Jump to Trivial/Small only when the user's wording signals it — e.g. "quickly", "fast", "just", "one-line", "typo", "rename". Confirm before skipping any stage. When genuinely ambiguous, ask.
 
 ### 5. Design stage (unless skipped)
 
@@ -104,17 +93,13 @@ After Design (or immediately for trivial/small tasks), decide:
 - Complex / long-running / touches many files → suggest a dedicated branch + worktree. Use `up:git-worktrees`.
 - Easy fix / small scope → suggest working on current branch (usually `main`).
 
-Interactive mode: always confirm with the user.
-
-Hands-off mode: default to the safest reversible option — always a dedicated branch + worktree via `up:git-worktrees`, never direct edits to `main`/`master`. Log the branch name and worktree path under `## Conclusion → ### Hands-off decisions`. The only exception: if `up:git-worktrees` itself fails (e.g. no gitignored worktree path available), log the failure under `### Deferred (needs user input)` and stop — do not silently fall back to working on `main`.
+Always confirm with the user.
 
 If a branch is created, update the task file's `**Branch:**` and `**Worktree:**` headers.
 
 ### 7. Plan stage (unless skipped)
 
 Invoke `up:uplan`. It populates `## Plan`. Status → `executing`.
-
-In hands-off, `up:uplan` auto-proceeds to `up:uexecute` without an approval prompt. It logs `- uplan: plan auto-approved (hands-off)` to `### Hands-off decisions`.
 
 ### 8. Execute stage
 
@@ -143,9 +128,7 @@ Once `done`, run the docs-refresh check (see below).
 
 ### 12. Finish
 
-Hands-off mode — first: print the `## Conclusion → ### Hands-off decisions` list (and `### Deferred (needs user input)` if non-empty) to the user and ask verbatim: "Here's what I did to make it hands-off. Want to change anything?" Wait for the user's response before continuing.
-
-Then (both modes) present options to the user:
+Present options to the user:
 - Merge / open PR (if on a branch)
 - Clean up worktree
 - Move on
@@ -177,26 +160,20 @@ Rules:
 
 Stop and ask the user when:
 
-- Size classification is genuinely unclear (interactive only; in hands-off, default to Medium)
+- Size classification is genuinely unclear
 - User has expressed a preference (branch, scope, TDD) that conflicts with the auto-inference
 - Any stage's skill returns a blocker
 
 ## Rules
 
-- Never skip Review (both modes)
-- Never auto-merge or auto-push — the user chooses at step 12 (both modes)
+- Never skip Review
+- Never auto-merge or auto-push — the user chooses at step 12
 - Never mark `done` until the Goal is confirmed achieved (step 11) — verified + reviewed is not done
-- Never create a worktree without confirming in interactive mode
-- Never edit `main` / `master` directly in hands-off (see `up:handsoff` safety principles)
+- Never create a worktree without confirming with the user
 - Keep the task file as the single source of truth — each stage reads it, each stage writes to it
 - External spec / design docs (e.g. anything under `docs/specs/`) are read-only during execute. If a stage finds the spec is wrong, surface it to the user — don't mutate it silently
 - Don't assume prior session memory — the next agent may be a fresh context reading only the task file
-- In hands-off, never invent a default for an ambiguous argument — see `up:handsoff` no-default rule
-
-## Hands-off mode
-
-Activated by prefixing `/up:make` arguments with the literal token `handsoff`. The full contract — safety principles (worktree-first, reversible-first, no destructive ops, no push), decision log format, deferred log, no-default rule, end-of-task summary — lives in `up:handsoff`. Read that skill once when the task file's `**Mode:**` header is `hands-off`; the references in step 4, step 6, step 7, step 12 above are the stage-specific touches on top of it.
 
 ## Terminal state
 
-Task file Status = `done` (Goal confirmed achieved, step 11), Conclusion filled, user has chosen a finish action (merge, PR, cleanup, or defer). In hands-off, the user has also reviewed the `### Hands-off decisions` list.
+Task file Status = `done` (Goal confirmed achieved, step 11), Conclusion filled, user has chosen a finish action (merge, PR, cleanup, or defer).

@@ -19,10 +19,8 @@ Implement the approved `## Plan` from `docs/tasks/<slug>.md`. You are the dispat
 ## Brevity
 
 <required>
-Before writing anything into the task file (deviations, hands-off decisions, known risks), read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its five principles. Specifically:
+Before writing anything into the task file (deviations, known risks), read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its five principles. Specifically:
 - `### Deviations from plan` — create the subsection only when a deviation happens. Do not add an empty "no deviations" line.
-- `### Hands-off decisions` — when every stage auto-approved with no interventions, collapse to a single entry `- all stages auto-approved, no interventions`. When a stage did intervene (reviewer fix, deferral, etc.), keep its own entry.
-- `### Deferred (needs user input)` — one line per deferral, with the concrete artifact the user needs (file path / command / question).
 The Exception clause still holds: deviations, deferrals, and known risks always carry evidence and "why".
 </required>
 
@@ -321,13 +319,7 @@ Agent edits `## Plan` inline with `<!-- deviation: ... -->` comments. Reviewer n
 - Verify would obviously fail even after you finish
 - You're about to invent a fallback / default / catch-all
 
-Don't force through. Ask. This list applies in both interactive and hands-off modes — it defines the "genuinely impossible without user input" exception. Log each such stop under `## Conclusion → ### Deferred (needs user input)` in hands-off mode.
-
-## Hands-off mode
-
-See `up:handsoff` for the full contract, including the safety principles (worktree-first, no destructive git ops, no push to remote, additive-over-subtractive edits). Stage-specific delta: execute's own behavior is unchanged — the existing fail-fast rules and "when to stop and ask" list above *are* the hands-off handling. Each such stop is logged under `### Deferred (needs user input)` with enough context for the user to resume.
-
-Never invent a default to keep moving. Conservative = fewer assumptions = stop and log.
+Don't force through. Ask.
 
 ## Never
 

@@ -51,7 +51,7 @@ Before writing the Plan, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply 
 8. Backwards-compat check — restate Design's compat risks in concrete plan terms.
 9. Self-review inline (placeholders, consistency, invariants, spec coverage).
 10. Scope-creep / simpler-way check — see below. This is the final step before handoff.
-11. Present the plan to the user. In interactive mode, wait for approval, then invoke `up:uexecute`. In hands-off mode (task-file `**Mode:** hands-off`), auto-invoke `up:uexecute` after presenting, and log `- uplan: plan auto-approved (hands-off)` to `## Conclusion → ### Hands-off decisions`.
+11. Present the plan to the user, wait for approval, then invoke `up:uexecute`.
 </required>
 
 ## Required contents
@@ -192,10 +192,6 @@ Before handing off to the user, check:
 
 If this check surfaces real simplifications, rewrite the plan. Don't stack warnings on top of a bloated plan.
 
-## Hands-off mode
-
-See `up:handsoff` for the full contract. Stage-specific delta: skip the approval wait — present the plan highlights, log `- uplan: plan auto-approved` to `### Hands-off decisions`, invoke `up:uexecute` directly. Self-review, scope-creep check, and backwards-compat restatement are unchanged. Ambiguities that would require a user call go to `### Deferred (needs user input)` and the plan stops — do not guess around them.
-
 ## Terminal state
 
-Plan written, self-reviewed, scope-checked. Interactive: present highlights, wait for approval, invoke `up:uexecute`. Hands-off: present highlights, log auto-approval, invoke `up:uexecute`.
+Plan written, self-reviewed, scope-checked. Present highlights, wait for approval, invoke `up:uexecute`.
