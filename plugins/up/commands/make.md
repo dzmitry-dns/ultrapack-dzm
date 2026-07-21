@@ -36,7 +36,7 @@ Status format: `<enum> — <optional annotation>`. The enum is everything before
 
 ### 3. Create task file
 
-Create `docs/tasks/<slug>.md` from the template. Status = `design`. Branch = `main` (placeholder until step 5). Goal = a first draft of the observable success condition from the description; `up:udesign` finalizes it, or `up:make` sets it directly when Design is skipped (trivial/small).
+Create `docs/tasks/<slug>.md` from the template. Status = `design`. Branch = `main` (placeholder until step 5). Goal = a first draft of the observable success condition from the description; `up:udesign` finalizes it, or `up:make` sets it directly when Design is skipped (trivial/small). If the project's `CLAUDE.md` has a `## Jira adapter` section and the task has no `**Jira:**` header, prompt once for a ticket id or skip (`up:ujira`).
 
 Template:
 
@@ -109,7 +109,7 @@ Always confirm with the user. If a branch is created, update the task file's `**
 
 ### 7. Plan stage (unless skipped)
 
-Invoke `up:uplan`. It populates `## Plan`. Status → `executing`.
+Invoke `up:uplan`. It populates `## Plan`. Status → `executing`. If Jira is configured, invoke `up:ujira` at this transition — the start draft rides the plan-approval pause.
 
 ### 8. Execute stage
 
@@ -143,6 +143,8 @@ Once `done`, run the docs-refresh check (see below).
 Present options to the user:
 - Merge / open PR (if on a branch)
 - Move on
+
+If Jira is configured, present the `up:ujira` terminal draft alongside these options.
 
 Execute only after the user chooses.
 
