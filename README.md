@@ -31,25 +31,27 @@ The plugin is named `up`; the marketplace is named `ultrapack` (hence `up@ultrap
 
 1. **Design** — a short interactive dialogue: tradeoffs, the observable Goal, and the constraints the work must respect. You approve before anything else happens.
 2. **Plan** — the concrete delta: which files change, which line ranges, which interfaces, broken into ordered phases.
-3. **Execute** — the plan is implemented phase by phase. Independent phases run in parallel; each phase is its own commit.
+3. **Execute** — the plan is implemented phase by phase, each phase its own commit; a plan-declared interface graph runs independent phases in parallel.
 4. **Verify** — the change is attacked, not confirmed: happy-path, negative, invariant, and interface checks, plus an end-to-end smoke. Any demonstrated break loops back to execute.
 5. **Review** — an independent reviewer audits the diff against the plan and constraints, from the seat of whoever maintains this in six months.
 6. **Validate the Goal** — the task is not done until its Goal is confirmed achieved, not merely verified and reviewed.
-
-Add `handsoff` to run it while you're away: `/up:make handsoff fix the flaky login test` (see [Hands-off mode](#hands-off-mode)).
 
 ## The task file
 
 Everything about a task lives in one markdown file, `docs/tasks/<slug>.md`. It is the single source of truth — the conversation is disposable, the file is not. It evolves through four sections:
 
-- `## Design` — what we want and how it should work.
-- `## Plan` — how we get there from the current code.
+- `## Design` — what we want and how it should work, with `### Prior art` citing related past tasks.
+- `## Plan` — how we get there from the current code; gains `### Rollback` / `### Rollout` when the change ships to a live system.
 - `## Verify` — what was attacked and what held.
-- `## Conclusion` — the review outcome, filled at the end.
+- `## Conclusion` — the review outcome; after the task lands it grows a dated post-merge log (`### Follow-up — <date>`, `### Scope change — <date>`) and `### Deferred` scope-parking.
 
-A `**Status:**` header tracks where the task is, and any agent resumes from it:
+Optional `**Jira:**` and `**Depends on:**` headers link the task outward; every optional slot appears only when it carries content. A multi-task workstream nests as `docs/tasks/<epic>/` — an `overview.md` at Status `reference` linking normal child task files.
 
-`design` → `planning` → `executing` → `reviewing` → `validating` → `done`
+A `**Status:**` header tracks where the task is, and any agent resumes from it. The format is `<enum> — <optional annotation>` (`executing — reopened 2026-08-01`):
+
+`design` → `planning` → `executing` → `reviewing` → `validating` → `done` → `shipped`
+
+`shipped` is set once the merge/deploy is confirmed real, with the evidence in the annotation.
 
 ### Goal-gated done
 
@@ -77,7 +79,7 @@ Process skills (`u`-prefixed to dodge Claude Code built-ins):
 
 - `up:udesign` — turn an idea into a validated spec: tradeoffs, the Goal, invariants/principles/assumptions/unknowns, and the TDD decision. The one interactive stage.
 - `up:uplan` — turn the approved spec into a concrete plan: exact files and line ranges, interface signatures, phases, test strategy, execution order.
-- `up:uexecute` — implement the plan phase by phase, dispatching a fresh implementer per phase; commit per phase; run boundary, plan-diff, and consistency checks after each.
+- `up:uexecute` — implement the plan phase by phase, inline and serial by default — a plan-declared interface graph dispatches parallel implementers; commit per phase; plan-diff and consistency checks after each.
 - `up:uverify` — attack the change to prove it's broken; run each check freshly plus an end-to-end smoke; loop back to execute on any break.
 - `up:ureview` — dispatch an independent reviewer, process its findings fairly, and fill the Conclusion.
 - `up:udebug` — four-phase root-cause investigation (reproduce → pattern-match → hypothesize → fix); no symptom patches.
@@ -88,11 +90,10 @@ Discipline skills:
 - `up:test-driven-development` — red → green → refactor, with a rule for when TDD actually applies.
 - `up:git-worktrees` — pick and create an isolated worktree, share the environment from main, run a baseline.
 - `up:job-guardian` — babysit any long-running job — a deploy, migration, batch run, or training run — while you're away: launch contract, immediate-crash gate, stability polls, recoverable-vs-not triage, reversible teardown, and a notification when it's over.
-- `up:handsoff` — the contract for hands-off mode: safest reversible path, no destructive git ops, a decision log, and no invented defaults.
 
 ## Commands
 
-- `/up:make [handsoff] <description>` — orchestrate the full workflow end to end. Resumes an existing task by its status.
+- `/up:make <description>` — orchestrate the full workflow end to end. Resumes an existing task by its status.
 - `/up:try` — quick manual test of the latest change: one positive case, one negative, run both, report.
 - `/up:step-back` — circuit breaker: stop, diagnose why attempts keep failing, propose a fundamentally new direction.
 - `/up:summary` — draft a handoff summary so another session can continue with zero conversation context.
@@ -106,23 +107,12 @@ Stages delegate focused work to subagents, each with fresh context. Roles:
 | Agent | Role |
 |-------|------|
 | `up:explorer` | Read-only codebase tracing: entry points, call chain, 3–5 essential files with `file:line` refs. |
-| `up:implementer` | Default per-phase implementer for complex phases: code, tests, commit, self-review. |
-| `up:implementer-sonnet` | Same procedure for trivial phases (typos, renames, doc edits); bounces non-trivial work back to `up:implementer`. |
+| `up:implementer` | Per-phase implementer in parallel waves: code, tests, commit, self-review. |
 | `up:reviewer` | Independent review against the Plan, Invariants, and Assumptions; confidence-filtered, severity-tiered. |
 | `up:researcher` | General-purpose investigation across the web, library docs, and the current codebase. |
 | `up:summarizer` | Drafts the handoff prose for `/up:summary`; gathers repo state, never writes to disk. |
 
-Models are pinned in each agent's frontmatter — review-grade judgment runs on the top pinned tier, mechanical work on cheaper tiers, and the default implementer inherits your session model.
-
-## Hands-off mode
-
-Prefix the description with `handsoff` to run the full workflow with as few prompts as possible:
-
-```
-/up:make handsoff fix the flaky login test
-```
-
-The agent takes the safest reversible path at every step: it works on a dedicated branch and worktree, prefers additive edits over destructive ones, never pushes to remote, and never invents a default where none exists — it defers instead. Every auto-choice lands in a decision log you review once at the end. Design stays interactive; it's the one stage hands-off preserves.
+Models are pinned in each agent's frontmatter — review-grade judgment runs on the top pinned tier, and the implementer inherits your session model, downshifted per-dispatch to a cheaper tier for trivial phases.
 
 ## Fork note
 
