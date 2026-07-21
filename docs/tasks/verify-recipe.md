@@ -1,6 +1,6 @@
 # Project verify recipe
 
-**Status:** planning
+**Status:** planning — parked 2026-07-21; plan ready; draft commits a77ae40 (PH1) + 11f7609 (PH2, bump 0.3.30) on this branch await review
 **Branch:** verify-recipe
 **Depends on:** docs/roadmap.md:90
 **Goal:** `up:uverify` reads a consumer-declared `## Verify recipe` CLAUDE.md section (bare `- <command>` lines, same parse convention as `## Jira adapter`) and runs it as the smoke baseline instead of guessing; projects without the section keep byte-identical heuristic behavior; grep-proof: parse convention consistent with ujira's config wording.
