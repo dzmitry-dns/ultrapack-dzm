@@ -1,7 +1,7 @@
 # ujira V1.1 polish — dogfood follow-ups
 
-**Status:** planning
-**Branch:** main
+**Status:** executing
+**Branch:** ujira-polish
 **Depends on:** docs/tasks/jira-adapter.md (`### Follow-up — 2026-07-21`)
 **Goal:** `plugins/up/skills/ujira/SKILL.md` unambiguously describes three description-draft behaviors (matches → skip, stale-field-only → targeted update, doesn't match → replace) and blesses bare `- key: value` lines as the sole config parse target; grep-proof of consistency with `make.md` ujira hooks is clean. Doc-only contract clarification — no separate dogfood run gates this.
 
@@ -38,7 +38,36 @@ Out of scope (parked in jira-adapter.md `### Deferred scope-parking`): sync-stat
 - UK1: Whether the draft block needs a distinct rendering for targeted updates (e.g. `Description (update <field>):`) or reuses the replace shape with a narrower payload. Resolve at plan.
 
 ## Plan
-<empty — filled by up:uplan>
+
+Approach: three surgical edits to the ujira skill contract, each landing where the current text already speaks — match semantics into `## Draft contract`, verdict reference into `## Triggers & coalescing` + `## Draft block`, parse rule into `## Config`. No new sections, no make.md changes (AS1).
+
+UK1 resolved: targeted updates get a distinct draft-block rendering — `Description (update: <field>):` carrying only the replacement line(s) — so the owner sees at a glance that human wording elsewhere is untouched; reusing the replace shape would make skip-vs-clobber invisible.
+
+### PH1 — SKILL.md contract edits
+
+- **1.1** `plugins/up/skills/ujira/SKILL.md:36-45` (modify) — `## Draft contract`
+  - Replace line 38's binary "refreshed only when it no longer matches reality" with a three-verdict match rule: matches → skip; structurally matches but one field stale (e.g. outdated `Details:` pointer) → targeted update replacing only that field, preserving human-written what+why and acceptance wording; doesn't match → full replace draft. One line per verdict. Respects: IV1.
+- **1.2** `plugins/up/skills/ujira/SKILL.md:59` (modify) — `## Triggers & coalescing`
+  - "a description draft when the current ticket description doesn't match the contract" → "a description draft per the match verdict (skip / targeted update / replace)". Respects: IV3.
+- **1.3** `plugins/up/skills/ujira/SKILL.md:66-84` (modify) — `## Draft block`
+  - After the block example: targeted-update rendering — item reads `Description (update: <field>):` with only the replacement line(s). Approval/skip semantics unchanged. Respects: IV2.
+- **1.4** `plugins/up/skills/ujira/SKILL.md:21-34` (modify) — `## Config`
+  - Add parse contract after the fenced example: bare `- key: value` lines are the sole parse target of the section; surrounding prose allowed; keys never wrapped in backticks or folded into sentences — the section is docs and live config at once. Existing fenced example already conforms. Respects: IV4.
+- Commit: `docs(ujira): three-verdict description matching, targeted-update rendering, canonical config format`
+
+### PH2 — version bump
+
+- **2.1** `plugins/up/.claude-plugin/plugin.json:3` (modify) — `"version": "0.3.27"` → `"0.3.28"`.
+- Commit: `chore: bump up to 0.3.28`
+
+Backwards-compat: doc-only; the shipped consumer config (bare `- key: value` lines post-dogfood-fix) already satisfies the new parse rule — no consumer edit required.
+
+### Test strategy
+
+Doc-only — verification is read-through + grep-proof:
+- grep `ujira|Jira` in `plugins/up/commands/make.md` (hooks at 39, 112, 147): every hook behavior still described by SKILL.md, no SKILL.md behavior contradicting a hook (AS1, IV3).
+- SKILL.md self-consistency: draft-block renderings cover exactly the verdicts the contract names; config example passes its own parse rule (IV4).
+- Banned-content list unchanged and reachable from the targeted-update path (IV1).
 
 ## Verify
 <empty — filled by up:uverify>
