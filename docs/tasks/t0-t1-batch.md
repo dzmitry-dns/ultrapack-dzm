@@ -1,6 +1,6 @@
 # T0+T1 — Fork governance + reliability quick-wins
 
-**Status:** validating
+**Status:** done
 **Branch:** t0-t1-batch
 **Worktree:** none
 **Goal:** Fork owns its marketplace identity and installs cleanly as the daily driver (`/up:make` loads from this fork's marketplace); agents follow the quota-aware model policy with no inlined model names left in prose; no dangling skill refs or repo-relative cross-refs remain; job-guardian is de-ML'd with a truthful cadence rationale; README is a self-sufficient onboarding doc a colleague can install and use the pack from without asking the owner. Confirming install requires a real reinstall in the owner's environment.
@@ -128,7 +128,7 @@ Goal: proxy only — manifests/refs/content verified at rest; install-and-invoke
 
 ## Conclusion
 
-Outcome: all T0+T1 edits landed and reviewed merge-ready at `c2e916a`; Goal completes when the owner reinstalls from the fork and `/up:make` loads (UK1/UK2 close there).
+Outcome: all T0+T1 edits landed and reviewed merge-ready at `c2e916a`; merged to `main` (`7046f2c`, 0.3.23) and pushed 2026-07-21. Goal complete: owner reinstalled from the fork, `/up:make` loads, install smoke closed AS1/UK1/UK2.
 
 Invariants:
 - IV1 — grep sweep: model names only in frontmatter + `_brevity.md:20` anti-example (CK5, confirmed by reviewer at HEAD)
@@ -138,16 +138,16 @@ Invariants:
 - IV5 — zero Fable/Mythos hits (CK5)
 
 ### Assumptions check
-- AS1 — unverifiable until reinstall — no `${CLAUDE_PLUGIN_ROOT}` precedent existed on `main` (PH2's "existing usage" claim was false); syntax follows Claude Code plugin docs, confirmed only by install smoke
+- AS1 — held — confirmed at install smoke 2026-07-21: `${CLAUDE_PLUGIN_ROOT}` expands in installed skill and agent markdown (see UK2)
 - AS2 — held — `gh repo view`: PUBLIC, https://github.com/dzmitry-dns/ultrapack-dzm
 
 ### Unknowns outcome
-- UK1 — still-open — remove-upstream-first documented in README; confirmed at owner's reinstall
-- UK2 — still-open — `${CLAUDE_PLUGIN_ROOT}` expansion in agent files; fallback ready (ureview passes the brevity path in the reviewer dispatch prompt) if it doesn't expand
+- UK1 — closed — remove-upstream-first confirmed at reinstall 2026-07-21: `/plugin marketplace remove ultrapack` → `add dzmitry-dns/ultrapack-dzm` → `install up@ultrapack` → `/reload-plugins` succeeded, 0.3.23 in cache, `/up:make` loads
+- UK2 — closed — expands: a dispatched `up:reviewer` saw the fully expanded path (`~/.claude/plugins/cache/ultrapack/up/0.3.23/skills/_brevity.md`) in its instructions and Read it successfully; fallback not needed
 
 Plan adherence: two consistency-sweep extras beyond listed line numbers, both in-scope — `implementer-sonnet.md:24` header rename (IV1) and PH3 de-ML of lines 33/38/39/80/93 (covered by "throughout"); post-verify fix `c2e916a` (README pointer over-claimed CLAUDE.md contents — CK11).
 
 Review findings: none at confidence ≥80 (reviewer on the new opus pin; sub-80 observations recorded: nonstandard `metadata.repository` manifest key — covered by install smoke; implementer/implementer-sonnet model-equivalence when the session runs a cheap tier — deliberate "one `/model` knob" tradeoff).
 
 Future work:
-- Remove the dispatch-time `model: "opus"` override for `up:reviewer` from the owner's global `~/.claude/CLAUDE.md` after reinstall — Justification: Design item 3 (frontmatter pin obsoletes it).
+- Remove the dispatch-time `model: "opus"` override for `up:reviewer` from the owner's global `~/.claude/CLAUDE.md` after reinstall — Justification: Design item 3 (frontmatter pin obsoletes it). Done 2026-07-21.
