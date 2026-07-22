@@ -80,3 +80,6 @@ Scope flag:
 
 ### Deferred
 - Retire `~/.claude/agents/requirements-reviewer.md` and reconcile the global CLAUDE.md Ultrapack note → owner, after 0.3.29 installs.
+
+### Follow-up — 2026-07-22
+- Deferred owner-cleanup done: user-level `requirements-reviewer.md` deleted, global CLAUDE.md Ultrapack note now points at `up:requirements-reviewer` via `up:ureview` step 1b.
