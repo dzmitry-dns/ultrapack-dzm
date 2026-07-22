@@ -1,6 +1,6 @@
 # Project verify recipe
 
-**Status:** validating — merged + pushed 2026-07-22; reinstall pending; goal confirmed once a live uverify run reads a recipe
+**Status:** validating — 0.3.30 installed 2026-07-22; recipe section live in cccc CLAUDE.md (b856b2f, rides the CATS-1523 branch); done once that task's uverify reads it
 **Branch:** verify-recipe
 **Depends on:** docs/roadmap.md:90
 **Goal:** `up:uverify` reads a consumer-declared `## Verify recipe` CLAUDE.md section (bare `- <command>` lines, same parse convention as `## Jira adapter`) and runs it as the smoke baseline instead of guessing; projects without the section keep byte-identical heuristic behavior; grep-proof: parse convention consistent with ujira's config wording.
