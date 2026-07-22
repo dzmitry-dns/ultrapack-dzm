@@ -1,6 +1,6 @@
 # Reviewer model override on request
 
-**Status:** executing — trivial, Design/Plan skipped
+**Status:** shipped — 2026-07-22; goal is fully demonstrated by the diff (the paragraph exists); loads on next marketplace update
 **Branch:** main
 **Goal:** `up:ureview` documents that the owner can request a per-dispatch reviewer model override ("review on Fable" / "review on the session model"); the default stays the agent's pinned model, and agent frontmatter pins are never edited for a one-off.
 
@@ -16,4 +16,8 @@
 Smoke: doc-only — install-and-invoke rides the next `/plugin marketplace update` (same deferral as verify-recipe)
 
 ## Conclusion
-<empty — filled by up:ureview>
+
+Outcome: per-dispatch model override documented in ureview section 1 (applies to 1b too); pins untouched. 6ae53bb + review fix.
+
+Review findings:
+- Important: "the owner" broke the file's user/dispatcher/reviewer vocabulary — changed to "the user"
