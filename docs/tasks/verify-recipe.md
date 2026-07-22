@@ -1,6 +1,6 @@
 # Project verify recipe
 
-**Status:** validating — review clean 2026-07-21 (1 Important fixed, 64101d9); goal gated on post-merge install-and-invoke
+**Status:** validating — merged to main 2026-07-22; push + reinstall pending; goal confirmed once a live uverify run reads a recipe
 **Branch:** verify-recipe
 **Depends on:** docs/roadmap.md:90
 **Goal:** `up:uverify` reads a consumer-declared `## Verify recipe` CLAUDE.md section (bare `- <command>` lines, same parse convention as `## Jira adapter`) and runs it as the smoke baseline instead of guessing; projects without the section keep byte-identical heuristic behavior; grep-proof: parse convention consistent with ujira's config wording.
