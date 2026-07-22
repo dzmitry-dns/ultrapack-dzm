@@ -1,6 +1,6 @@
 # Reviewer model override on request
 
-**Status:** shipped — 2026-07-22; goal is fully demonstrated by the diff (the paragraph exists); loads on next marketplace update
+**Status:** shipped — 2026-07-22; 0.3.31 installed same day (cache verified, SHA 0c42512); pre-close control review clean
 **Branch:** main
 **Goal:** `up:ureview` documents that the owner can request a per-dispatch reviewer model override ("review on Fable" / "review on the session model"); the default stays the agent's pinned model, and agent frontmatter pins are never edited for a one-off.
 
@@ -21,3 +21,5 @@ Outcome: per-dispatch model override documented in ureview section 1 (applies to
 
 Review findings:
 - Important: "the owner" broke the file's user/dispatcher/reviewer vocabulary — changed to "the user"
+
+Pre-close control review (2026-07-22): `up:reviewer` re-dispatched on 27f383a..0c42512 — merge-ready, zero findings ≥80; CK1–CK4 re-confirmed against files; 0.3.31 cache verified. Sub-threshold notes (no action): README:117 describes only the default pin (level-of-detail choice); "Fable" codename in SKILL.md:73 is an illustrative user utterance.
