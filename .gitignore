@@ -1,5 +1,6 @@
 tmp/
 .worktrees/
+local/
 
 # Editor / OS
 .DS_Store
