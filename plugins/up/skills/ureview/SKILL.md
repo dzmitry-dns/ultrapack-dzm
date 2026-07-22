@@ -70,6 +70,8 @@ HEAD_SHA: <current HEAD>
 Working directory: <absolute path>
 ```
 
+Model: the agent pins its own default. When the owner asks for a specific model for this review ("review on Fable", "review on the session model"), pass it as the dispatch-time model override for that run only — never edit the agent's frontmatter pin for a one-off. Applies equally to the 1b dispatch below.
+
 ### 1b. Optional second dispatch — `up:requirements-reviewer`
 
 A requirements-level audit that catches "built cleanly, but not the right thing". Suggest it for Medium+ or high-stakes changes; the user opts in — never auto-run it, and it complements (never replaces) `up:reviewer`.
