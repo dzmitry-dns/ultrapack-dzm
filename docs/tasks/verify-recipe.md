@@ -1,6 +1,6 @@
 # Project verify recipe
 
-**Status:** validating — 0.3.30 installed 2026-07-22; recipe section live in cccc CLAUDE.md (b856b2f, rides the CATS-1523 branch); done once that task's uverify reads it
+**Status:** shipped — merged d8b791c, v0.3.30; goal confirmed 2026-07-22 by a live cccc run (recipe found and run in order: type-check 7/7, test:unit 1335/0, build 4/4; integration `deferred` — Azure test DB unreachable; smoke taken from the `- smoke:` line)
 **Branch:** verify-recipe
 **Depends on:** docs/roadmap.md:90
 **Goal:** `up:uverify` reads a consumer-declared `## Verify recipe` CLAUDE.md section (bare `- <command>` lines, same parse convention as `## Jira adapter`) and runs it as the smoke baseline instead of guessing; projects without the section keep byte-identical heuristic behavior; grep-proof: parse convention consistent with ujira's config wording.
@@ -78,3 +78,7 @@ Review findings:
 - Important: undashed `smoke: <description>` literal contradicted the sole-parse-target rule — the exact folded-key trap ujira warns about; resolved in 64101d9 (dash added in both occurrences)
 
 Verified by: install-and-invoke smoke deferred to post-merge `/plugin marketplace update ultrapack` + `/reload-plugins`; grep-proofs and cccc dry-parse stood in (see Verify)
+
+### Follow-up — 2026-07-22
+
+- Deferred smoke closed: live uverify run in cccc (docs micro-task) found `## Verify recipe`, ran the three commands fresh and in order, recorded the integration step `deferred` with the real reason (`.env` points at Azure `connect-sandbox-westus2-psql-01`, `pg_isready` no response), took the smoke from the `- smoke:` line, and still built a CK-lite attack list. Goal confirmed; Status → shipped.

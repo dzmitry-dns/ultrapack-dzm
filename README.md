@@ -80,7 +80,7 @@ Process skills (`u`-prefixed to dodge Claude Code built-ins):
 - `up:udesign` — turn an idea into a validated spec: tradeoffs, the Goal, invariants/principles/assumptions/unknowns, and the TDD decision. The one interactive stage.
 - `up:uplan` — turn the approved spec into a concrete plan: exact files and line ranges, interface signatures, phases, test strategy, execution order.
 - `up:uexecute` — implement the plan phase by phase, inline and serial by default — a plan-declared interface graph dispatches parallel implementers; commit per phase; plan-diff and consistency checks after each.
-- `up:uverify` — attack the change to prove it's broken; run each check freshly plus an end-to-end smoke; loop back to execute on any break.
+- `up:uverify` — attack the change to prove it's broken; run each check freshly plus an end-to-end smoke — a `## Verify recipe` section in the consumer project's CLAUDE.md, when present, supplies the smoke baseline instead of guessing; loop back to execute on any break.
 - `up:ureview` — dispatch an independent reviewer, process its findings fairly, and fill the Conclusion.
 - `up:udebug` — four-phase root-cause investigation (reproduce → pattern-match → hypothesize → fix); no symptom patches.
 - `up:udocument` — discipline for writing docs: lead with why, kill stale content, lists over tables, no aspirational content.
