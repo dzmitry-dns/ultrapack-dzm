@@ -109,7 +109,7 @@ Always confirm with the user. If a branch is created, update the task file's `**
 
 ### 7. Plan stage (unless skipped)
 
-Invoke `up:uplan`. It populates `## Plan`. Status → `executing`. If Jira is configured, invoke `up:ujira` at this transition — the start draft rides the plan-approval pause.
+Invoke `up:uplan`. It populates `## Plan`. Status → `executing`. If Jira is configured, invoke `up:ujira` at this transition — the start draft rides the plan-approval pause, minus whatever the project set `auto` to, which `up:ujira` has already applied.
 
 ### 8. Execute stage
 
@@ -144,7 +144,7 @@ Present options to the user:
 - Merge / open PR (if on a branch)
 - Move on
 
-If Jira is configured, present the `up:ujira` terminal draft alongside these options.
+If Jira is configured, present the `up:ujira` terminal draft alongside these options. Items `up:ujira` auto-applied appear there as receipts, not as choices.
 
 Execute only after the user chooses.
 

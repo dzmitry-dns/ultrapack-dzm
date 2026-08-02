@@ -1,11 +1,11 @@
 ---
 name: ujira
-description: Draft thin-layer Jira updates at task Status transitions and hand them to the owner for approval — never writes without it. Entry paths — invoked by /up:make at its trigger points, or manually via /up:ujira. In a project with no Jira adapter config it is a silent no-op.
+description: Sync thin-layer Jira updates at task Status transitions. Comments post automatically where the project opted in (`auto: comment`); transitions and description edits always wait for owner approval. Entry paths — invoked by /up:make at its trigger points, or manually via /up:ujira. In a project with no Jira adapter config it is a silent no-op.
 ---
 
 # Jira adapter
 
-Keeps Jira human-readable with near-zero owner effort: at meaningful Status transitions the workflow drafts a thin Jira update, the owner approves, and only then does anything reach Jira. Jira is a thin layer for humans — never a mirror of the task file. The technical record stays in `docs/tasks/<slug>.md`; Jira gets what a teammate skimming the board needs.
+Keeps Jira human-readable with near-zero owner effort: at meaningful Status transitions the workflow produces a thin Jira update. What reaches Jira on its own is bounded by config — by default nothing does, and the owner approves every item; a project can opt comments out of that gate with `auto: comment`. Ticket state and description never leave the gate. Jira is a thin layer for humans — never a mirror of the task file. The technical record stays in `docs/tasks/<slug>.md`; Jira gets what a teammate skimming the board needs.
 
 ## Gate — when to run at all
 
@@ -26,7 +26,8 @@ The pack ships no Jira config. Consumers declare it in their project `CLAUDE.md`
 ## Jira adapter
 - project: PROJ
 - site: https://org.atlassian.net
-- apply: manual
+- apply: mcp
+- auto: comment
 ```
 
 The section is docs and live config at once: only bare `- key: value` lines are parsed as config. Surrounding prose is welcome, but never wrap a key in backticks or fold it into a sentence — a decorated key is invisible to discovery.
@@ -34,6 +35,7 @@ The section is docs and live config at once: only bare `- key: value` lines are 
 - `project` — required; Jira project key. Sanity-check ticket ids in `**Jira:**` headers against it.
 - `site` — optional; base URL for rendering ticket links and MCP site lookup.
 - `apply` — optional; `manual` (default) or `mcp`. Absent means `manual`.
+- `auto` — optional; which draft items are applied without asking the owner. `comment` is the only honored value and it requires `apply: mcp`. Absent means nothing is automatic, which is the historical behavior.
 
 ## Draft contract — thin layer, never a mirror
 
@@ -66,7 +68,7 @@ Two drafting moments per `/up:make` session; each draft covers every transition 
 1. Status → `executing` — rides the plan-approval pause. Ticket transition proposal (e.g. To Do → In Progress), one start comment, and a description item per the match verdict (skip / targeted update / replace).
 2. Terminal pause — `/up:make` step 12 finish menu, or session end. One comment line per phase crossed since the last sync (validating / done / shipped), plus a ticket transition proposal when done or shipped.
 
-Sync state lives in the `**Jira:**` header annotation: `**Jira:** PROJ-123 — synced executing 2026-07-21`. Update it after the owner approves or skips a draft; everything after the recorded enum is not yet synced. Internal churn (design → planning) never drafts.
+Sync state lives in the `**Jira:**` header annotation: `**Jira:** PROJ-123 — synced executing 2026-07-21`. Update it after the owner approves or skips a draft, and immediately after an auto comment lands — an applied comment the annotation does not know about is a duplicate on the next run. Everything after the recorded enum is not yet synced. Internal churn (design → planning) never drafts.
 
 Manual invocation (`/up:ujira`): same rules — read the header annotation, draft whatever is unsynced, hand over.
 
@@ -90,24 +92,46 @@ Jira draft — PROJ-123 (docs/tasks/<slug>.md)
 
 A stale-field-only verdict renders item 3 as `Description (update: <field>):` carrying only the replacement line(s) — everything else in the live description stays untouched.
 
-Owner responds per block: approve / edit (owner returns corrected text) / skip. After approve or skip, update the sync annotation.
+Item 2 reads `Comment (posted):` only under `auto: comment`, where it is a receipt rather than a proposal — the text is already on the ticket and the owner is being shown what went out. Without `auto`, it stays `Comment:` and waits like every other item.
+
+Owner responds per block: approve / edit (owner returns corrected text) / skip. After approve or skip, update the sync annotation. An already-posted comment takes no response; an owner who dislikes it edits it in Jira, which is why it was safe to send unattended in the first place.
 
 ## Apply modes
 
 - `manual` (default): after approval, output the block for the owner to paste into Jira. The agent never calls a Jira write tool — approval does not change that.
-- `mcp`: after approval of a specific draft, apply exactly that draft via the Atlassian MCP write tools and report each action's result. No approval, no write; partial approval applies only the approved items.
+- `mcp`: after approval of a specific draft, apply exactly that draft via the Atlassian MCP write tools and report each action's result. No approval, no write; partial approval applies only the approved items. The one thing that can skip the approval step is a comment under `auto: comment` (below) — `mcp` on its own changes who applies a draft, never whether it was approved.
 
 A targeted update is a fragment, and Jira's description is one field: applying it means splicing the replacement into the live description and writing the field back whole (`mcp`), or editing just that field in the Jira editor (`manual`) — never writing the fragment as the new description.
 
 Reads — fetching the current ticket description and status before drafting — are fine in both modes when an MCP is available. When it isn't, draft from the task file alone and say the ticket state wasn't checked.
 
+## `auto: comment` — comments post unattended
+
+Comments are additive and reversible: a wrong one is edited or deleted in Jira in seconds and nobody acts on it in the meantime. Transitions and descriptions are neither — a transition moves the ticket for the whole team, a description overwrites prose a human wrote. That asymmetry is the entire rationale, so `transition` and `description` are not valid `auto` values: encountering one, ignore it, say so once, and keep that item gated.
+
+With `auto: comment` and `apply: mcp`, per comment:
+
+1. Build it exactly as the Draft contract requires. Automation relaxes nothing — the contract is the only thing between the board and technical noise, and it matters more when no owner reads the text first.
+2. Post it via the Atlassian MCP write tool before presenting the block.
+3. Render it in the block as a receipt (`Comment (posted):`), never as a proposal.
+4. Update the sync annotation the moment the post succeeds, without waiting for the rest of the block to be resolved.
+
+Step 4 is not bookkeeping pedantry: the owner can walk away from the block, and a session that posted a comment but recorded nothing posts it again next run.
+
+The other items still wait for the owner, so a comment can land while its transition is skipped. Accepted by design — the comment reports work that happened, the transition asserts board state the owner owns.
+
+`auto: comment` under `apply: manual` is a config error, not a fallback to silence: `manual` has no write path at all. Name the contradiction once, then hand the comment over as a normal draft item.
+
+A failed MCP write is reported, never swallowed: name the failure, render that comment as a paste-ready proposal, and leave the sync annotation alone — it must not claim a comment that never landed.
+
 ## Rules
 
-- Never write to Jira without per-draft approval; in `manual` mode never write at all.
+- Never write to Jira without per-draft approval, with exactly one exception: comments in a project that opted in via `auto: comment`. In `manual` mode never write at all.
+- Transitions and descriptions always need approval. No config value turns that off.
 - Never draft outside the contract — when in doubt, it's technical detail: leave it out.
 - Config comes only from the consumer project's `CLAUDE.md` — never from the pack, never invented.
 - No config or no ticket → silent no-op; the flow must be byte-identical to a Jira-less project.
 
 ## Terminal state
 
-Drafts handed over; approved ones applied (`mcp`) or delivered paste-ready (`manual`); sync annotation updated. Control returns to `/up:make`.
+Auto comments posted and recorded; remaining drafts handed over; approved ones applied (`mcp`) or delivered paste-ready (`manual`); sync annotation updated. Control returns to `/up:make`.

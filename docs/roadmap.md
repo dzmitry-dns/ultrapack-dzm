@@ -20,7 +20,7 @@ Why this fork: the upstream pack (btseytlin/ultrapack, forked at v0.3.22, `main 
 Config layer (`.claude/rules/workflow.md` + settings):
 
 - Owner hand-built what the pack lacks: mandatory `docs/tasks/archive/` consultation before Design + required `### Prior art` subsection; SessionStart hook printing branch/commits/active tasks/archive index; `**Jira:**` header convention; hard plan-approval gate (3+ files, DB migration, or new API surface); Context7-first mandate.
-- Jira MCP is effectively **read-only** (allow: getJiraIssue/searchJiraIssuesUsingJql/getTransitions; no addComment/editIssue) — any Jira automation must be draft-then-approve.
+- Jira MCP was read-only at audit time (project allowlist: getJiraIssue/searchJiraIssuesUsingJql/getTransitions only), which is why the adapter shipped draft-then-approve. **No longer true as of 2026-08-02:** the user-scope settings allow `mcp__claude_ai_Atlassian_Rovo__*`, writes included, so the permission layer is not what gates Jira automation — the `auto` config key is (see `docs/tasks/ujira-auto-comments.md`).
 - `dippy` PreToolUse hook (global) auto-approves safe Bash; mutating git (`push`/`reset`/`rebase`) stays ask-tier — agents can stage/commit/branch autonomously but not rewrite history or push.
 - Local `workflow.md` template omits `## Verify` and fixes a 5-status enum — both already contradicted by real files (Verify appears in 99 files; statuses overflow the enum). The plugin should own the template; the rule doc should shrink.
 - Verify recipe for this stack: `bun type-check` + `bun test:unit` + `bun run build` + local dev smoke; integration needs the `ats2025_test` DB; E2E is Playwright. Turborepo + bun, Next.js 16 / React 19 / tRPC 11 / Clerk, Fastify 5 APIs, Prisma 7.
@@ -85,7 +85,7 @@ Task-file census (157 files, ~124 archived):
 - [x] Fold the SSOT dedup here (single home for reviewer stance, dispatch contract) — it's the same files being rewritten anyway.
 
 ### T3 — Daily-driver features
-- [x] **Jira adapter:** on Status transitions, *draft* the thin-layer Jira update (description = what+why + acceptance + task-file pointer; comment = one plain line per phase) and hand to the owner for approval — MCP is read-only for writes by policy. Config in project CLAUDE.md.
+- [x] **Jira adapter:** on Status transitions, *draft* the thin-layer Jira update (description = what+why + acceptance + task-file pointer; comment = one plain line per phase) and hand to the owner for approval. Config in project CLAUDE.md. *(shipped v0.3.27 `docs/tasks/jira-adapter.md`, polished v0.3.28 `docs/tasks/ujira-polish.md`; the approval gate is no longer absolute — comments opt out of it per project via `auto: comment`, v0.3.32 `docs/tasks/ujira-auto-comments.md`)*
 - [x] **Requirements-review:** optional second dispatch in `ureview` — verbatim original requirement + BASE_SHA/HEAD_SHA only; auto-suggested for Medium+. Fold `~/.claude/agents/requirements-reviewer.md` into the pack. *(shipped v0.3.29, `docs/tasks/requirements-review.md`)*
 - [x] **Project verify recipe:** `uverify`/`/up:make` read a per-project smoke recipe (cccc: `bun type-check`, `bun test:unit`, `bun run build`, dev smoke; integration gated on test DB; UI via Playwright/chrome MCP click-through) instead of guessing. *(shipped v0.3.30, `docs/tasks/verify-recipe.md`)*
 - [ ] **Plan-approval gates as config:** fold cccc's "3+ files / DB migration / new API surface ⇒ plan approval" into `/up:make` as a project-configurable gate; shrink `workflow.md` accordingly.
