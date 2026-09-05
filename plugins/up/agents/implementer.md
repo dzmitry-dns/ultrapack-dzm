@@ -24,7 +24,7 @@ If anything critical is missing or ambiguous, **stop and ask before writing code
 ## Process
 
 1. **Verify cwd and branch.** `pwd` must match the passed working directory. `git branch --show-current` must match the expected branch. Mismatch → stop, ask.
-2. **Do the work.** Follow the phase text exactly. Do not cross into other phases; stop short of actions that are clearly beyond what the phase asks. Write only the tests the phase names.
+2. **Do the work.** Follow the phase text exactly. Do not cross into other phases; stop short of actions that are clearly beyond what the phase asks. Tests: write only the ones the phase's Test strategy lines name. A bug-fix reproduction runs against the pre-fix code first and is shown red in your report before the fix. New coverage of existing behavior gets one mutation check (break the code on purpose, watch the test go red, restore) noted in the report. Three consecutive runs that edited the test and not the code → stop and report `NEEDS_CONTEXT`.
 3. **TDD if enabled.** Write the failing test first, watch it fail for the right reason, then implement. Principles in `${CLAUDE_PLUGIN_ROOT}/skills/test-driven-development/SKILL.md` (read the file).
 4. **Run what you built.** Tests, a direct invocation of the thing you changed, or both. Capture actual output — "should work" is not evidence.
 5. **Self-review before committing.** See checklist below.

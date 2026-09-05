@@ -70,9 +70,9 @@ Task-file census (157 files, ~124 archived):
   - `implementer-sonnet` — `sonnet`, `explorer` — `haiku`, `researcher`/`summarizer` — `sonnet` (unchanged).
   - Never pin Fable/Mythos-tier in the pack — per-session user choice only.
   - Kill inlined model names in README/prose; frontmatter is the only home for model choice.
-- [ ] Fix cross-file refs (`${CLAUDE_PLUGIN_ROOT}` or skill-relative).
-- [ ] Remove dangling `remote-ssh`/`ml-experiments` refs from job-guardian (inline the needed minimum); de-ML its examples; fix the stale 270s cache-TTL rationale (cadence matches what's being watched).
-- [ ] README refresh (models, fork install path), `plugin.json` keywords cleanup.
+- [x] Fix cross-file refs (`${CLAUDE_PLUGIN_ROOT}` or skill-relative).
+- [x] Remove dangling `remote-ssh`/`ml-experiments` refs from job-guardian (inline the needed minimum); de-ML its examples; fix the stale 270s cache-TTL rationale (cadence matches what's being watched).
+- [x] README refresh (models, fork install path), `plugin.json` keywords cleanup.
 
 ### T2 — Template & flow realignment (data-driven; biggest value) — shipped 2026-07-21, v0.3.26, docs/tasks/t2-template-realignment.md
 - [x] Template additions: `### Prior art` (+ udesign step: consult `docs/tasks/archive/`, cite file:line or "none found"), `### Rollback` + `### Rollout` in Plan, `**Jira:**` + `**Depends on:**` headers.

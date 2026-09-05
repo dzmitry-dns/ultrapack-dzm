@@ -10,7 +10,7 @@ Implement the approved `## Plan` from `docs/tasks/<slug>.md`. Phases run seriall
 ## Before starting
 
 <required>
-1. Read the full task file — Design, Invariants (IV), Principles (PC), Assumptions (AS), Unknowns (UK), Plan. Plan is not optional reading.
+1. Read the full task file — Design, Invariants (IV), Principles (PC), Assumptions (AS), Unknowns (UK), Plan. Plan is not optional reading. A Trivial task (`/up:make` step 4) has no Plan: the task description and Goal are the contract, and the Tests block below still applies.
 2. Scan the plan for ambiguity, missing dependencies, or contradictory steps. Raise now, not after writing half the code.
 3. Verify the working copy. Check `git branch --show-current` matches the task file's `**Branch:**` header, and `git rev-parse --show-toplevel` is the repo (or worktree) the user intends. If mismatched: stop and ask.
 4. Build the checklist — one line per plan phase (or per task if phases are coarse), kept in your working notes for this session. The task file's Plan is the durable record; tick nothing there.
@@ -27,7 +27,7 @@ The Exception clause still holds: deviations, deferrals, and known risks always 
 ## Tests — the plan's list is the cap
 
 <required>
-- Write only the tests the plan's `### Test strategy` names. More test files in the diff than in the plan → cut back before the commit.
+- Write only the tests the plan's `### Test strategy` names. More test files in the diff than in the plan → cut back before the commit. No Plan (Trivial path): write no test unless the user asked for one, except a bug fix, which still gets its one reproduction below.
 - Bug fix: run the reproduction test against the pre-fix code first (stash the fix or check out the parent commit) and show it red in this message; only then commit the fix. A reproduction that was never red is deleted.
 - New coverage of existing behavior: one mutation check — break the covered code on purpose, watch the new test go red, restore. Record the check in the commit message or the task file. Coverage that was only ever green proves nothing.
 - Three consecutive runs that edited the test and not the code → stop and ask the user whether the test is worth keeping.

@@ -79,7 +79,7 @@ Done in-repo (doc-only change; install-and-invoke is the only local proxy):
 
 ### Open gate — one live dogfood run
 
-Status stops at `testing` until the next `/up:make` in cccc that crosses a drafting transition, where all four must hold:
+Status stops at `validating` until the next `/up:make` in cccc that crosses a drafting transition, where all four must hold:
 
 1. Exactly one comment lands on the ticket — not zero, not a duplicate of a prior run's line.
 2. It is rendered in the draft block as `Comment (posted):`, a receipt, not a proposal awaiting approval.

@@ -33,7 +33,8 @@ Do NOT review code quality, style, abstractions, naming, or maintainability — 
 1. Restate the requirement in your own words: what was asked, decomposed into checkable clauses. This restatement is your only spec.
 2. Read the diff. For each clause, find the code that delivers it. Cite `file:line`.
 3. For each clause with no delivering code, or partially delivering code — that is a finding.
-4. Run cheap empirical checks where possible (grep for the feature surface, run a targeted test, trace an entry point) before claiming a clause is unmet. Confidence ≥80 or silence.
+4. Run cheap empirical checks where possible (grep for the feature surface, run a targeted test, trace an entry point) before claiming a clause is unmet.
+5. Two passes: first list every gap you noticed without judging it (filtering while reading lowers recall), then rate each 0-100 and report only those at confidence ≥80. Silence on the rest; the pass-one list stays in your notes.
 
 ## Output format
 

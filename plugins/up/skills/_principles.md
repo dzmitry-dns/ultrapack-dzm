@@ -11,6 +11,10 @@ GPC1–GPC8. Apply to every task unless clearly irrelevant. Deviations name the 
 - **GPC7 — Plan for debugging.** Assume every new piece of functionality will need to be debugged. Design it so future-you can diagnose without a rewrite: structured logs at seams, meaningful IDs threaded through (request id, run id, sample id), state-transition logging for long-running processes, deterministic-where-possible execution, and a way to reproduce a single failing case in isolation. "We'll add logging when it breaks" means you'll add logging in production at 2am.
 - **GPC8 — DRY, reuse first.** Before writing new code, search for existing helpers, utilities, or patterns that already solve it — extend or call them rather than parallel-implementing. Duplicated logic across two call sites is a smell; three is a bug. Reuse wins over re-creation; the exception is when reuse would force a premature abstraction that mixes concerns (then prefer explicit over DRY per GPC2).
 
+## Manual-only skills
+
+A skill with `disable-model-invocation: true` (since 0.3.34: e, try, reflect, step-back, test-driven-development, git-worktrees, job-guardian, udocument) is invisible to the model and cannot be invoked through the Skill tool. A stage skill that needs its content reads the file at `${CLAUDE_PLUGIN_ROOT}/skills/<name>/SKILL.md`; a stage that wants the user to run it says "type `/up:<name>`". Never write "invoke `up:<name>`" for one of these. This is the single home of the rule; callers only point here.
+
 ## Incidental code smells
 
 While exploring code for a task you'll pass smells unrelated to the change — a 200-line function, a duplicated helper, a leaked layer boundary. Two outcomes, no third:

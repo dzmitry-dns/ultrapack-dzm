@@ -1,8 +1,8 @@
 # Audit fixes 2026-09: broken refs, rule alignment, disable unused skills
 
-**Status:** validating — code reviewed 2026-09-05; Goal needs the 0.3.33 install and one live cccc smoke
+**Status:** validating — code reviewed 2026-09-05; Goal needs the 0.3.34 install and one live cccc smoke
 **Branch:** main
-**Goal:** v0.3.33 installs from the fork and `/up:make` on one small cccc task runs with no broken reference, ujira proposes no ticket transition, uverify sets `verifying`, and the eight zero-use skills no longer load into model context.
+**Goal:** v0.3.34 installs from the fork and `/up:make` on one small cccc task runs with no broken reference, ujira proposes no ticket transition, uverify sets `verifying`, and the eight zero-use skills no longer load into model context.
 
 ## Design
 
@@ -54,11 +54,11 @@ Approach: one patch release, edits grouped by file, no behaviour change beyond t
 
 ### PH3 — Disable zero-use skills, bookkeeping, version
 - `disable-model-invocation: true` on commands e, try, reflect, step-back and skills test-driven-development, git-worktrees, job-guardian, udocument.
-- `plugin.json` author, repository, version 0.3.33.
+- `plugin.json` author, repository, version 0.3.34.
 - `docs/roadmap.md` tick T0/T1; three task files lose "pending"; `ujira-auto-comments.md` Status `validating`.
 - `.claude/settings.local.json` drop `Bash(...)` entries.
 - README status chain adds `verifying`, `reference`.
-- Commit: `chore(pack): disable eight zero-use skills, bump 0.3.33`
+- Commit: `chore(pack): disable eight zero-use skills, bump 0.3.34`
 
 ### Test strategy
 none (doc-only pack; verify is `claude plugin validate --strict` plus grep for dangling refs)
@@ -83,11 +83,11 @@ Invariant:
 - CK6 — IV4 model pins unchanged — held (reviewer/requirements-reviewer opus, explorer haiku, researcher/summarizer sonnet, implementer none)
 - CK7 — Status `verifying` set by both entry paths (make step 9, uverify on entry) — held after the uverify edit
 
-Smoke: deferred — a live `/up:make` run on a small cccc task needs the 0.3.33 install first (see Conclusion).
+Smoke: deferred — a live `/up:make` run on a small cccc task needs the 0.3.34 install first (see Conclusion).
 
 ## Conclusion
 
-Outcome: pack side done and reviewed; Goal pending the 0.3.33 install and one live `/up:make` smoke in cccc. Commits bdab382, 67c3ccb, 1ac57c6, 29fb830, 2288cbc plus the review-fix commit.
+Outcome: pack side done and reviewed; Goal pending the 0.3.34 install and one live `/up:make` smoke in cccc. Commits bdab382, 67c3ccb, 1ac57c6, 29fb830, 2288cbc plus the review-fix commit.
 
 Invariants:
 - IV1 — grep: every `up:<name>` resolves to a file; every `${CLAUDE_PLUGIN_ROOT}` path exists; disabled skills are reached by file read, never by Skill invocation
@@ -114,13 +114,17 @@ Review findings:
 - Important: Test strategy not passed to wave implementers — resolved, added to the dispatch prompt and implementer input
 - Important: ujira start draft had no pause to ride for Small tasks — resolved, gated items move to the terminal draft
 - Not accepted: `/up:ujira` "has no command file" — plugin skills create their slash command (skills docs lines 16 and 130)
+- Second pass (`/code-review high`, 9 confirmed): ujira draft prose pointed at the wrong item after renumbering; tests cap had no rule for the Trivial path (no Plan); wave implementers never received red-first / mutation / three-edits rules; requirements-reviewer missed the two-pass change the Plan promised; ureview could run a second `/code-review` on a diff that already had one; ujira-auto-comments body still said `testing`; Future work omitted audit D6; version not bumped for the commits after 1ac57c6 — all resolved in the closing commit (version 0.3.34, single home for the manual-only rule in `_principles.md`, roadmap T1 fully ticked)
+- Left as is: commit subject of 043933c contains an em dash against the owner's commit-message rule; rewriting it needs `git reset`, which prompts, and the history is local only
 
 Scope flag:
 - Reviewer: "zero-use" counted the owner's explicit calls, not the pack's own control flow; TDD and git-worktrees are invoked by udesign/uexecute/make. Addressed by the read-the-file rewiring; the owner's decision to disable stands.
 
 Future work:
 - `context: fork` on uverify and ureview — Justification: audit D3, out of this patch's scope
-- `hooks/hooks.json` SessionStart task index; udebug as the bug entry of make; CI validate — Justification: audit D5-D7, roadmap T3/T5
+- `hooks/hooks.json` SessionStart task index; CI validate — Justification: audit D5, D7, roadmap T3/T5
+- udebug as the bug entry of make — Justification: audit C3, roadmap T3
+- `!`-injection of `git branch --show-current` and the active task list into make at invocation (the 2026-08-17 "why main" interrupt storm) — Justification: audit D6, needs `allowed-tools` for the shell call, out of this patch
 - Trim SKILL.md files over 150 lines into reference files — Justification: audit C1
 
 Verified by: `claude plugin validate --strict`, reference greps, one opus reviewer pass; live smoke deferred to the install.

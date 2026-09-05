@@ -22,7 +22,7 @@ Review is a process, not just a section. Its end product is the `## Conclusion` 
 - Before opening a PR
 - Never skipped, regardless of task size
 
-Relation to the built-in `/code-review`: that skill hunts bugs in a diff and knows nothing about the task file. This skill is the maintainability audit against Plan, Invariants, and Assumptions, and it writes the Conclusion. They complement each other; for a Medium+ diff, run `/code-review` first and hand its unresolved findings to the reviewer dispatch as context-free facts, never as rationale.
+Relation to the built-in `/code-review`: that skill hunts bugs in a diff and knows nothing about the task file. This skill is the maintainability audit against Plan, Invariants, and Assumptions, and it writes the Conclusion. They complement each other; for a Medium+ diff, offer `/code-review` first unless it already ran on this diff in the task (the owner's post-feature checklist often runs it), and hand its unresolved findings to the reviewer dispatch as context-free facts, never as rationale. One bug hunt per diff, never two.
 
 ## Brevity
 

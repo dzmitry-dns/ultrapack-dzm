@@ -86,7 +86,7 @@ Process skills (`u`-prefixed to dodge Claude Code built-ins):
 - `up:udocument` — discipline for writing docs: lead with why, kill stale content, lists over tables, no aspirational content. Manual-only.
 - `up:ujira` — thin-layer Jira sync at Status transitions. Draft-then-approve by default; a project can opt comments out of the gate with `auto: comment` so they post unattended; descriptions always wait for the owner, and ticket transitions are not drafted at all unless the project sets `transitions: propose`. Config lives in the consumer project's CLAUDE.md.
 
-Discipline skills (manual-only since 0.3.33: `disable-model-invocation: true`, so they cost no context until you type `/up:<name>`; the stage skills read the TDD file directly when Design says `TDD: yes`):
+Discipline skills (manual-only since 0.3.34: `disable-model-invocation: true`, so they cost no context until you type `/up:<name>`; the stage skills read the TDD file directly when Design says `TDD: yes`):
 
 - `up:test-driven-development` — red → green → refactor, with a rule for when TDD actually applies.
 - `up:git-worktrees` — pick and create an isolated worktree, share the environment from main, run a baseline.
@@ -94,7 +94,7 @@ Discipline skills (manual-only since 0.3.33: `disable-model-invocation: true`, s
 
 ## Commands
 
-`/up:make` and `/up:summary` are model-invocable; the other four are manual-only since 0.3.33 (`disable-model-invocation: true`).
+`/up:make` and `/up:summary` are model-invocable; the other four are manual-only since 0.3.34 (`disable-model-invocation: true`).
 
 - `/up:make <description>` — orchestrate the full workflow end to end. Resumes an existing task by its status.
 - `/up:try` — quick manual test of the latest change: one positive case, one negative, run both, report.
