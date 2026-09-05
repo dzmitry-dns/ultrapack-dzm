@@ -1,6 +1,6 @@
 # Audit fixes 2026-09: broken refs, rule alignment, disable unused skills
 
-**Status:** validating — code reviewed 2026-09-05; Goal needs the 0.3.34 install and one live cccc smoke
+**Status:** done — 2026-09-05, pushed ac23f7f, 0.3.34 installed from the fork (update 0.3.32 → 0.3.34 confirmed); owner closed without the live cccc smoke, first real `/up:make` run in cccc is the smoke
 **Branch:** main
 **Goal:** v0.3.34 installs from the fork and `/up:make` on one small cccc task runs with no broken reference, ujira proposes no ticket transition, uverify sets `verifying`, and the eight zero-use skills no longer load into model context.
 
@@ -87,7 +87,7 @@ Smoke: deferred — a live `/up:make` run on a small cccc task needs the 0.3.34 
 
 ## Conclusion
 
-Outcome: pack side done and reviewed; Goal pending the 0.3.34 install and one live `/up:make` smoke in cccc. Commits bdab382, 67c3ccb, 1ac57c6, 29fb830, 2288cbc plus the review-fix commit.
+Outcome: pack side done, reviewed twice, pushed, and installed as 0.3.34; the owner closed the task on the install evidence, so the first `/up:make` run in cccc doubles as the smoke. Commits bdab382, 67c3ccb, 1ac57c6, 29fb830, 2288cbc plus the review-fix commit.
 
 Invariants:
 - IV1 — grep: every `up:<name>` resolves to a file; every `${CLAUDE_PLUGIN_ROOT}` path exists; disabled skills are reached by file read, never by Skill invocation
