@@ -171,7 +171,7 @@ What to look for:
 Rules:
 - If nothing needs updating: say so in one line and move on. Do not invent edits.
 - If updates are needed: make them directly, then summarize what changed in 1-3 lines (e.g. "README: fixed install instructions; CLAUDE.md: no change"). Do not prompt for approval first. Do not produce a detailed diff — the user will git-diff if they want.
-- Follow `up:udocument`: lead with why, lists over tables, no aspirational content, kill stale content.
+- Follow the rules in `${CLAUDE_PLUGIN_ROOT}/skills/udocument/SKILL.md` (read the file; the skill is manual-only): lead with why, lists over tables, no aspirational content, kill stale content.
 - Do not duplicate content across task file and project docs — pick one home per fact.
 
 ## Stop conditions
