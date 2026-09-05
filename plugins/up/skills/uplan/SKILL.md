@@ -72,8 +72,8 @@ Plan introduces two entity types, numbered within the task file:
 
 References to Design entities use IDs (IV3, AS1, UK2) — never re-quote the full sentence.
 
-Required when relevant (omit the subsection when it would say "single phase, no deps", "none", or similar):
-- Test strategy: behaviors to cover. If `TDD: yes`, list the failing tests to write first.
+Required when relevant (omit the subsection when it would say "single phase, no deps", "none", or similar; `### Test strategy` is the exception and always appears, `none` included, because execute reads it as the cap on tests):
+- Test strategy: the tests this change needs, by name, and nothing more; `none` is a valid answer (refactor with no behavior change, doc-only, config). This list is the cap: execute writes no test the plan did not name. Bug fix → exactly one reproduction test, shown red on the pre-fix code before the fix is committed. New coverage of existing behavior → name the mutation check (what to break on purpose to see it go red). If `TDD: yes`, list the failing tests to write first.
 - Order + dependencies: phases, what blocks what
 - Open questions / risks: what could go wrong, how to back out during development
 - Rollout / Rollback: when the change ships to a live system — how it lands (order, flags, migrations) and how it backs out post-ship
@@ -100,8 +100,8 @@ Approach: <1-2 sentences>
 ### PH2 — <name>
 ...
 
-### Test strategy   (optional — omit if no tests / doc-only)
-<behavior list, per file or per phase>
+### Test strategy   (always present; `none` when the change needs no test)
+<named tests, per file or per phase — the cap on what execute may write; bug fix = one red reproduction>
 
 ### Order & dependencies   (optional — omit for single-phase or obviously-sequential plans)
 <what blocks what, parallelizable phases>

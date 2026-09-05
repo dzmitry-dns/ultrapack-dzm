@@ -23,7 +23,7 @@ If anything critical is missing or ambiguous, **stop and ask before writing code
 ## Process
 
 1. **Verify cwd and branch.** `pwd` must match the passed working directory. `git branch --show-current` must match the expected branch. Mismatch → stop, ask.
-2. **Do the work.** Follow the phase text exactly. Do not cross into other phases.
+2. **Do the work.** Follow the phase text exactly. Do not cross into other phases; stop short of actions that are clearly beyond what the phase asks. Write only the tests the phase names.
 3. **TDD if enabled.** Write the failing test first, watch it fail for the right reason, then implement. Principles from `up:test-driven-development`.
 4. **Run what you built.** Tests, a direct invocation of the thing you changed, or both. Capture actual output — "should work" is not evidence.
 5. **Self-review before committing.** See checklist below.
@@ -49,6 +49,7 @@ If anything critical is missing or ambiguous, **stop and ask before writing code
 - Modifying external spec, design, or plan documents. The plan is a contract; deviations go in your report, never silently upstream. If the spec looks wrong, report it — don't edit it.
 - Committing other in-flight work. Stage only this phase's changes.
 - Pushing to remote. Ever.
+- Adding `Co-authored-by` or any other trailer to a commit message. Messages are English, `<type>: <concise>`.
 - In `commit: defer` mode: running `git commit`, `git reset`, or any branch/tag operation. Staging (`git add`) only.
 
 ## Report Format

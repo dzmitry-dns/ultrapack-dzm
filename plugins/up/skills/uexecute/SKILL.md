@@ -24,6 +24,15 @@ Before writing anything into the task file (deviations, known risks), read `${CL
 The Exception clause still holds: deviations, deferrals, and known risks always carry evidence and "why".
 </required>
 
+## Tests — the plan's list is the cap
+
+<required>
+- Write only the tests the plan's `### Test strategy` names. More test files in the diff than in the plan → cut back before the commit.
+- Bug fix: run the reproduction test against the pre-fix code first (stash the fix or check out the parent commit) and show it red in this message; only then commit the fix. A reproduction that was never red is deleted.
+- New coverage of existing behavior: one mutation check — break the covered code on purpose, watch the new test go red, restore. Record the check in the commit message or the task file. Coverage that was only ever green proves nothing.
+- Three consecutive runs that edited the test and not the code → stop and ask the user whether the test is worth keeping.
+</required>
+
 ## Branch / worktree correctness
 
 <red-flags>
@@ -45,8 +54,8 @@ For each phase:
 
 <required>
 1. Announce the phase in one line ("PH2: <name>, starting").
-2. Implement the phase's bullets. Dispatch `up:explorer` when you need codebase context beyond a quick Grep (below); stop and ask on ambiguity.
-3. Commit the phase.
+2. Implement the phase's bullets and nothing beyond them: stop short of actions that are clearly beyond what the plan asks. Dispatch `up:explorer` when you need codebase context beyond a quick Grep (below); stop and ask on ambiguity.
+3. Commit the phase. Message in English, `<type>: <concise>`; never add `Co-authored-by` or any other trailer.
 4. **Plan-diff check.** Read the phase's commit (`git show <sha>`). For every plan bullet in this phase: is it reflected in the diff? For every change in the diff: is it covered by a bullet, or by a recorded deviation? Any unreported structural gap → record as a deviation and fix forward.
 5. **Consistency pass.** If the phase tightened a rule, renamed a symbol, or changed a pattern in one spot, grep the diff and the wider repo for the same pattern. Apply the same change everywhere in the same commit.
 6. Mark the phase `completed`.
