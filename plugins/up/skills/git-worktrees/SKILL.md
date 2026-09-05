@@ -1,6 +1,7 @@
 ---
 name: git-worktrees
 description: Use when a task needs isolation from the current workspace. Picks a worktree directory via a fixed priority order, verifies it's gitignored, creates the worktree, auto-detects project setup, runs baseline tests.
+disable-model-invocation: true
 ---
 
 # Git Worktrees

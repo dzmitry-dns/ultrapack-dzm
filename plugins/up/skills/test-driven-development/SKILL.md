@@ -1,6 +1,7 @@
 ---
 name: test-driven-development
 description: Use when implementing deterministic, reusable code where regressions would warrant a CI red light. Enforces RED-GREEN-REFACTOR. Applicability rule and skip conditions inside.
+disable-model-invocation: true
 ---
 
 # Test-Driven Development

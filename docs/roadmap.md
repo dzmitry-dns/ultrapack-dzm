@@ -58,13 +58,13 @@ Task-file census (157 files, ~124 archived):
 
 ## Tracks
 
-### T0 — Fork governance
-- [ ] Own marketplace identity in `.claude-plugin/marketplace.json` (owner, repo URL). Installing from the fork requires uninstalling the upstream marketplace first (plugin name `up` collides).
-- [ ] Policy: generic fixes PR'd upstream; opinionated features stay in fork; periodic cherry-pick from upstream.
-- [ ] Reinstall daily driver from this fork; verify `/up:make` loads.
+### T0 — Fork governance — shipped 2026-07-21, v0.3.24, docs/tasks/t0-t1-batch.md
+- [x] Own marketplace identity in `.claude-plugin/marketplace.json` (owner, repo URL). Installing from the fork requires uninstalling the upstream marketplace first (plugin name `up` collides).
+- [x] Policy: generic fixes PR'd upstream; opinionated features stay in fork; periodic cherry-pick from upstream.
+- [x] Reinstall daily driver from this fork; verify `/up:make` loads.
 
-### T1 — Reliability quick-wins (one batch, mostly upstreamable)
-- [ ] Model policy (owner is on a **Max 5x** subscription — quota-aware): spend where independent judgment pays, mechanics cheap, main-line follows the session model so one `/model` knob controls daily burn.
+### T1 — Reliability quick-wins (one batch, mostly upstreamable) — shipped 2026-07-21, v0.3.24, docs/tasks/t0-t1-batch.md
+- [x] Model policy (owner is on a **Max 5x** subscription — quota-aware): spend where independent judgment pays, mechanics cheap, main-line follows the session model so one `/model` knob controls daily burn.
   - `implementer` — no pin, inherits session model.
   - `reviewer` — pin `opus` (highest-leverage tokens; obsoletes the owner's dispatch-time override).
   - `implementer-sonnet` — `sonnet`, `explorer` — `haiku`, `researcher`/`summarizer` — `sonnet` (unchanged).

@@ -1,6 +1,6 @@
 # ujira — comments post without approval
 
-**Status:** testing — pack side landed on `main` at v0.3.32; the dogfood gate below is open
+**Status:** validating — pack side landed on `main` at v0.3.32; the dogfood gate below is open
 **Branch:** main
 **Goal:** In a project configured with `apply: mcp` + `auto: comment`, a `/up:make` run that crosses a drafting transition posts its phase comment to Jira unattended and records it in the `**Jira:**` header, while the ticket transition and any description rewrite still reach the owner as proposals. In a project without `auto`, behavior is byte-identical to v0.3.31.
 

@@ -1,5 +1,6 @@
 ---
 description: Circuit breaker — stop, diagnose why attempts are failing, propose a fundamentally new direction before trying again.
+disable-model-invocation: true
 ---
 
 Circuit breaker. Stop all current attempts — do not try another fix.

@@ -1,6 +1,6 @@
 # Requirements-review fold-in
 
-**Status:** shipped — merged 2026-07-21; push + reinstall to 0.3.29 pending
+**Status:** shipped — merged 2026-07-21; superseded by the 0.3.30 install on 2026-07-22
 **Branch:** requirements-review
 **Depends on:** docs/roadmap.md:89
 **Goal:** The pack ships `up:requirements-reviewer` (agent) and `up:ureview` offers it as an optional second dispatch — verbatim original requirement + BASE_SHA/HEAD_SHA only, auto-suggested for Medium+ tasks; README lists the agent; grep-proof: no pack file still points at `~/.claude/agents/requirements-reviewer.md`.

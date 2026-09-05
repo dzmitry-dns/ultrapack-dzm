@@ -155,7 +155,7 @@ Review findings:
 - Important: uplan Format carried two rollback-named headings (`### Risks / rollback` vs new `### Rollback`) — fixed, dev-time heading renamed `### Risks` (62f313c)
 - Important: make.md terminal state offered "cleanup" finish action dropped from step 12 — fixed, now `(merge, PR, or move on)` (62f313c)
 
-Verified by: install smoke was structural proxy only — real `/plugin` reinstall + `/up:make` template check pending (Goal)
+Verified by: install smoke was structural proxy first; real reinstall + `/up:make` template check passed 2026-07-21 (see Status)
 
 ### Deviations from plan
 - PH2: also edited Worktree references at `uexecute/SKILL.md:15,32` beyond the 2.x bullets — consistency pass for the dropped `**Worktree:**` header (IV5).

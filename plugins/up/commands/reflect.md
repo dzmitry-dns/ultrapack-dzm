@@ -1,5 +1,6 @@
 ---
 description: Reflect on the current dialogue, extract what's worth keeping, and route each learning to its right home — CLAUDE.md, memory, or project docs.
+disable-model-invocation: true
 ---
 
 # /up:reflect

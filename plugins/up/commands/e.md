@@ -1,5 +1,6 @@
 ---
 description: Explain something like a colleague explaining to another engineer. Picks a realistic depth, explains it in one message, offers follow-up threads.
+disable-model-invocation: true
 ---
 
 # /up:e

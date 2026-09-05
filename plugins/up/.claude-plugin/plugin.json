@@ -1,16 +1,16 @@
 {
   "name": "up",
-  "version": "0.3.32",
-  "description": "ultrapack — lean, opinionated Claude Code skill pack for spec-driven, git-centered development",
+  "version": "0.3.33",
+  "description": "ultrapack — lean, opinionated Claude Code skill pack for spec-driven, git-centered development (dzm fork)",
   "author": {
-    "name": "Boris Tseitlin",
-    "email": "iambtseytlin@gmail.com"
+    "name": "Dzmitry Sviryn"
   },
+  "repository": "https://github.com/dzmitry-dns/ultrapack-dzm",
   "license": "WTFPL",
   "keywords": [
     "skills",
     "workflow",
     "planning",
-    "tdd"
+    "jira"
   ]
 }
