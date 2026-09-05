@@ -90,7 +90,9 @@ Jira draft — PROJ-123 (docs/tasks/<slug>.md)
    Details: docs/tasks/<slug>.md in <repo>
 ```
 
-A stale-field-only verdict renders item 3 as `Description (update: <field>):` carrying only the replacement line(s) — everything else in the live description stays untouched.
+Under `transitions: propose` the block gains a `Transition: In Progress` item (or the terminal state) as its first line; without that key the block never mentions ticket state.
+
+A stale-field-only verdict renders the description item as `Description (update: <field>):` carrying only the replacement line(s) — everything else in the live description stays untouched.
 
 Item 2 reads `Comment (posted):` only under `auto: comment`, where it is a receipt rather than a proposal — the text is already on the ticket and the owner is being shown what went out. Without `auto`, it stays `Comment:` and waits like every other item.
 
