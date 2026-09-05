@@ -101,7 +101,7 @@ NEEDS_CONTEXT stating why it isn't trivial. Do not silently push through.
 
 ### Dispatching the wave
 
-All implementer dispatches for the wave MUST occur in a single assistant response containing multiple concurrent `Agent` tool calls, each with `run_in_background: true`, so they fire concurrently and you receive notifications as each completes. Dispatching one implementer, waiting, then dispatching the next is sequential, not parallel — if a wave was announced, all its phases go out together.
+All implementer dispatches for the wave MUST occur in a single assistant response containing multiple concurrent `Agent` tool calls (subagents run in the background by default), so they fire concurrently and you receive notifications as each completes. Dispatching one implementer, waiting, then dispatching the next is sequential, not parallel — if a wave was announced, all its phases go out together.
 
 A consumer is dispatched in parallel with its producer; the IF declaration in `### Interfaces` is the consumer's ground truth for the signatures it depends on.
 

@@ -23,7 +23,7 @@ CK-lite trims the list, not the stance: each attack is still a break hypothesis 
 ## Brevity
 
 <required>
-Before writing the Verify section, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its five principles (omit / evidence-on-surprise / don't-re-narrate / one-sentence / soft-caps). Passed checks are one line; evidence citations attach to failures, deferrals, or genuinely surprising passes. Omit `Smoke:`, `Goal:`, and `Notes:` when there's nothing to report (`Goal:` only when a proxy stood in for the real run). The Exception clause still holds: failures always carry evidence and a clear "how it should have worked" note.
+Before writing the Verify section, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its six principles (omit / evidence-on-surprise / don't-re-narrate / one-sentence / soft-caps / no-orphan-text). Passed checks are one line; evidence citations attach to failures, deferrals, or genuinely surprising passes. Omit `Smoke:`, `Goal:`, and `Notes:` when there's nothing to report (`Goal:` only when a proxy stood in for the real run). The Exception clause still holds: failures always carry evidence and a clear "how it should have worked" note.
 </required>
 
 ## Phase 1 — Build the attack list (happy-path, negative, invariant, interface)
@@ -192,19 +192,19 @@ Break note: "POST /items returned 500 instead of 400 when `name` was `null`. The
 Break note: "Attack landed, fix it." Tells execute nothing about what the behavior should be.
 </bad-example>
 
-## Future Work vs. incomplete work — the slacking-loophole rule
+## Future work vs. incomplete work — the slacking-loophole rule
 
-When a check fails or surfaces ambiguity, do not move it to `## Conclusion → Future Work` unless you have justification.
+When a check fails or surfaces ambiguity, do not move it to `## Conclusion → Future work` unless you have justification.
 
 <required>
 - In-scope = do it. If the plan mandated it, it's not future work. Complete it, or explicitly rescope with user consent.
-- Justification required. Future Work needs a pointer to (a) a Design-scope line that excludes it, or (b) a new fact discovered mid-execution that changes scope. Hand-waving doesn't count.
-- Out-of-scope but related? Fine — add to Future Work with justification, keep verifying the rest.
+- Justification required. Future work needs a pointer to (a) a Design-scope line that excludes it, or (b) a new fact discovered mid-execution that changes scope. Hand-waving doesn't count.
+- Out-of-scope but related? Fine — add to Future work with justification, keep verifying the rest.
 </required>
 
 ## Red flags — STOP, do not claim pass
 
-<system-reminder>
+<red-flags>
 These phrases mean verify did not actually attack:
 - "Just this once"
 - "I'm confident it works"
@@ -213,7 +213,7 @@ These phrases mean verify did not actually attack:
 - "Agent said done" (you haven't tried to break it yourself)
 - "Should work", "probably works", "looks correct"
 - "Couldn't think of a way to break it" — without naming the angles you tried (input shapes, ordering, partial failure, stale state, hidden coupling)
-</system-reminder>
+</red-flags>
 
 If any of these was the basis of a pass verdict: back to Phase 1.
 

@@ -25,7 +25,7 @@ Review is a process, not just a section. Its end product is the `## Conclusion` 
 ## Brevity
 
 <required>
-Before writing the `## Conclusion`, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its five principles. `Outcome:` is ≤1 sentence + the commit SHA — never re-narrate the diff. Omit subsections whose content would be "none" / "clean" / "no deviations" / "no findings" / the default: `Plan adherence`, `Review findings`, `Scope flag`, `Future work`, `Deferred`, `Verified by`, `Deviations from plan`, `Known risks`. `Invariants:`, `Assumptions check:`, and `Unknowns outcome:` stay when the task had any IV / AS / UK — they carry audit value even on pass. The Exception clause still holds: findings, deviations, risks, violated assumptions, and deferrals always carry evidence and "why".
+Before writing the `## Conclusion`, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its six principles. `Outcome:` is ≤1 sentence + the commit SHA — never re-narrate the diff. Omit subsections whose content would be "none" / "clean" / "no deviations" / "no findings" / the default: `Deviations from plan`, `Known risks`, `Review findings`, `Scope flag`, `Future work`, `Deferred`, `Verified by`. `Invariants:`, `Assumptions check:`, and `Unknowns outcome:` stay when the task had any IV / AS / UK — they carry audit value even on pass. The Exception clause still holds: findings, deviations, risks, violated assumptions, and deferrals always carry evidence and "why".
 
 `## Code smells` is shared across stages, not a Conclusion subsection: at task end delete the header if it stayed empty (brevity 1). Leave recorded smells in their own section; promote one to `Future work` only if this task decides to schedule its fix — don't duplicate.
 </required>
@@ -57,9 +57,9 @@ Dispatch the `up:reviewer` agent with:
 - `BASE_SHA` and `HEAD_SHA`
 - Working directory (explicitly — the agent does not inherit `cwd` reliably)
 
-<system-reminder>
+<red-flags>
 Do **not** pass session history to the reviewer. The reviewer must not see the rationale behind changes — only the Plan, Invariants, and diff. Independence is the point.
-</system-reminder>
+</red-flags>
 
 **Dispatch prompt skeleton** (guidance):
 
@@ -119,8 +119,8 @@ This is a short summary — the user can interject, then you apply the fixes.
 
 <good-example>
 "Reviewer findings:
-- Important #1: reviewer tool list missing `Bash`. Verdict: fix. Editing Design section of task file.
-- Important #2: try.md and step-back.md missing frontmatter. Verdict: fix. Adding frontmatter to both.
+- Important #1: `parseConfig` swallows a malformed line instead of raising (IV2). Verdict: fix. Editing `config.ts:41`.
+- Important #2: duplicate of an existing helper in `utils/slug.ts`. Verdict: fix. Replacing the copy with an import.
 
 Applying now."
 </good-example>
@@ -154,7 +154,11 @@ Invariants:
 - UK1 — resolved | still-open — <one-line resolution, or why it's still open>
 - UK2 — ...
 
-Plan adherence: <deviations>   (omit entire subsection if no deviations)
+### Deviations from plan   (omit entire subsection if no deviations; execute creates it, review keeps it)
+- <what changed> — <why>
+
+### Known risks   (omit entire subsection if none; execute creates it when a plan gap was left to raise)
+- <risk> — <why it was left and what would resolve it>
 
 Review findings:   (omit entire subsection if no Critical or Important)
 - Critical: <resolved, how>

@@ -23,10 +23,10 @@ Pick 1–2 phrases. The subagent tries the first; if it matches 0 or >1 file, it
 ### 2. Detect the active task file
 
 ```bash
-ls -t docs/tasks/*.md 2>/dev/null | head
+ls -t docs/tasks/*.md docs/tasks/*/*.md 2>/dev/null | head
 ```
 
-The active task file is the most-recently-modified entry whose `**Status:**` header is not `done`. If none qualify, pass `null`.
+The active task file is the most-recently-modified entry whose `**Status:**` enum (the text before the first ` — `) is not `done`, `shipped`, or `reference`. If none qualify, pass `null`.
 
 ### 3. Dispatch the `up:summarizer` subagent
 
@@ -34,7 +34,7 @@ The active task file is the most-recently-modified entry whose `**Status:**` hea
 Drafting runs in the subagent, not in the main session. Dispatching is not optional — drafting in the main session puts long structured output on the expensive model this command exists to avoid.
 </required>
 
-Dispatch via the Task tool with `subagent_type: up:summarizer` and a prompt containing:
+Dispatch via the Agent tool with `subagent_type: up:summarizer` and a prompt containing:
 - Working directory (absolute).
 - One or two distinctive phrases from step 1 — verbatim, exactly as they appear in the conversation.
 - Active task file path, or `null`.

@@ -89,7 +89,7 @@ One bug is rarely alone. Before marking the fix done, name the pattern behind it
 
 ## Red flags — STOP, return to Phase 1
 
-<system-reminder>
+<red-flags>
 These thoughts mean you're about to patch a symptom:
 - "Quick fix for now, investigate later"
 - "Just try changing X and see if it works"
@@ -97,7 +97,7 @@ These thoughts mean you're about to patch a symptom:
 - "Pattern says X but I'll adapt it differently"
 - Proposing solutions before tracing data flow
 - "One more attempt" when 2+ have already failed
-</system-reminder>
+</red-flags>
 
 ## When root cause really is environmental
 

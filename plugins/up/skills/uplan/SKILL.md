@@ -35,14 +35,14 @@ Fill `## Plan` in `docs/tasks/<slug>.md`. Do not create a separate plan file.
 ## Brevity
 
 <required>
-Before writing the Plan, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its five principles (omit / evidence-on-surprise / don't-re-narrate / one-sentence / soft-caps). Treat every subsection in the Format block below as optional — include only when the content is non-default. Failures, deviations, deferrals, and known risks always include evidence.
+Before writing the Plan, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its six principles (omit / evidence-on-surprise / don't-re-narrate / one-sentence / soft-caps / no-orphan-text). Treat every subsection in the Format block below as optional — include only when the content is non-default. Failures, deviations, deferrals, and known risks always include evidence.
 </required>
 
 ## Process
 
 <required>
 1. Read the task file's `## Design`, `### Invariants` (IV), `### Principles` (PC), `### Assumptions` (AS), `### Unknowns` (UK). Know what you're planning for.
-2. Sketch the file structure — which files change, which are new, which classes/methods. Fold an in-scope or easy-win smell you pass into a phase; record the rest to `## Code smells` (see `_principles.md` → Incidental code smells).
+2. Sketch the file structure — which files change, which are new, which classes/methods. Fold an in-scope or easy-win smell you pass into a phase; record the rest to `## Code smells` (see `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Incidental code smells).
 3. Break into phases. Each phase is a coherent commit.
 4. Write phase-by-phase plan entries. Concrete locations, per-file bullets, interfaces.
 5. Write test strategy (per task's TDD decision).
@@ -51,7 +51,7 @@ Before writing the Plan, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply 
 8. Backwards-compat check — restate Design's compat risks in concrete plan terms.
 9. Self-review inline (placeholders, consistency, invariants, spec coverage).
 10. Scope-creep / simpler-way check — see below. This is the final step before handoff.
-11. Present the plan to the user, wait for approval, then invoke `up:uexecute`.
+11. Present the plan to the user and wait for approval when the plan-approval gate applies (Medium / Large always; Small when the plan touches 3+ files, a DB migration, or a new API surface; a consumer `CLAUDE.md` `## Workflow` section may say `- plan-approval: always`). Below the gate, present the highlights and proceed. Then invoke `up:uexecute`.
 </required>
 
 ## Required contents
@@ -180,4 +180,4 @@ If this check surfaces real simplifications, rewrite the plan. Don't stack warni
 
 ## Terminal state
 
-Plan written, self-reviewed, scope-checked. Present highlights, wait for approval, invoke `up:uexecute`.
+Plan written, self-reviewed, scope-checked. Present highlights, wait for approval when the gate applies (step 11), invoke `up:uexecute`.

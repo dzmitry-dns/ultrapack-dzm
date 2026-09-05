@@ -91,14 +91,14 @@ For small utility functions, one-line docstring is enough. For short internal he
 
 ## Red flags — cut these when you see them
 
-<system-reminder>
+<red-flags>
 - Aspirational content — cut
 - Stale content describing removed behavior — delete, don't annotate
 - Walls of tables — convert to lists
 - Paragraphs longer than ~4 sentences — split or cut
 - Duplicate content across docs — consolidate and link
 - Comments explaining the obvious — delete
-</system-reminder>
+</red-flags>
 
 ## Process — six steps, always including "cut 30%"
 

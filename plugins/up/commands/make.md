@@ -20,12 +20,13 @@ Derive a kebab-case slug from the description, 3 words max (e.g. "flaky-login-te
 
 Before creating a new task file, check if the slug already exists — scan `docs/tasks/**/*.md` (tasks may live in epic folders).
 
-Status format: `<enum> — <optional annotation>`. The enum is everything before the first ` — `; the annotation is free text (dates, PR links, ship notes). Enum values: `design`, `planning`, `executing`, `reviewing`, `validating`, `done`, `shipped`, plus `reference` for epic overview files. Reopening a task = setting Status back to an earlier enum value with a dated annotation (e.g. `executing — reopened 2026-08-01, edge case PROJ-1204`). Ignore header fields you don't recognize — older files may carry retired ones.
+Status format: `<enum> — <optional annotation>`. The enum is everything before the first ` — `; the annotation is free text (dates, PR links, ship notes). Enum values: `design`, `planning`, `executing`, `verifying`, `reviewing`, `validating`, `done`, `shipped`, plus `reference` for epic overview files. Reopening a task = setting Status back to an earlier enum value with a dated annotation (e.g. `executing — reopened 2026-08-01, edge case PROJ-1204`). Ignore header fields you don't recognize — older files may carry retired ones.
 
 - Exists: read `**Status:**` from the header. Resume from the next stage:
   - `design` → continue design
   - `planning` → run `up:uplan`
   - `executing` → run `up:uexecute`
+  - `verifying` → run `up:uverify` (step 9); the plan is already implemented, do not re-run execute
   - `reviewing` → run `up:ureview`
   - `validating` → re-check the Goal with the user (step 11); on confirmation → `done`
   - `done` / `shipped` → ask the user what they want to do (start a follow-up, re-open, view conclusion)
@@ -111,13 +112,15 @@ Always confirm with the user. If a branch is created, update the task file's `**
 
 Invoke `up:uplan`. It populates `## Plan`. Status → `executing`. If Jira is configured, invoke `up:ujira` at this transition — the start draft rides the plan-approval pause, minus whatever the project set `auto` to, which `up:ujira` has already applied.
 
+Plan-approval gate: Medium / Large always pause for the user's approval. Small pauses too when the plan touches 3+ files, a DB migration, or a new API surface; otherwise `up:uplan` presents the plan and proceeds. Trivial skips Plan entirely (step 4). A consumer `CLAUDE.md` may tighten this in a `## Workflow` section with a bare `- plan-approval: always` line; never loosen it below the threshold above.
+
 ### 8. Execute stage
 
 Invoke `up:uexecute`. Implements the plan, commits incrementally.
 
 ### 9. Verify loop
 
-Invoke `up:uverify`. On failure: `up:uverify` describes how each failure *should* have worked, control returns to `up:uexecute`. Loop until verify passes.
+Status → `verifying` once every plan phase is committed. Invoke `up:uverify`. On failure: `up:uverify` describes how each failure *should* have worked, control returns to `up:uexecute` (Status stays `verifying`; the plan is implemented, only the fix is pending). Loop until verify passes.
 
 ### 10. Review stage
 

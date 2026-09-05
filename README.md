@@ -49,7 +49,7 @@ Optional `**Jira:**` and `**Depends on:**` headers link the task outward; every 
 
 A `**Status:**` header tracks where the task is, and any agent resumes from it. The format is `<enum> — <optional annotation>` (`executing — reopened 2026-08-01`):
 
-`design` → `planning` → `executing` → `reviewing` → `validating` → `done` → `shipped`
+`design` → `planning` → `executing` → `verifying` → `reviewing` → `validating` → `done` → `shipped` (plus `reference` for epic overview files)
 
 `shipped` is set once the merge/deploy is confirmed real, with the evidence in the annotation.
 

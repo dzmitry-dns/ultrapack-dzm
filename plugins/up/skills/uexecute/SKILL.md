@@ -13,27 +13,27 @@ Implement the approved `## Plan` from `docs/tasks/<slug>.md`. Phases run seriall
 1. Read the full task file — Design, Invariants (IV), Principles (PC), Assumptions (AS), Unknowns (UK), Plan. Plan is not optional reading.
 2. Scan the plan for ambiguity, missing dependencies, or contradictory steps. Raise now, not after writing half the code.
 3. Verify the working copy. Check `git branch --show-current` matches the task file's `**Branch:**` header, and `git rev-parse --show-toplevel` is the repo (or worktree) the user intends. If mismatched: stop and ask.
-4. Build the checklist — one todo per plan phase (or per task if phases are coarse). Use TodoWrite.
+4. Build the checklist — one line per plan phase (or per task if phases are coarse), kept in your working notes for this session. The task file's Plan is the durable record; tick nothing there.
 </required>
 
 ## Brevity
 
 <required>
-Before writing anything into the task file (deviations, known risks), read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its five principles. Specifically:
-- `### Deviations from plan` — create the subsection only when a deviation happens. Do not add an empty "no deviations" line.
+Before writing anything into the task file (deviations, known risks), read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply its six principles. Specifically:
+- `### Deviations from plan` and `### Known risks` — create the subsection only when there is content. Do not add an empty "no deviations" line.
 The Exception clause still holds: deviations, deferrals, and known risks always carry evidence and "why".
 </required>
 
 ## Branch / worktree correctness
 
-<system-reminder>
+<red-flags>
 Editing the wrong repository is one of the most common bugs. Before any write, confirm:
 
 - `pwd` is inside the intended checkout (the main repo, or the worktree if one was created via `up:git-worktrees`)
 - `git branch --show-current` matches `**Branch:**`
 
 When you dispatch a subagent (`up:explorer`, `up:researcher`), pass the intended working directory explicitly in the prompt. Subagents do not inherit your `cwd` reliably across harnesses.
-</system-reminder>
+</red-flags>
 
 ## Per-phase loop
 
@@ -44,7 +44,7 @@ Execute phases in plan order, one at a time, inline — you implement, you commi
 For each phase:
 
 <required>
-1. Mark the phase `in_progress` in TodoWrite.
+1. Announce the phase in one line ("PH2: <name>, starting").
 2. Implement the phase's bullets. Dispatch `up:explorer` when you need codebase context beyond a quick Grep (below); stop and ask on ambiguity.
 3. Commit the phase.
 4. **Plan-diff check.** Read the phase's commit (`git show <sha>`). For every plan bullet in this phase: is it reflected in the diff? For every change in the diff: is it covered by a bullet, or by a recorded deviation? Any unreported structural gap → record as a deviation and fix forward.
@@ -110,7 +110,7 @@ Fix one spot, commit, reviewer finds four more siblings, two rounds of fixups, n
 
 ## Incidental code smells
 
-Implementers and `up:explorer` report smells they pass; you also hit them while reading code to coordinate. For each: fix it in the same commit when it's in task scope or an easy, low-risk win (Boy-Scout); otherwise append it to the task file's `## Code smells` section — `file:line — one-line smell` — and leave it for review's Future-work call. Don't let out-of-scope smells balloon the change. See `_principles.md` → Incidental code smells.
+Implementers and `up:explorer` report smells they pass; you also hit them while reading code to coordinate. For each: fix it in the same commit when it's in task scope or an easy, low-risk win (Boy-Scout); otherwise append it to the task file's `## Code smells` section — `file:line — one-line smell` — and leave it for review's Future-work call. Don't let out-of-scope smells balloon the change. See `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Incidental code smells.
 
 ## Don't modify upstream specs or external design docs
 
@@ -122,13 +122,13 @@ Never edit the plan inline to hide a deviation. Never silently edit an external 
 
 ## Forbidden: inventing fallbacks, defaults, or best-effort behavior
 
-<system-reminder>
+<red-flags>
 No silent fallbacks. No invented defaults. No "best effort" try/except that swallows the error. If you're tempted to write `.get("attr", 0)` and zero is not a genuine, intended default — don't. Crash > corrupt state.
 
 Never add `try: ... except: pass`. Never catch a broad exception to "keep going". Never substitute a placeholder value so the code "works for now".
 
 If the plan is silent on what to do when X is missing, the answer is: let it raise. Then tell the user this is a potential failure point and add it to the task file's `## Conclusion` as a known risk.
-</system-reminder>
+</red-flags>
 
 <bad-example>
 ```python
@@ -147,7 +147,7 @@ timeout = config["timeout"]
 user_id = payload["user_id"]
 ```
 
-Then append to the task file's `## Conclusion` under "Known risks":
+Then append to the task file's `## Conclusion` under `### Known risks` (create if missing):
 > `- config["timeout"] will KeyError if config is partial. Plan didn't specify a default; recommend either adding one with user approval, or validating config at load time.`
 </good-example>
 
@@ -161,7 +161,7 @@ A deviation is any structural change from what the plan says. File moved to a di
 When a deviation happens:
 
 1. Do not edit the Plan inline. The plan is the contract that was approved; it stays as-is for the review.
-2. Record the deviation in the task file's `## Conclusion` under a `### Deviations from plan` subsection (create if missing). Format: `- <what changed> — <why>`. If no deviation happens, do not create the subsection at all — per `_brevity.md`, empty subsections are deleted, not written.
+2. Record the deviation in the task file's `## Conclusion` under a `### Deviations from plan` subsection (create if missing). Format: `- <what changed> — <why>`. If no deviation happens, do not create the subsection at all — per `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`, empty subsections are deleted, not written.
 3. If the deviation is minor (renamed a helper, swapped two steps) — continue execution.
 4. If the deviation is structural enough that later phases in the plan no longer apply — stop executing. Invoke `up:uplan` with enough context (what was done, what no longer applies, what new reality is). Let the planner skill update the plan before resuming.
 </required>
