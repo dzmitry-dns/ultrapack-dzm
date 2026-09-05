@@ -51,7 +51,7 @@ Before writing the Plan, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply 
 8. Backwards-compat check — restate Design's compat risks in concrete plan terms.
 9. Self-review inline (placeholders, consistency, invariants, spec coverage).
 10. Scope-creep / simpler-way check — see below. This is the final step before handoff.
-11. Present the plan to the user and wait for approval when the plan-approval gate applies (Medium / Large always; Small when the plan touches 3+ files, a DB migration, or a new API surface; a consumer `CLAUDE.md` `## Workflow` section may say `- plan-approval: always`). Below the gate, present the highlights and proceed. Then invoke `up:uexecute`.
+11. Present the plan to the user and wait for approval. The one exception is the plan-approval gate defined in `/up:make` step 7: when `/up:make` told you in this invocation that the task is Small and the plan stays under its threshold, present the highlights and proceed. Invoked manually or on resume, you were not told, so you wait. Then invoke `up:uexecute`.
 </required>
 
 ## Required contents
@@ -180,4 +180,4 @@ If this check surfaces real simplifications, rewrite the plan. Don't stack warni
 
 ## Terminal state
 
-Plan written, self-reviewed, scope-checked. Present highlights, wait for approval when the gate applies (step 11), invoke `up:uexecute`.
+Plan written, self-reviewed, scope-checked. Present highlights, wait for approval unless the step 11 exception applies, invoke `up:uexecute`.

@@ -11,6 +11,7 @@ You implement one phase of an approved plan. You work from the phase text the di
 - Phase text (verbatim from `## Plan`, e.g. PH3)
 - Design IV (invariants), PC (principles), AS (assumptions)
 - TDD decision (yes | no, with reason)
+- Test strategy lines for this phase (from the plan's `### Test strategy`, or `none`) — the cap on tests you may write
 - Working directory (absolute path — do not infer from `pwd`)
 - Expected branch (from the task file's `**Branch:**` header)
 - `Owns: <comma-separated paths>` — files this phase may edit; anything outside is out of scope and will halt on the dispatcher's boundary check.
@@ -24,7 +25,7 @@ If anything critical is missing or ambiguous, **stop and ask before writing code
 
 1. **Verify cwd and branch.** `pwd` must match the passed working directory. `git branch --show-current` must match the expected branch. Mismatch → stop, ask.
 2. **Do the work.** Follow the phase text exactly. Do not cross into other phases; stop short of actions that are clearly beyond what the phase asks. Write only the tests the phase names.
-3. **TDD if enabled.** Write the failing test first, watch it fail for the right reason, then implement. Principles from `up:test-driven-development`.
+3. **TDD if enabled.** Write the failing test first, watch it fail for the right reason, then implement. Principles in `${CLAUDE_PLUGIN_ROOT}/skills/test-driven-development/SKILL.md` (read the file).
 4. **Run what you built.** Tests, a direct invocation of the thing you changed, or both. Capture actual output — "should work" is not evidence.
 5. **Self-review before committing.** See checklist below.
 6. **Commit.**

@@ -1,6 +1,6 @@
 ---
 name: job-guardian
-description: Use to babysit a long-running process (a deploy, DB migration, backfill, batch pipeline, or a training run) on a remote host or locally while the user is away. Defines a launch contract, gates on immediate crash, polls for stability, triages anomalies as recoverable (fix + resume) or not (tear down + notify). Auto-triggers when the user asks you to launch a job and watch it / keep it alive / shut it down if it dies.
+description: Use to babysit a long-running process (a deploy, DB migration, backfill, batch pipeline, or a training run) on a remote host or locally while the user is away. Defines a launch contract, gates on immediate crash, polls for stability, triages anomalies as recoverable (fix + resume) or not (tear down + notify). Manual-only (`/up:job-guardian`).
 disable-model-invocation: true
 ---
 

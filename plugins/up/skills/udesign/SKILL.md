@@ -35,7 +35,7 @@ Follow these steps in order. Do not combine or skip.
 5. Backwards-compat check — flag anything that could break already-running or already-used systems. Ask the user how to resolve before proceeding.
 6. Present the design in sections. Get per-section approval.
 7. Identify invariants (IV), principles (PC), assumptions (AS), and unknowns (UK).
-8. Decide TDD — yes or no, with reason. Use `up:test-driven-development`'s applicability rule.
+8. Decide TDD — yes or no, with reason. Use the applicability rule in `${CLAUDE_PLUGIN_ROOT}/skills/test-driven-development/SKILL.md` (read the file; the skill is not model-invocable).
 9. Write to task file — set the `**Goal:**` header (the definition of done — see below), then `## Design`, `### Prior art`, `### Invariants`, `### Principles`, `### Assumptions`, `### Unknowns`.
 10. Self-review for placeholders, contradictions, scope, ambiguity. Fix inline.
 11. Wait for user approval before invoking `up:uplan`.
@@ -156,7 +156,7 @@ UK — open questions the design cannot answer alone. Resolved during plan, exec
 
 ## TDD decision
 
-Invoke the applicability rule from `up:test-driven-development`. Record in Design:
+Apply the applicability rule from `${CLAUDE_PLUGIN_ROOT}/skills/test-driven-development/SKILL.md` (read the file). Record in Design:
 
 ```
 TDD: yes

@@ -66,7 +66,7 @@ Comment: "PH2 done — make.md:110 hook landed in a1b2c3d, IV4 holds." — task-
 
 Two drafting moments per `/up:make` session; each draft covers every transition not yet synced:
 
-1. Status → `executing` — rides the plan-approval pause. One start comment, a description item per the match verdict (skip / targeted update / replace), and, only under `transitions: propose`, a ticket transition proposal (e.g. To Do → In Progress).
+1. Status → `executing` — rides the plan-approval pause; when `/up:make` skipped that pause (Small under the gate), auto items still post here and gated items move to the terminal draft. One start comment, a description item per the match verdict (skip / targeted update / replace), and, only under `transitions: propose`, a ticket transition proposal (e.g. To Do → In Progress).
 2. Terminal pause — `/up:make` step 12 finish menu, or session end. One comment line per phase crossed since the last sync (validating / done / shipped), plus, only under `transitions: propose`, a ticket transition proposal when done or shipped.
 
 Sync state lives in the `**Jira:**` header annotation: `**Jira:** PROJ-123 — synced executing 2026-07-21`. Update it after the owner approves or skips a draft, and immediately after an auto comment lands — an applied comment the annotation does not know about is a duplicate on the next run. Everything after the recorded enum is not yet synced. Internal churn (design → planning) never drafts.

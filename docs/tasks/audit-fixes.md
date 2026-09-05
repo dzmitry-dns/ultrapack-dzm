@@ -1,6 +1,6 @@
 # Audit fixes 2026-09: broken refs, rule alignment, disable unused skills
 
-**Status:** executing
+**Status:** validating — code reviewed 2026-09-05; Goal needs the 0.3.33 install and one live cccc smoke
 **Branch:** main
 **Goal:** v0.3.33 installs from the fork and `/up:make` on one small cccc task runs with no broken reference, ujira proposes no ticket transition, uverify sets `verifying`, and the eight zero-use skills no longer load into model context.
 
@@ -86,3 +86,41 @@ Invariant:
 Smoke: deferred — a live `/up:make` run on a small cccc task needs the 0.3.33 install first (see Conclusion).
 
 ## Conclusion
+
+Outcome: pack side done and reviewed; Goal pending the 0.3.33 install and one live `/up:make` smoke in cccc. Commits bdab382, 67c3ccb, 1ac57c6, 29fb830, 2288cbc plus the review-fix commit.
+
+Invariants:
+- IV1 — grep: every `up:<name>` resolves to a file; every `${CLAUDE_PLUGIN_ROOT}` path exists; disabled skills are reached by file read, never by Skill invocation
+- IV2 — ujira drafts a transition only under `transitions: propose` (description, config, triggers, draft example, rules, README all say so)
+- IV3 — `claude plugin validate plugins/up --strict` passed after the last edit
+- IV4 — model pins unchanged
+
+### Assumptions check
+- AS1 — held — `skills.md` docs line 172: command files support the same frontmatter except `name` and `paths`
+- AS2 — held — `TodoWrite` absent from the session tool list; replaced by a session checklist
+
+### Unknowns outcome
+- UK1 — resolved — `effort:` is a documented subagent field (low/medium/high/xhigh/max), Claude Code 2.1.261
+
+### Deviations from plan
+- `plan-approval: always` consumer key added in PH2, then removed after review — the gate now has one home (make step 7) and no config surface
+- plugin.json keywords and description edited beyond author/repository/version — fork identity, no behaviour
+- Disabled skills that the pack itself calls (test-driven-development, git-worktrees) are reached by reading the file, not by invoking the skill; the callers were reworded (udesign, uexecute, implementer, make)
+
+Review findings:
+- Critical: TDD and git-worktrees invocation paths severed by `disable-model-invocation` — resolved, callers read the file
+- Critical: plan-approval gate depended on a size never stored — resolved, uplan waits unless make said Small-under-threshold in the same invocation
+- Important: README and two descriptions still promised auto-triggers and always-proposed transitions — resolved
+- Important: Test strategy not passed to wave implementers — resolved, added to the dispatch prompt and implementer input
+- Important: ujira start draft had no pause to ride for Small tasks — resolved, gated items move to the terminal draft
+- Not accepted: `/up:ujira` "has no command file" — plugin skills create their slash command (skills docs lines 16 and 130)
+
+Scope flag:
+- Reviewer: "zero-use" counted the owner's explicit calls, not the pack's own control flow; TDD and git-worktrees are invoked by udesign/uexecute/make. Addressed by the read-the-file rewiring; the owner's decision to disable stands.
+
+Future work:
+- `context: fork` on uverify and ureview — Justification: audit D3, out of this patch's scope
+- `hooks/hooks.json` SessionStart task index; udebug as the bug entry of make; CI validate — Justification: audit D5-D7, roadmap T3/T5
+- Trim SKILL.md files over 150 lines into reference files — Justification: audit C1
+
+Verified by: `claude plugin validate --strict`, reference greps, one opus reviewer pass; live smoke deferred to the install.

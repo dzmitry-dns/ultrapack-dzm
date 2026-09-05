@@ -68,6 +68,7 @@ Pass:
 - Full verbatim text of the phase from `## Plan`
 - `### Invariants` (IV), `### Principles` (PC), `### Assumptions` (AS) from `## Design`
 - TDD decision (from Design — `yes` or `no (reason)`)
+- Test strategy lines that apply to this phase (from `### Test strategy`, or `none`) — the implementer writes no other test
 - Absolute working directory (subagents do not inherit `cwd` reliably across harnesses)
 - Expected git branch (from the task file `**Branch:**` header)
 - `Commit mode: defer` — the dispatcher commits; implementers stage and report

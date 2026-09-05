@@ -38,7 +38,7 @@ The Exception clause still holds: deviations, deferrals, and known risks always 
 <red-flags>
 Editing the wrong repository is one of the most common bugs. Before any write, confirm:
 
-- `pwd` is inside the intended checkout (the main repo, or the worktree if one was created via `up:git-worktrees`)
+- `pwd` is inside the intended checkout (the main repo, or the worktree if the user created one with `/up:git-worktrees`)
 - `git branch --show-current` matches `**Branch:**`
 
 When you dispatch a subagent (`up:explorer`, `up:researcher`), pass the intended working directory explicitly in the prompt. Subagents do not inherit your `cwd` reliably across harnesses.
@@ -63,7 +63,7 @@ For each phase:
 
 ## TDD
 
-If Design recorded `TDD: yes`, invoke `up:test-driven-development` for each unit under test:
+If Design recorded `TDD: yes`, read `${CLAUDE_PLUGIN_ROOT}/skills/test-driven-development/SKILL.md` (not model-invocable; read it) and follow it for each unit under test:
 
 - Write the failing test, watch it fail for the right reason
 - Write the minimal implementation to pass

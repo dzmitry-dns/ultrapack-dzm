@@ -106,13 +106,15 @@ After Design (or immediately for trivial/small tasks), decide:
 - Complex / long-running / touches many files → suggest a dedicated branch.
 - Easy fix / small scope → suggest working on the current branch (usually `main`).
 
-Always confirm with the user. If a branch is created, update the task file's `**Branch:**` header. When the work additionally needs filesystem isolation (a second live checkout), `up:git-worktrees` covers it on demand.
+Always confirm with the user. If a branch is created, update the task file's `**Branch:**` header. When the work additionally needs filesystem isolation (a second live checkout), the user runs `/up:git-worktrees` (manual-only skill); suggest it, never invoke it.
 
 ### 7. Plan stage (unless skipped)
 
 Invoke `up:uplan`. It populates `## Plan`. Status → `executing`. If Jira is configured, invoke `up:ujira` at this transition — the start draft rides the plan-approval pause, minus whatever the project set `auto` to, which `up:ujira` has already applied.
 
-Plan-approval gate: Medium / Large always pause for the user's approval. Small pauses too when the plan touches 3+ files, a DB migration, or a new API surface; otherwise `up:uplan` presents the plan and proceeds. Trivial skips Plan entirely (step 4). A consumer `CLAUDE.md` may tighten this in a `## Workflow` section with a bare `- plan-approval: always` line; never loosen it below the threshold above.
+Plan-approval gate (single home; `up:uplan` defers to it): `up:uplan` waits for the user's approval unless you tell it, in the invocation, that the task is Small and the plan touches fewer than 3 files, no DB migration, and no new API surface; then it presents the highlights and proceeds. Medium / Large always pause. Trivial skips Plan entirely (step 4). A manual or resumed `up:uplan` has no size and always waits.
+
+If the gate does not pause and Jira is configured, `up:ujira` still runs at this transition: auto items post as usual, and anything needing approval is carried to the terminal draft (step 12) instead of a pause the flow no longer has.
 
 ### 8. Execute stage
 

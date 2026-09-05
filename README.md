@@ -83,16 +83,18 @@ Process skills (`u`-prefixed to dodge Claude Code built-ins):
 - `up:uverify` — attack the change to prove it's broken; run each check freshly plus an end-to-end smoke — a `## Verify recipe` section in the consumer project's CLAUDE.md, when present, supplies the smoke baseline instead of guessing; loop back to execute on any break.
 - `up:ureview` — dispatch an independent reviewer, process its findings fairly, and fill the Conclusion.
 - `up:udebug` — four-phase root-cause investigation (reproduce → pattern-match → hypothesize → fix); no symptom patches.
-- `up:udocument` — discipline for writing docs: lead with why, kill stale content, lists over tables, no aspirational content.
-- `up:ujira` — thin-layer Jira sync at Status transitions. Draft-then-approve by default; a project can opt comments out of the gate with `auto: comment` so they post unattended, while transitions and descriptions always wait for the owner. Config lives in the consumer project's CLAUDE.md.
+- `up:udocument` — discipline for writing docs: lead with why, kill stale content, lists over tables, no aspirational content. Manual-only.
+- `up:ujira` — thin-layer Jira sync at Status transitions. Draft-then-approve by default; a project can opt comments out of the gate with `auto: comment` so they post unattended; descriptions always wait for the owner, and ticket transitions are not drafted at all unless the project sets `transitions: propose`. Config lives in the consumer project's CLAUDE.md.
 
-Discipline skills:
+Discipline skills (manual-only since 0.3.33: `disable-model-invocation: true`, so they cost no context until you type `/up:<name>`; the stage skills read the TDD file directly when Design says `TDD: yes`):
 
 - `up:test-driven-development` — red → green → refactor, with a rule for when TDD actually applies.
 - `up:git-worktrees` — pick and create an isolated worktree, share the environment from main, run a baseline.
 - `up:job-guardian` — babysit any long-running job — a deploy, migration, batch run, or training run — while you're away: launch contract, immediate-crash gate, stability polls, recoverable-vs-not triage, reversible teardown, and a notification when it's over.
 
 ## Commands
+
+`/up:make` and `/up:summary` are model-invocable; the other four are manual-only since 0.3.33 (`disable-model-invocation: true`).
 
 - `/up:make <description>` — orchestrate the full workflow end to end. Resumes an existing task by its status.
 - `/up:try` — quick manual test of the latest change: one positive case, one negative, run both, report.
