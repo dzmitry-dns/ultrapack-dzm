@@ -68,4 +68,21 @@ none (doc-only pack; verify is `claude plugin validate --strict` plus grep for d
 
 ## Verify
 
+**Result:** passed
+
+Happy-path:
+- CK1 — `claude plugin validate plugins/up --strict` — held (Validation passed, 2026-09-05)
+- CK2 — every `up:<name>` mention resolves to a skill, command, or agent file — held (0 missing)
+- CK3 — every `${CLAUDE_PLUGIN_ROOT}/...` path exists — held (0 missing)
+
+Negative:
+- CK4 — leftovers of `system-reminder`, `TodoWrite`, `Task tool`, `five principles`, `run_in_background` in the pack — held (0 hits)
+- CK5 — any file outside ujira still says transitions are always proposed — held (0 hits)
+
+Invariant:
+- CK6 — IV4 model pins unchanged — held (reviewer/requirements-reviewer opus, explorer haiku, researcher/summarizer sonnet, implementer none)
+- CK7 — Status `verifying` set by both entry paths (make step 9, uverify on entry) — held after the uverify edit
+
+Smoke: deferred — a live `/up:make` run on a small cccc task needs the 0.3.33 install first (see Conclusion).
+
 ## Conclusion
