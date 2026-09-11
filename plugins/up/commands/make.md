@@ -122,11 +122,11 @@ Run the context checkpoint (see below). Invoke `up:uexecute`. Implements the pla
 
 ### 9. Verify loop
 
-Run the context checkpoint (see below). Status → `verifying` once every plan phase is committed. Invoke `up:uverify`. On failure: `up:uverify` describes how each failure *should* have worked, control returns to `up:uexecute` (Status stays `verifying`; the plan is implemented, only the fix is pending). Loop until verify passes.
+Status → `verifying` once every plan phase is committed. Run the context checkpoint (see below). Invoke `up:uverify`. On failure: `up:uverify` describes how each failure *should* have worked, control returns to `up:uexecute` (Status stays `verifying`; the plan is implemented, only the fix is pending). Loop until verify passes.
 
 ### 10. Review stage
 
-Run the context checkpoint (see below). Status → `reviewing`. Invoke `up:ureview`. It dispatches `up:reviewer`, processes findings, fills `## Conclusion`. Status → `validating` — code is verified and reviewed, but the task is not `done` until its Goal is confirmed achieved (step 11).
+Status → `reviewing`. Run the context checkpoint (see below). Invoke `up:ureview`. It dispatches `up:reviewer`, processes findings, fills `## Conclusion`. Status → `validating` — code is verified and reviewed, but the task is not `done` until its Goal is confirmed achieved (step 11).
 
 ### 11. Validate the goal
 
