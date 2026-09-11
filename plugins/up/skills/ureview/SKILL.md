@@ -46,6 +46,8 @@ The asymmetry is deliberate. A tough reviewer catches more real issues; a fair d
 
 ## Process
 
+See `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Dispatch narration.
+
 ### 1. Dispatch `up:reviewer`
 
 Get git SHAs:

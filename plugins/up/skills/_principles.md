@@ -15,6 +15,10 @@ GPC1–GPC8. Apply to every task unless clearly irrelevant. Deviations name the 
 
 A skill with `disable-model-invocation: true` (since 0.3.34: e, try, reflect, step-back, test-driven-development, git-worktrees, job-guardian, udocument) is invisible to the model and cannot be invoked through the Skill tool. A stage skill that needs its content reads the file at `${CLAUDE_PLUGIN_ROOT}/skills/<name>/SKILL.md`; a stage that wants the user to run it says "type `/up:<name>`". Never write "invoke `up:<name>`" for one of these. This is the single home of the rule; callers only point here.
 
+## Dispatch narration
+
+Before dispatching a subagent (`Agent` tool call) and after it returns, state one line: what's being dispatched / what it returned. The user sees no tool calls, only text — an unannounced dispatch reads as silence. This is the single home of the rule; callers only point here.
+
 ## Incidental code smells
 
 While exploring code for a task you'll pass smells unrelated to the change — a 200-line function, a duplicated helper, a leaked layer boundary. Two outcomes, no third:

@@ -34,6 +34,8 @@ The active task file is the most-recently-modified entry whose `**Status:**` enu
 Drafting runs in the subagent, not in the main session. Dispatching is not optional — drafting in the main session puts long structured output on the expensive model this command exists to avoid.
 </required>
 
+State one line before dispatching and one line when the draft returns — see `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Dispatch narration.
+
 Dispatch via the Agent tool with `subagent_type: up:summarizer` and a prompt containing:
 - Working directory (absolute).
 - One or two distinctive phrases from step 1 — verbatim, exactly as they appear in the conversation.

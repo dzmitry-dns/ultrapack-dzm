@@ -72,6 +72,8 @@ If Design recorded `TDD: yes`, read `${CLAUDE_PLUGIN_ROOT}/skills/test-driven-de
 
 If `TDD: no`, skip the test-first loop; verification happens in `up:uverify`.
 
+Before dispatching `up:explorer` or `up:researcher` below, see `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Dispatch narration.
+
 ## When to dispatch `up:explorer`
 
 - The implementer reported `NEEDS_CONTEXT` and a code map would unblock them
