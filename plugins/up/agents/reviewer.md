@@ -57,8 +57,17 @@ Always scan explicitly for these failure modes (all are ≥ 80 confidence when f
 
 ### 3. Severity
 
-- **Critical** — bug, security issue, invariant violation, breaks existing behavior
+Severity is probability × damage, never damage alone. Before assigning a tier, name who triggers
+the finding and how often in real usage (a role on a page, a cron run, a public form). Ground it in
+the code: open the entry point and its role guard when the trigger is not obvious.
+
+- **Critical** — bug, security issue, invariant violation, breaks existing behavior, on a path a real user or job reaches in normal use
 - **Important** — will cause pain soon; regression risk; clear guideline violation
+
+A finding that needs two operators on the same row inside one request window, or a state that no
+existing code path produces yet, is Important at most, and only when the fix is one line with no
+data risk; otherwise leave it out. A concurrent-operator race on a low-traffic admin UI is not
+Critical, whatever the damage would be.
 
 No "Suggestion" tier. If it's below Important, don't report it.
 
@@ -82,11 +91,11 @@ git log <BASE_SHA>..<HEAD_SHA> --oneline
 ## Findings
 
 ### Critical
-- **<file:line>** — <issue> (confidence: NN)
+- **<file:line>** — <issue> (confidence: NN; trigger: <who>, <how often>)
   Fix: <1-line concrete suggestion>
 
 ### Important
-- **<file:line>** — <issue> (confidence: NN)
+- **<file:line>** — <issue> (confidence: NN; trigger: <who>, <how often>)
   Fix: <1-line concrete suggestion>
 
 ### Scope flag   (omit unless a scope concern surfaced)
