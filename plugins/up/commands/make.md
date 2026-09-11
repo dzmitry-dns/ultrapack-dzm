@@ -118,15 +118,15 @@ If the gate does not pause and Jira is configured, `up:ujira` still runs at this
 
 ### 8. Execute stage
 
-Invoke `up:uexecute`. Implements the plan, commits incrementally.
+Run the context checkpoint (see below). Invoke `up:uexecute`. Implements the plan, commits incrementally.
 
 ### 9. Verify loop
 
-Status → `verifying` once every plan phase is committed. Invoke `up:uverify`. On failure: `up:uverify` describes how each failure *should* have worked, control returns to `up:uexecute` (Status stays `verifying`; the plan is implemented, only the fix is pending). Loop until verify passes.
+Run the context checkpoint (see below). Status → `verifying` once every plan phase is committed. Invoke `up:uverify`. On failure: `up:uverify` describes how each failure *should* have worked, control returns to `up:uexecute` (Status stays `verifying`; the plan is implemented, only the fix is pending). Loop until verify passes.
 
 ### 10. Review stage
 
-Status → `reviewing`. Invoke `up:ureview`. It dispatches `up:reviewer`, processes findings, fills `## Conclusion`. Status → `validating` — code is verified and reviewed, but the task is not `done` until its Goal is confirmed achieved (step 11).
+Run the context checkpoint (see below). Status → `reviewing`. Invoke `up:ureview`. It dispatches `up:reviewer`, processes findings, fills `## Conclusion`. Status → `validating` — code is verified and reviewed, but the task is not `done` until its Goal is confirmed achieved (step 11).
 
 ### 11. Validate the goal
 
@@ -173,6 +173,10 @@ Rules:
 - If updates are needed: make them directly, then summarize what changed in 1-3 lines (e.g. "README: fixed install instructions; CLAUDE.md: no change"). Do not prompt for approval first. Do not produce a detailed diff — the user will git-diff if they want.
 - Follow the rules in `${CLAUDE_PLUGIN_ROOT}/skills/udocument/SKILL.md` (read the file; the skill is manual-only): lead with why, lists over tables, no aspirational content, kill stale content.
 - Do not duplicate content across task file and project docs — pick one home per fact.
+
+## Context checkpoint
+
+Runs right before invoking the stage skill at steps 8, 9, and 10 — one check per transition, covering everything since the previous checkpoint (step 8's check covers steps 5–7). Count subagents dispatched and tool outputs long enough to fill roughly a screen. Either count at 3+ subagents or 2+ large outputs → print one line: "This session has grown large — consider `/up:summary` before continuing." Then proceed to the stage regardless; advisory only, never a pause.
 
 ## Stop conditions
 
