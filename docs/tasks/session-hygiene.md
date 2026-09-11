@@ -1,6 +1,6 @@
 # Session hygiene: status narration + context checkpoint
 
-**Status:** validating
+**Status:** done — 2026-09-11, pushed to origin/main (3906ba4), 0.3.35 installed and content-verified from the live cache
 **Branch:** main
 **Goal:** (1) ultrapack's own skill files carry a local reminder to narrate subagent dispatch and return at the point of dispatch, not only via the distant global CLAUDE.md rule; (2) `/up:make` itself suggests running `/up:summary` at stage transitions once a stage's subagent-dispatch or large-output count crosses a fixed threshold, instead of relying on someone remembering to run it.
 
@@ -92,7 +92,7 @@ Goal: proxy only — smoke covers the doc edits themselves; confirming the Goal 
 
 ## Conclusion
 
-Outcome: both Goal items land in the planned locations (25c8da8, 1545a0b, 251d17d, review fix f53d50d); confirming they change real `/up:make` behavior needs the fork reinstalled and a live run — see Verify's proxy note.
+Outcome: both Goal items land in the planned locations (25c8da8, 1545a0b, 251d17d, review fix f53d50d), pushed and installed as 0.3.35 (`installed_plugins.json` gitCommitSha 3906ba4); read the live cache and confirmed the shipped text matches the diff. No live `/up:make` run has yet exercised the narration/checkpoint behavior — that's ordinary use, not a one-off test (UK1).
 
 Invariants:
 - IV1 — held. Two of the five pointers (`uexecute/waves.md`, `commands/summary.md`) add a short site-specific clause next to the pointer (wave cadence, dispatch/return cadence) rather than a bare "see X". The substantive rule text still lives only in `_principles.md`, so single-source-of-truth holds, but this reads looser than the invariant's own wording ("never restate") implies — reviewer flagged it below the reporting threshold (confidence 65).
