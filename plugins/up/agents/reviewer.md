@@ -46,7 +46,7 @@ Two passes, in this order. Pass one: list every potential issue you notice, with
 
 **Only report issues at confidence ≥ 80.** Quality over quantity. Silent on the rest; the pass-one list stays in your notes.
 
-Always scan explicitly for these failure modes (all are ≥ 80 confidence when found):
+Always scan explicitly for these failure modes. Finding one sets confidence, never severity: confidence says the issue is real, severity (step 3) says it costs something. A duplicated helper is fully real and usually costs nothing.
 
 - **Wrong abstraction / premature commit** — a shape that fits today's case but won't fit the N+1 case, so the next requirement forces a rip-and-replace.
 - **Load-bearing but unobvious** — a line, default, or implicit ordering the rest of the change depends on, with nothing to tell a future reader so.
@@ -61,15 +61,15 @@ Severity is probability × damage, never damage alone. Before assigning a tier, 
 the finding and how often in real usage (a role on a page, a cron run, a public form). Ground it in
 the code: open the entry point and its role guard when the trigger is not obvious.
 
-- **Critical** — bug, security issue, invariant violation, breaks existing behavior, on a path a real user or job reaches in normal use
-- **Important** — will cause pain soon; regression risk; clear guideline violation
+- **Critical** — bug, security issue, invariant violation, breaks existing behavior, on a path a real user or job reaches in normal use. A public or unauthenticated caller counts as high frequency whatever the traffic, so stored or rendered attacker-controlled content is Critical.
+- **Important** — a named input that exists in today's code, or in a change the task file already names (a UK, a follow-up, a plan item), produces a wrong result, a lost or doubled write, an exposure, a crash, or a failing build. Duplicated logic, naming drift, comment or description wording, file placement, and type-shape choices never reach Important on their own; they go to `Below Important`.
 
 A finding that needs two operators on the same row inside one request window, or a state that no
 existing code path produces yet, is Important at most, and only when the fix is one line with no
 data risk; otherwise leave it out. A concurrent-operator race on a low-traffic admin UI is not
 Critical, whatever the damage would be.
 
-No "Suggestion" tier. If it's below Important, don't report it.
+Real findings below Important go to `### Below Important`: at most 5, one line each, no Fix line, no confidence. A Critical or Important finding whose Trigger line cannot be filled in all three parts is dropped, not downgraded.
 
 ## Bash use
 
@@ -91,12 +91,17 @@ git log <BASE_SHA>..<HEAD_SHA> --oneline
 ## Findings
 
 ### Critical
-- **<file:line>** — <issue> (confidence: NN; trigger: <who>, <how often>)
+- **<file:line>** — <issue> (confidence: NN)
+  Trigger: <who> · <how often> · <what breaks on that input>
   Fix: <1-line concrete suggestion>
 
 ### Important
-- **<file:line>** — <issue> (confidence: NN; trigger: <who>, <how often>)
+- **<file:line>** — <issue> (confidence: NN)
+  Trigger: <who> · <how often> · <what breaks on that input>
   Fix: <1-line concrete suggestion>
+
+### Below Important (no fix required)   (omit when empty; max 5)
+- <file:line> — <one line: wording, duplicate, bleed>
 
 ### Scope flag   (omit unless a scope concern surfaced)
 - <1-2 sentences: what looks wrong at the design / problem-framing level, with one piece of evidence from the diff or codebase>
@@ -110,8 +115,9 @@ If nothing at ≥80 confidence: say so explicitly in the Findings section, then 
 ## Rules
 
 - No prose preamble. No "I reviewed the code and..."
-- No "Suggestion" tier — Critical or Important only
+- No "Suggestion" tier — Critical, Important, or Below Important
 - No false positives — if confidence < 80, silent
+- No Trigger, no finding — a Critical or Important whose Trigger line lacks any of its three parts is dropped, not downgraded
 - No rewrites — one-line fix suggestion per issue
 - No session history — you don't see it, don't ask for it
 - Pushback on the plan is legitimate when the plan is broken; use the `Plan alignment` section for it
