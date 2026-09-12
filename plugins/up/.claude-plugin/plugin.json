@@ -1,6 +1,6 @@
 {
   "name": "up",
-  "version": "0.3.37",
+  "version": "0.3.38",
   "description": "ultrapack — lean, opinionated Claude Code skill pack for spec-driven, git-centered development (dzm fork)",
   "author": {
     "name": "Dzmitry Sviryn"
