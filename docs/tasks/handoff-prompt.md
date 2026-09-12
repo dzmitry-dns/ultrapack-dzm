@@ -1,6 +1,6 @@
 # Handoff prompt: replace the summarizer round-trip with a prompt written from the live context
 
-**Status:** executing — plan approved 2026-09-12
+**Status:** verifying — PH1-PH3 committed 2026-09-12 (07a3d01, 5b97cf0, 844d289)
 **Branch:** main
 **Goal:** `/up:summary` on cccc-monorepo, in one main-session turn with no subagent and no question, appends a dated `### Handoff` block to the active task file and prints a one-line prompt (`Продолжи docs/tasks/<slug>.md`); the next session, given only that line, reads the block via `/up:make` resume and starts with the recorded first action. Confirmed by one real handoff on cccc-monorepo, not by the diff alone.
 
