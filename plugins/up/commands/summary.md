@@ -11,8 +11,10 @@ Write the handoff from what this session already knows. The task file carries th
 ### 1. Detect the active task file
 
 ```bash
-ls -t docs/tasks/*.md docs/tasks/*/*.md 2>/dev/null | head
+find docs/tasks -maxdepth 2 -name '*.md' -exec ls -t {} + | head
 ```
+
+(`find`, not a glob: under zsh an unmatched `docs/tasks/*/*.md` aborts the whole command and the command would wrongly conclude there is no task file.)
 
 The active task file is the most recently modified entry whose `**Status:**` enum (the text before the first ` — `) is not `done`, `shipped`, or `reference`. If more than one qualifies, take the one this session edited. Ask only if that still leaves more than one. None → see "No active task file" below.
 
@@ -50,7 +52,7 @@ A fenced block so it copies whole:
 Продолжи docs/tasks/<slug>.md
 ```
 
-`/up:make` reads the latest Handoff block on resume, so the one line is enough.
+Use the file's real path: an epic child lives at `docs/tasks/<epic>/<slug>.md`. `/up:make` reads the latest Handoff block on resume, so the one line is enough.
 
 Below the fence, outside the prompt, one sentence for the owner in the owner's language: where the work stands and what happens next.
 
