@@ -1,6 +1,6 @@
 # Upstream integration: port the generic improvements from btseytlin/ultrapack
 
-**Status:** validating — 2026-09-12, ports and bump on local main (d276a0e, 60df510, 0375134), reviewed; CK5 (reviewer agent loads after push + reinstall) still open
+**Status:** shipped — 2026-09-12, pushed to origin/main (4172186..64da00a), up@ultrapack updated 0.3.37 → 0.3.38, installed copy matches repo
 **Branch:** main
 **Goal:** The two ported upstream changes (`a2e08e9` quoted reviewer description, `225058a` GPC3 wording) are in `plugins/up/` on `main`, the plugin version is bumped one patch above whatever `main` holds at merge time (0.3.37 on 2026-09-12, other agents bump in parallel), and every other upstream commit since merge-base `e4b96f6` has a skip reason recorded in this file. Confirmed by the diff plus one reinstall showing the reviewer agent still loads with its description intact. The fork's own decisions (model policy, plan-approval gates, ujira, requirements-reviewer, severity grading, context checkpoint) stay intact.
 
@@ -158,14 +158,14 @@ Stance: two one-line doc changes; the attack surface is "the YAML no longer pars
 - CK2 — `claude plugin validate .` (marketplace): passed with two pre-existing warnings, see Code smells.
 - CK3 — reviewer description line byte-identical to `upstream/main:agents/reviewer.md` line 3: `diff` empty.
 - CK4 — GPC3 line byte-identical to `upstream/main:skills/_principles.md`: `diff` empty.
-- CK5 — reviewer agent loads with the quoted description: pending. `claude plugin details` reads only installed plugins, and the installed copy is 0.3.36; run `claude plugin update up@ultrapack` after the push, then `claude plugin details up@ultrapack` must list the reviewer agent with its description. No local YAML parser is available (no yq; inline interpreters are denied by the shell hook).
+- CK5 — reviewer agent loads from the installed 0.3.38: passed after push and `claude plugin update up@ultrapack`; `claude plugin details up@ultrapack` lists reviewer among 5 agents, and the installed `agents/reviewer.md` line 3 is identical to the repo's.
 
 ## Code smells
 - `.claude-plugin/marketplace.json`: `metadata.repository` is an unknown field Claude Code ignores, and the marketplace has no `description`. Reported by `claude plugin validate .`; out of scope here.
 
 ## Conclusion
 
-Outcome: both ports and the bump are on local `main` (d276a0e, 60df510, 0375134); the Goal closes once the push lands and CK5 (reviewer agent loads from the reinstalled 0.3.38) passes.
+Outcome: Goal achieved; ports and bump on `origin/main` (d276a0e, 60df510, 0375134), 0.3.38 installed and content-verified (CK5).
 
 Invariants:
 - IV1 — diff touches only `plugins/up/`; layout and manifest unchanged.
@@ -175,7 +175,7 @@ Invariants:
 
 ### Assumptions check
 - AS1 — held: both ported hunks are plain markdown lines, byte-identical to `upstream/main`.
-- AS2 — unverifiable until the push and `claude plugin update up@ultrapack`; CK5 records the check.
+- AS2 — held: `claude plugin update up@ultrapack` moved the install from 0.3.37 to 0.3.38 right after the push.
 
 ### Unknowns outcome
 - UK1 — resolved: gate removals rejected as a whole, owner decision 2026-09-12.
@@ -183,8 +183,5 @@ Invariants:
 
 Review findings:
 - Important: the three commits carried a `Co-Authored-By` trailer the owner's global rules forbid. Resolved by recreating the commits without it (reviewer suggested the fix; nothing had been pushed).
-
-Verified by: CK5 is a manual step after push: `claude plugin update up@ultrapack`, then `claude plugin details up@ultrapack` must list the reviewer agent with its description.
-
 ## Next session
 Run `/up:make upstream-integration`; it resumes from the Status enum. The port list is fixed in "Owner decisions"; do not reopen skipped items. Read the plugin version on `main` fresh before bumping: other agents bump in parallel.
