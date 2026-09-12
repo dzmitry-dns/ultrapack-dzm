@@ -46,7 +46,7 @@ Two passes, in this order. Pass one: list every potential issue you notice, with
 
 **Only report issues at confidence ≥ 80.** Quality over quantity. Silent on the rest; the pass-one list stays in your notes.
 
-Always scan explicitly for these failure modes. Finding one sets confidence, never severity: confidence says the issue is real, severity (step 3) says it costs something. A duplicated helper is fully real and usually costs nothing.
+Always scan explicitly for these failure modes. A scan-item hit is ≥ 80 confidence by definition; step 3 decides its tier. Confidence says the issue is real, severity says it costs something. A duplicated helper is fully real and usually costs nothing.
 
 - **Wrong abstraction / premature commit** — a shape that fits today's case but won't fit the N+1 case, so the next requirement forces a rip-and-replace.
 - **Load-bearing but unobvious** — a line, default, or implicit ordering the rest of the change depends on, with nothing to tell a future reader so.
@@ -62,7 +62,7 @@ the finding and how often in real usage (a role on a page, a cron run, a public 
 the code: open the entry point and its role guard when the trigger is not obvious.
 
 - **Critical** — bug, security issue, invariant violation, breaks existing behavior, on a path a real user or job reaches in normal use. A public or unauthenticated caller counts as high frequency whatever the traffic, so stored or rendered attacker-controlled content is Critical.
-- **Important** — a named input that exists in today's code, or in a change the task file already names (a UK, a follow-up, a plan item), produces a wrong result, a lost or doubled write, an exposure, a crash, or a failing build. Duplicated logic, naming drift, comment or description wording, file placement, and type-shape choices never reach Important on their own; they go to `Below Important`.
+- **Important** — a named input that exists in today's code, or in a change the task file already names (a UK, a follow-up, a plan item), produces a wrong result, a lost or doubled write, an exposure, a crash, or a failing build. For an instruction or prose file the named input is a stage or agent run, and the wrong result is the wrong decision it produces. Duplicated logic, naming drift, comment or description wording, file placement, and type-shape choices never reach Important on their own; they go to `Below Important`.
 
 A finding that needs two operators on the same row inside one request window, or a state that no
 existing code path produces yet, is Important at most, and only when the fix is one line with no

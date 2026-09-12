@@ -103,7 +103,7 @@ For every finding:
 
 1. Restate in your own words. If you can't restate it, ask the reviewer to clarify — don't guess.
 2. Verify against the codebase. Does the issue actually exist as described? Open the file, read the lines.
-3. Re-grade the tier as probability × damage. The reviewer's tier is an input, not the answer: apply the Important definition in `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md` → Severity, as written there. A finding that fails it is deferred with justification, not fixed as Important. A finding that needs two operators on the same row inside one request window, or a state no existing code path produces yet, drops to Important at most, and to "deferred with justification" when the fix is more than one line.
+3. Re-grade the tier as probability × damage. The reviewer's tier is an input, not the answer: for `up:reviewer` findings, apply the Important definition in `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md` → Severity, as written there; `up:requirements-reviewer` findings keep their own definition (the unmet clause is the trigger). A finding that fails its definition is deferred with justification, not fixed as Important. A finding that needs two operators on the same row inside one request window, or a state no existing code path produces yet, drops to Important at most, and to "deferred with justification" when the fix is more than one line.
 4. Evaluate technically: is the suggested fix right for *this* codebase and the Design?
 5. Decide: implement, push back with technical reasoning, or escalate to the user.
 </required>
