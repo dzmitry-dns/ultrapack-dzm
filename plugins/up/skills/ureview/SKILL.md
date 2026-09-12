@@ -142,6 +142,8 @@ If fixes are substantial, re-dispatch the reviewer on the new diff.
 
 ### 6. Write the `## Conclusion`
 
+Replace the placeholder line only. Any `### Handoff — <date>` blocks that follow it (written by `/up:summary`) stay below the written Conclusion.
+
 ```markdown
 ## Conclusion
 

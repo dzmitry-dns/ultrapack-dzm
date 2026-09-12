@@ -1,5 +1,5 @@
 ---
-description: End a session so the next one can continue — append a dated Handoff block to the active task file and print the one-line prompt for the next session. Runs in the main session in one turn, no subagent, no transcript.
+description: End a session so the next one can continue — in one main-session turn, append a dated Handoff block to the active task file and print the one-line prompt for the next session.
 ---
 
 # /up:summary

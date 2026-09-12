@@ -99,7 +99,7 @@ Discipline skills (manual-only since 0.3.34: `disable-model-invocation: true`, s
 - `/up:make <description>` — orchestrate the full workflow end to end. Resumes an existing task by its status.
 - `/up:try` — quick manual test of the latest change: one positive case, one negative, run both, report.
 - `/up:step-back` — circuit breaker: stop, diagnose why attempts keep failing, propose a fundamentally new direction.
-- `/up:summary` — end a session: append a dated Handoff block to the active task file and print the one-line prompt (`Продолжи docs/tasks/<slug>.md`) for the next session. One turn, no subagent.
+- `/up:summary` — end a session: append a dated Handoff block to the active task file and print the one-line prompt (`Продолжи docs/tasks/<slug>.md`) for the next session, in one turn.
 - `/up:reflect` — extract learnings from the session and route each to its home (CLAUDE.md, memory, or docs).
 - `/up:e` — explain something the way one engineer explains to another: lede first, one core mechanism, deeper threads offered but not dumped.
 

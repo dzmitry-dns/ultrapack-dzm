@@ -164,7 +164,7 @@ Backwards compatibility: the summarizer agent is removed in PH1 together with it
 
 Happy-path:
 - CK1 — active-file detection: run the shipped command under zsh in a repo with no epic folder — broke, then held after 0e33390: the inherited `ls -t docs/tasks/*.md docs/tasks/*/*.md` printed `zsh: no matches found` and ran nothing, so the command would have taken the "no task file" path; replaced with `find -maxdepth 2`, re-run under zsh here and in cccc-monorepo (epic folder plus archive present), both list the task files.
-- CK2 — `ureview` clobbers a `### Handoff` block that sits after `## Conclusion` — held: its write template replaces the placeholder, and dated `###` subsections are the documented living-log form (`ureview/SKILL.md:186`); watch on the first live run.
+- CK2 — `ureview` clobbers a `### Handoff` block that sits after `## Conclusion` — broke (found by review): step 6 of `ureview/SKILL.md` hands the model a template starting at the `## Conclusion` heading with no "placeholder only" rule, so a heading-to-end rewrite would drop every block; held after the review fix, which adds that rule to step 6.
 
 Negative:
 - CK3 — prompt template `docs/tasks/<slug>.md` misleads for an epic child (`docs/tasks/messaging/` exists in cccc) — broke, then held after 0e33390: step 4 now says to use the real path.
