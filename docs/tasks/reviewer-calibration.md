@@ -1,6 +1,6 @@
 # Reviewer calibration: severity by real trigger, and no commit trailers from any stage
 
-**Status:** verifying
+**Status:** reviewing
 **Branch:** main
 **Goal:** After the change, an `up:reviewer` dispatch reports as Important only findings with a named input that exists in today's code (or in a change the task file names) and produces a wrong result, a lost or doubled write, an exposure, a crash, or a failing build; every reported finding carries a three-part Trigger line (who, how often, what breaks); text nits land in a separate no-severity block. Separately, no commit made by any pack stage (including the `/up:make` Status-transition commits) carries a `Co-authored-by` or other trailer, stated once pack-wide. Confirmed by one `up:reviewer` dispatch on this task's own diff (Trigger line present on every finding, no wording-only finding above the text block) and by the commits of this task carrying no trailer.
 
@@ -120,10 +120,36 @@ none (doc-only plugin). Verify runs `claude plugin validate plugins/up`, greps f
 Backwards compatibility: no phase removes a tier, a section, or a command; PH2.2 is a new step that runs only when the block is present, so a reviewer output without it (the 0.3.36 agent, or any older install) goes through steps 2-5 unchanged.
 
 ## Verify
-<empty — filled by up:uverify>
+
+**Result:** passed (after one execute loop, db30e53)
+
+Happy-path:
+- CK1 — an agent given the new `reviewer.md` verbatim, on a synthetic diff (public form storing `z.url()` unvalidated, a duplicated slug helper, a conversation-bleed comment): does it still grade the nit Important or skip the Trigger line — held: XSS graded Critical with a three-part Trigger, all four Important carry the line, duplicate and bleed under Below Important.
+
+Negative:
+- CK2 — `claude plugin validate plugins/up` after every commit — held.
+
+Invariants / assumptions:
+- CK3 (IV1) — grep for a new tier heading, and ureview 5b conditional on the block — held.
+- CK4 (IV2) — both output-format tiers carry the three-part Trigger line, and the drop rule appears twice — held.
+- CK5 (IV3) — ureview 3.3 restates Important instead of pointing — broke, then held: the first cut paraphrased the definition and dropped the "change the task file already names" branch (found by the proxy reviewer on the real diff); db30e53 keeps the pointer by name only.
+- CK6 (IV4) — a stage that commits without pointing at the Commits rule — broke, then held: `_principles.md` listed `up:ureview` as a caller while ureview step 5 had no pointer; db30e53 adds it. `make.md`, `uexecute`, `ureview` now all point; `implementer.md` keeps its inline copy.
+- CK7 (IV5) — version on base d22a84b 0.3.38, on head 0.3.39 — held.
+
+Interfaces:
+- CK8 — the path `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md` that ureview 3.3 names resolves in the installed layout (`cache/ultrapack/up/<ver>/agents/reviewer.md`) — held.
+
+Smoke: two general-purpose agents given the new `reviewer.md` body verbatim (real diff d22a84b..625a537 and the synthetic diff of CK1) → both produce the prescribed format.
+
+Goal: proxy only — this session loaded the pack at 0.3.36, so the real `up:reviewer` agent still runs the old text; the Goal's dispatch needs 0.3.39 pushed and installed, then one `/up:make` review on any task.
 
 ## Code smells
 <empty — file:line + one-line smell passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
 
 ## Conclusion
 <empty — filled by up:ureview; after done/shipped grows dated ### Follow-up — <date> / ### Scope change — <date> entries and ### Deferred scope-parking>
+
+### Deviations from plan
+- `_principles.md` "How to use" gained a Commits bullet (bfd4baa) — consistency pass: every other single-home rule in that file is listed there.
+- Conclusion template's `Review findings:` omit-condition now includes text fixes (ba2cbf2) — the new optional line could otherwise appear under a heading the rule says to omit.
+- `ureview` step 2 classification list and step 5 gained Below Important and Commits lines, `reviewer.md:72` clarifies the ≥ 80 gate (db30e53) — verify CK5/CK6 and the proxy reviewer's Below Important entries.
