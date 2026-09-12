@@ -1,6 +1,6 @@
 # Handoff prompt: replace the summarizer round-trip with a prompt written from the live context
 
-**Status:** planning — design approved 2026-09-12
+**Status:** executing — plan approved 2026-09-12
 **Branch:** main
 **Goal:** `/up:summary` on cccc-monorepo, in one main-session turn with no subagent and no question, appends a dated `### Handoff` block to the active task file and prints a one-line prompt (`Продолжи docs/tasks/<slug>.md`); the next session, given only that line, reads the block via `/up:make` resume and starts with the recorded first action. Confirmed by one real handoff on cccc-monorepo, not by the diff alone.
 
@@ -110,7 +110,53 @@ Design implication (for `up:udesign` to confirm): the cheapest consumed handoff 
 - UK1 — Whether the block is complete enough when the session was compacted by the harness before the handoff; only a real post-compaction handoff will show it.
 
 ## Plan
-<empty — filled by up:uplan>
+
+Approach: rewrite `commands/summary.md` around one main-session turn that appends a Handoff block and prints a one-line prompt, delete the summarizer agent, and teach `/up:make` step 2 to read the block; three commits, doc-only.
+
+### Handoff block and prompt (the contract between PH1 and PH2)
+
+Block appended at the end of the task file, English:
+
+```markdown
+### Handoff — YYYY-MM-DD
+- Position: <stage or plan phase>; committed: <last sha, short name>; uncommitted: <files, or "none">
+- Decided: <decision>, because <reason>            (0..n lines)
+- Dead end: <what was tried>, <why it failed>        (0..n lines)
+- Open: <question waiting on the owner>              (0..1 line)
+- First action: <one line, a command where possible>
+```
+
+Printed prompt, in a fenced block: `Продолжи docs/tasks/<slug>.md`. Below the fence, one sentence for the owner in the owner's language. Without a task file: a `Goal:` line plus the same bullets inline in the fenced block, no file write.
+
+### PH1 — Rewrite `/up:summary`, remove the summarizer
+
+- **1.1** `plugins/up/commands/summary.md:1-85` (rewrite)
+  - Frontmatter `description`: one sentence, "append a dated Handoff block to the active task file and print the one-line prompt for the next session".
+  - Sections: Process (detect active task file; ground with `git status --short` and `git log -3 --oneline`; append the block; print the prompt and the owner line), No active task file, Rules (only what file and git do not already hold; one question at most, IV4; no subagent, no transcript, IV3; no commit, PC2).
+  - Active-file rule: most recently modified `docs/tasks/**/*.md` whose Status enum is not `done`, `shipped`, `reference`; prefer the one edited this session; ask only if still ambiguous (IV4).
+  - Respects: IV3, IV4, PC1, PC2, AS1.
+- **1.2** `plugins/up/agents/summarizer.md` (delete). Respects: IV2, IV3.
+- **1.3** `README.md:102` (modify): `/up:summary` line describes the Handoff block and the one-line prompt. `README.md:117` (modify): drop the `up:summarizer` row. Line 97 stays true. Respects: IV2.
+- Commit: `feat(summary): write the handoff from the live session; drop the summarizer agent`
+
+### PH2 — `/up:make` reads the Handoff block on resume
+
+- **2.1** `plugins/up/commands/make.md:25` (modify): the "Exists:" bullet gains one sentence before "Resume from the next stage": if the file ends with one or more `### Handoff — <date>` blocks, read the latest one first; it holds what the previous session left uncommitted or undecided and its first action. No other line in step 2, no template change. Respects: IV1, IV5, AS2.
+- Commit: `feat(make): read the latest Handoff block on resume`
+
+### PH3 — Version
+
+- **3.1** `plugins/up/.claude-plugin/plugin.json:3` (modify): `0.3.36` → `0.3.37`.
+- Commit: `chore(pack): bump to 0.3.37`
+
+### Test strategy
+none (doc-only). Verification is install-and-invoke: install 0.3.37, run `/up:summary` in a real cccc-monorepo session, start a new session with only the printed line, confirm it reads the block and starts with the recorded first action (Goal, UK1).
+
+### Risks
+- RK1 — A paused parallel session holds untracked `docs/tasks/upstream-integration.md` and plans its own `make.md` and `plugin.json` edits; every commit here adds files by name, and the `make.md` edit is one sentence on line 25, so a later merge conflicts at most on that line and the version number.
+- RK2 — `/up:summary` is model-invocable and the checkpoint line suggests it; the rewritten command still runs only when invoked, and its single side effect is one append, so an unwanted run costs one block, not a subagent.
+
+Backwards compatibility: the summarizer agent is removed in PH1 together with its last references (`summary.md`, README), so no dangling `subagent_type`; old `### Summary —` blocks in cccc task files stay untouched; PH2's sentence is conditional on a Handoff block, so files without one resume exactly as before (IV1).
 
 ## Verify
 <empty — filled by up:uverify>
