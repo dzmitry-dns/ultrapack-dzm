@@ -1,6 +1,6 @@
 # Handoff prompt: replace the summarizer round-trip with a prompt written from the live context
 
-**Status:** validating — reviewed 2026-09-12 (212233a); awaiting push, install of 0.3.37, and one live handoff on cccc-monorepo
+**Status:** done — 2026-09-12; one live handoff consumed on this repo (see Follow-up); the cccc-monorepo run named in the Goal was not performed
 **Branch:** main
 **Goal:** `/up:summary` on cccc-monorepo, in one main-session turn with no subagent and no question, appends a dated `### Handoff` block to the active task file and prints a one-line prompt (`Продолжи docs/tasks/<slug>.md`); the next session, given only that line, reads the block via `/up:make` resume and starts with the recorded first action. Confirmed by one real handoff on cccc-monorepo, not by the diff alone.
 
@@ -204,3 +204,6 @@ Review findings:
 - Important: description and README defined the command by what the deleted agent did ("no subagent, no transcript") — resolved, 212233a.
 
 Verified by: one `up:reviewer` dispatch on Fable; the live `/up:summary` run on cccc-monorepo is deferred to the owner after install.
+
+### Follow-up — 2026-09-12
+Live handoff consumed. `/up:summary` on this repo wrote the `### Handoff — 2026-09-12` block into `docs/tasks/retire-summary-sonnet.md` in one turn (no subagent, no question) and printed the one-line prompt. A fresh session after `/clear`, given only `продолжи docs/tasks/retire-summary-sonnet.md`, read the block and executed the recorded first action verbatim: a9b36a9, then cde6b48. Two differences from the Goal as written: the repo was ultrapack-dzm, not cccc-monorepo, and the session resumed by reading the file directly, not through `/up:make`. UK1 (handoff after a harness compaction) stays open.
