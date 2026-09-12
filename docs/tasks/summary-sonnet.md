@@ -117,3 +117,6 @@ Verified by: structural checks CK1–CK5 (grep). Live install-and-invoke (CK6) d
 - uplan: plan auto-approved (hands-off).
 - ureview: reviewer flagged one Important finding against an untouched file (`reviewer.md:3` conversation bleed). Decision: deferred to Future work — out of this task's scope, not blocking.
 - upstream-cleanup: side request completed on `main` in commit 26518ec (drop `superpowers/`, `claude-code-plugins/` from `.gitignore`; retire example path in `uexecute`/`make`).
+
+### Follow-up — 2026-09-12
+Superseded. The `summarizer` agent this task introduced (`plugins/up/agents/summarizer.md`) was removed in 07a3d01, and `/up:summary` now writes the handoff from the live session instead of dispatching a Sonnet agent. The current design and its rationale live in `docs/tasks/handoff-prompt.md`. Nothing in this file describes the shipped behavior any more; keep it only as history.
