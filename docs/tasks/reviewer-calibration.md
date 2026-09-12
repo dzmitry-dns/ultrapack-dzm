@@ -1,6 +1,6 @@
 # Reviewer calibration: severity by real trigger, and no commit trailers from any stage
 
-**Status:** reviewing
+**Status:** validating — pack change complete at d0ec7f1; Goal needs 0.3.39 installed and one real reviewer dispatch
 **Branch:** main
 **Goal:** After the change, an `up:reviewer` dispatch reports as Important only findings with a named input that exists in today's code (or in a change the task file names) and produces a wrong result, a lost or doubled write, an exposure, a crash, or a failing build; every reported finding carries a three-part Trigger line (who, how often, what breaks); text nits land in a separate no-severity block. Separately, no commit made by any pack stage (including the `/up:make` Status-transition commits) carries a `Co-authored-by` or other trailer, stated once pack-wide. Confirmed by one `up:reviewer` dispatch on this task's own diff (Trigger line present on every finding, no wording-only finding above the text block) and by the commits of this task carrying no trailer.
 
@@ -143,11 +143,34 @@ Smoke: two general-purpose agents given the new `reviewer.md` body verbatim (rea
 
 Goal: proxy only — this session loaded the pack at 0.3.36, so the real `up:reviewer` agent still runs the old text; the Goal's dispatch needs 0.3.39 pushed and installed, then one `/up:make` review on any task.
 
-## Code smells
-<empty — file:line + one-line smell passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
-
 ## Conclusion
-<empty — filled by up:ureview; after done/shipped grows dated ### Follow-up — <date> / ### Scope change — <date> entries and ### Deferred scope-parking>
+
+Outcome: pack change complete at d0ec7f1; the Goal's real `up:reviewer` dispatch on the new text remains, it needs 0.3.39 pushed and installed and one `/up:make` review on any task.
+
+Invariants:
+- IV1 — grep: no tier heading beyond Critical / Important / Below Important; ureview 5b is conditional on the block (Verify CK3).
+- IV2 — both output-format tiers carry the three-part Trigger line; the drop rule is stated in Severity and in Rules (CK4).
+- IV3 — ureview 3.3 points at `agents/reviewer.md` → Severity by name, no restated definition (CK5, after db30e53).
+- IV4 — `_principles.md` → Commits is the one definition; `make.md`, `uexecute`, `ureview` point there; `implementer.md` keeps its inline copy (CK6, after db30e53).
+- IV5 — 0.3.38 on base, 0.3.39 on head (CK7).
+
+### Assumptions check
+- AS1 — held on the proxy: two agents given the new text filled the Trigger line on 7 of 7 Critical / Important findings, against 3 of 58 under the parenthetical form.
+- AS2 — held on the proxy: the synthetic public-form XSS came out Critical with a full Trigger line; not exercised on a real dispatch yet.
+
+### Unknowns outcome
+- UK1 — still-open: needs five real dispatches on 0.3.39 to count Below Important smells the owner acts on.
+- UK2 — still-open: not tested; `implementer.md` keeps the inline copy, which is safe either way.
+
+Review findings:
+- Important: ureview 3.3 applied the code-trigger Important definition to `up:requirements-reviewer` findings too, against the Design's scope line — resolved, d0ec7f1 (scoped to `up:reviewer` findings).
+- Important: the Important definition named only runtime damage, leaving a doc-only repo with no path to Important — resolved, d0ec7f1 (one clause: for a prose file the input is a stage run, the wrong result its wrong decision); the proxy had already graded two prose defects Important, so the clause removes an ambiguity, not an observed miss.
+- Important: dropping the "≥ 80 when found" clause let the 0-25 "stylistic" rubric row swallow scan hits before the shelf — resolved, d0ec7f1 (explicit floor: a scan-item hit is ≥ 80 by definition; step 3 decides the tier).
+
+Verified by: the review dispatch ran the 0.3.36 agent text (session loaded before the 0.3.38 install); the new text was exercised only through the two proxy agents in Verify.
+
+### Deferred
+- `up:requirements-reviewer` calibration → a later task, after the audit measures it.
 
 ### Deviations from plan
 - `_principles.md` "How to use" gained a Commits bullet (bfd4baa) — consistency pass: every other single-home rule in that file is listed there.
