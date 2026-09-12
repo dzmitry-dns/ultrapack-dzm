@@ -102,7 +102,7 @@ For every finding:
 
 1. Restate in your own words. If you can't restate it, ask the reviewer to clarify — don't guess.
 2. Verify against the codebase. Does the issue actually exist as described? Open the file, read the lines.
-3. Re-grade the tier as probability × damage. The reviewer's tier is an input, not the answer: name who triggers the finding and how often in real usage. A finding that needs two operators on the same row inside one request window, or a state no existing code path produces yet, drops to Important at most, and to "deferred with justification" when the fix is more than one line.
+3. Re-grade the tier as probability × damage. The reviewer's tier is an input, not the answer: apply the Important definition in `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md` → Severity (a named input that exists today, and a wrong result, lost or doubled write, exposure, crash, or failing build). A finding that fails it is deferred with justification, not fixed as Important. A finding that needs two operators on the same row inside one request window, or a state no existing code path produces yet, drops to Important at most, and to "deferred with justification" when the fix is more than one line.
 4. Evaluate technically: is the suggested fix right for *this* codebase and the Design?
 5. Decide: implement, push back with technical reasoning, or escalate to the user.
 </required>
@@ -140,6 +140,10 @@ For every fix, run the consistency pass (same rule as `up:uexecute`): if you're 
 
 If fixes are substantial, re-dispatch the reviewer on the new diff.
 
+### 5b. Below Important
+
+The reviewer's `### Below Important` block (when present) skips steps 2-4. Open each line once: a wording entry that checks out is applied, all of them in one commit `fix: review text fixes`; a duplicate or smell entry is appended to `## Code smells` as `file:line — smell` and decided at Future work. Nothing in the block changes the merge verdict.
+
 ### 6. Write the `## Conclusion`
 
 Replace the placeholder line only. Any `### Handoff — <date>` blocks that follow it (written by `/up:summary`) stay below the written Conclusion.
@@ -167,9 +171,10 @@ Invariants:
 ### Known risks   (omit entire subsection if none; execute creates it when a plan gap was left to raise)
 - <risk> — <why it was left and what would resolve it>
 
-Review findings:   (omit entire subsection if no Critical or Important)
+Review findings:   (omit entire subsection if no Critical, Important, or text fixes)
 - Critical: <resolved, how>
 - Important: <resolved or explicitly deferred with justification>
+- Text fixes: N applied (<sha>)   (omit when none)
 
 Scope flag:   (omit unless reviewer raised one — never auto-act; surface verbatim for the user)
 - <reviewer's flag, 1-2 sentences>
