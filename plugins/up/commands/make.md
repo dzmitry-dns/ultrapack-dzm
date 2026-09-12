@@ -22,7 +22,7 @@ Before creating a new task file, check if the slug already exists — scan `docs
 
 Status format: `<enum> — <optional annotation>`. The enum is everything before the first ` — `; the annotation is free text (dates, PR links, ship notes). Enum values: `design`, `planning`, `executing`, `verifying`, `reviewing`, `validating`, `done`, `shipped`, plus `reference` for epic overview files. Reopening a task = setting Status back to an earlier enum value with a dated annotation (e.g. `executing — reopened 2026-08-01, edge case PROJ-1204`). Ignore header fields you don't recognize — older files may carry retired ones.
 
-- Exists: read `**Status:**` from the header. Resume from the next stage:
+- Exists: read `**Status:**` from the header. If the file ends with one or more `### Handoff — <date>` blocks, read the latest one first — it holds what the previous session left uncommitted or undecided, and its first action. Resume from the next stage:
   - `design` → continue design
   - `planning` → run `up:uplan`
   - `executing` → run `up:uexecute`
