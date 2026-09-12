@@ -1,85 +1,77 @@
 ---
-description: Produce a summary so another session can continue with zero context beyond CLAUDE.md, the codebase, and the summary itself. Asks whether to append to the current task file or create a new summary task file.
+description: End a session so the next one can continue — append a dated Handoff block to the active task file and print the one-line prompt for the next session. Runs in the main session in one turn, no subagent, no transcript.
 ---
 
 # /up:summary
 
-Prepare a handoff summary so another agent session can continue this work without the current conversation. Drafting is delegated to the `up:summarizer` subagent, cheaper than the main-session model, so the expensive main-session model doesn't write the long structured prose. The subagent locates this session's JSONL transcript on disk using a distinctive phrase you pass to it, then reads it directly.
+Write the handoff from what this session already knows. The task file carries the state; the prompt is a pointer to it. One turn, one side effect (the append), no questions unless the active task file is genuinely ambiguous.
 
 ## Process
 
-### 1. Pick a distinctive phrase from the current conversation
-
-Choose a verbatim string that uniquely identifies this session — something unusual enough not to match any other session's JSONL:
-- A recent user quote with unusual wording.
-- An error message or stack-trace line.
-- A commit hash or file path that's specific to this session.
-- A made-up term, slug, or identifier coined this session.
-
-Avoid generic phrases ("fix the bug", "run tests") — they'll match many sessions.
-
-Pick 1–2 phrases. The subagent tries the first; if it matches 0 or >1 file, it falls back to the second.
-
-### 2. Detect the active task file
+### 1. Detect the active task file
 
 ```bash
 ls -t docs/tasks/*.md docs/tasks/*/*.md 2>/dev/null | head
 ```
 
-The active task file is the most-recently-modified entry whose `**Status:**` enum (the text before the first ` — `) is not `done`, `shipped`, or `reference`. If none qualify, pass `null`.
+The active task file is the most recently modified entry whose `**Status:**` enum (the text before the first ` — `) is not `done`, `shipped`, or `reference`. If more than one qualifies, take the one this session edited. Ask only if that still leaves more than one. None → see "No active task file" below.
 
-### 3. Dispatch the `up:summarizer` subagent
+### 2. Ground the state in git
 
-<required>
-Drafting runs in the subagent, not in the main session. Dispatching is not optional — drafting in the main session puts long structured output on the expensive model this command exists to avoid.
-</required>
-
-State one line before dispatching and one line when the draft returns — see `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Dispatch narration.
-
-Dispatch via the Agent tool with `subagent_type: up:summarizer` and a prompt containing:
-- Working directory (absolute).
-- One or two distinctive phrases from step 1 — verbatim, exactly as they appear in the conversation.
-- Active task file path, or `null`.
-
-**Dispatch prompt skeleton** (guidance):
-
-```
-Working directory: <absolute path>
-Distinctive phrases: <phrase 1> | <phrase 2, optional>
-Active task file: <docs/tasks/<slug>.md | null>
+```bash
+git status --short
+git log -3 --oneline
 ```
 
-The subagent greps JSONL files under the encoded-cwd projects dirs to locate this session's transcript, then reads it. Do not paste the transcript into the prompt.
+The block reports committed and uncommitted work from this output, not from memory.
 
-### 4. Receive the draft
+### 3. Append the Handoff block
 
-The subagent returns prose beginning with `Draft summary below — main session decides destination.` followed by the eight-section summary (Goal / Problem / Infrastructure / Current state / Active blocker / Key files / What to do next / Gotchas).
+Append at the end of the task file, after `## Conclusion`. English, 5–12 bullets. Earlier Handoff blocks stay; the newest is always last.
 
-Quote the draft verbatim back to the user. Do not rewrite — if something is missing, ask the subagent to revise rather than silently patching on the main model.
+```markdown
+### Handoff — YYYY-MM-DD
+- Position: <stage or plan phase>; committed: <last sha, short name>; uncommitted: <files, or "none">
+- Decided: <decision>, because <reason>
+- Dead end: <what was tried>, <why it failed>
+- Open: <question waiting on the owner>
+- First action: <one line, a command where possible>
+```
 
-If the subagent reports it couldn't uniquely locate the JSONL (zero matches or multiple matches on both phrases), pick a different phrase and re-dispatch.
+`Decided` and `Dead end` repeat as needed and are omitted when empty; `Open` is at most one line. When step 2 shows uncommitted changes, `First action` starts with committing them.
 
-### 5. Ask the user where to put it
+Only what the file and git do not already say: decisions taken in chat and their reasons, dead ends, the open question, the next step. Do not restate Design, Plan, or the diff.
 
-<required>
-After showing the draft, ask:
+### 4. Print the prompt
 
-1. Append to the current task file's `## Conclusion` as a `### Summary — YYYY-MM-DD` subsection (provide the detected `docs/tasks/<slug>.md` path).
-2. Create a new file at `docs/tasks/summary-<new-slug>.md` (propose a slug based on the current work).
+A fenced block so it copies whole:
 
-Pick the destination based on the user's answer. Do not write anywhere without confirmation.
-</required>
+```
+Продолжи docs/tasks/<slug>.md
+```
 
-If no active task file was detected in step 2, option 1 is unavailable — only offer option 2.
+`/up:make` reads the latest Handoff block on resume, so the one line is enough.
 
-### 6. Write
+Below the fence, outside the prompt, one sentence for the owner in the owner's language: where the work stands and what happens next.
 
-Perform the write in the main session using Edit (append) or Write (new file). The subagent has no write tools.
+## No active task file
+
+Print the prompt with the state inline and touch no file:
+
+```
+Goal: <one sentence>
+- Position: ...
+- Decided: ...
+- Dead end: ...
+- Open: ...
+- First action: ...
+```
+
+Same owner sentence below the fence.
 
 ## Rules
 
-- Subagent locates the JSONL, drafts the summary; main session picks the phrase, asks, and writes.
-- Concrete: exact commands, exact paths, exact error messages.
-- Terse: bullets over prose. No filler.
-- Include only info that can't be derived from code or git history. Don't restate `CLAUDE.md`.
-- Never write without confirmation.
+- Main session only: no subagent, no transcript lookup, no JSONL.
+- One side effect: the append. No commit, no new file, no other edit.
+- At most one question, and only to pick between several in-flight task files edited this session.
+- Concrete: exact paths, exact commands, exact error text. Bullets, no prose.
