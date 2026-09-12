@@ -1,6 +1,6 @@
 # Handoff prompt: replace the summarizer round-trip with a prompt written from the live context
 
-**Status:** verifying — PH1-PH3 committed 2026-09-12 (07a3d01, 5b97cf0, 844d289)
+**Status:** reviewing — verify passed 2026-09-12 after fix 0e33390
 **Branch:** main
 **Goal:** `/up:summary` on cccc-monorepo, in one main-session turn with no subagent and no question, appends a dated `### Handoff` block to the active task file and prints a one-line prompt (`Продолжи docs/tasks/<slug>.md`); the next session, given only that line, reads the block via `/up:make` resume and starts with the recorded first action. Confirmed by one real handoff on cccc-monorepo, not by the diff alone.
 
@@ -159,7 +159,23 @@ none (doc-only). Verification is install-and-invoke: install 0.3.37, run `/up:su
 Backwards compatibility: the summarizer agent is removed in PH1 together with its last references (`summary.md`, README), so no dangling `subagent_type`; old `### Summary —` blocks in cccc task files stay untouched; PH2's sentence is conditional on a Handoff block, so files without one resume exactly as before (IV1).
 
 ## Verify
-<empty — filled by up:uverify>
+
+**Result:** passed
+
+Happy-path:
+- CK1 — active-file detection: run the shipped command under zsh in a repo with no epic folder — broke, then held after 0e33390: the inherited `ls -t docs/tasks/*.md docs/tasks/*/*.md` printed `zsh: no matches found` and ran nothing, so the command would have taken the "no task file" path; replaced with `find -maxdepth 2`, re-run under zsh here and in cccc-monorepo (epic folder plus archive present), both list the task files.
+- CK2 — `ureview` clobbers a `### Handoff` block that sits after `## Conclusion` — held: its write template replaces the placeholder, and dated `###` subsections are the documented living-log form (`ureview/SKILL.md:186`); watch on the first live run.
+
+Negative:
+- CK3 — prompt template `docs/tasks/<slug>.md` misleads for an epic child (`docs/tasks/messaging/` exists in cccc) — broke, then held after 0e33390: step 4 now says to use the real path.
+
+Invariants / assumptions:
+- CK4 (IV1, IV5) — `git show 5b97cf0 --stat`: one line changed in `make.md`, the new sentence is conditional on a Handoff block, template untouched — held.
+- CK5 (IV2, IV3) — `grep -rn summarizer plugins/up README.md CLAUDE.md` empty; `summary.md` has no `Agent`, no JSONL, no `disable-model-invocation` — held.
+
+Smoke: steps 1 and 2 of the shipped command run by hand under zsh in this repo and in cccc-monorepo → correct file lists and git output. A live `/up:summary` needs the 0.3.37 install, so it was not run here.
+
+Goal: proxy only — the structural checks cover the text and the shell commands; one real handoff on cccc-monorepo after installing 0.3.37, then a new session started with the one printed line, remains (UK1 too).
 
 ## Conclusion
 <empty — filled by up:ureview>
