@@ -1,6 +1,6 @@
 # Handoff prompt: replace the summarizer round-trip with a prompt written from the live context
 
-**Status:** reviewing — verify passed 2026-09-12 after fix 0e33390
+**Status:** validating — reviewed 2026-09-12 (212233a); awaiting push, install of 0.3.37, and one live handoff on cccc-monorepo
 **Branch:** main
 **Goal:** `/up:summary` on cccc-monorepo, in one main-session turn with no subagent and no question, appends a dated `### Handoff` block to the active task file and prints a one-line prompt (`Продолжи docs/tasks/<slug>.md`); the next session, given only that line, reads the block via `/up:make` resume and starts with the recorded first action. Confirmed by one real handoff on cccc-monorepo, not by the diff alone.
 
@@ -178,4 +178,29 @@ Smoke: steps 1 and 2 of the shipped command run by hand under zsh in this repo a
 Goal: proxy only — the structural checks cover the text and the shell commands; one real handoff on cccc-monorepo after installing 0.3.37, then a new session started with the one printed line, remains (UK1 too).
 
 ## Conclusion
-<empty — filled by up:ureview>
+
+Outcome: the pack change is complete at 212233a; the Goal still needs one real handoff on cccc-monorepo after 0.3.37 is pushed and installed, then a new session started with the printed line.
+
+Invariants:
+- IV1 — `git show 5b97cf0`: one sentence added to the "Exists:" bullet, conditional on a Handoff block; no other resume line changed.
+- IV2 — command name unchanged; `grep -rn summarizer plugins/up README.md` empty after 07a3d01, which also deleted the agent file.
+- IV3 — `summary.md` contains no `Agent` dispatch, no JSONL or transcript step; the rule is stated in its `## Rules`.
+- IV4 — `summary.md` step 1 asks only when several in-flight files were edited this session; no other question in the command.
+- IV5 — task file template and `make.md` steps 3-12 untouched (`git diff 7abd3f6..HEAD -- plugins/up/commands/make.md` is the one line).
+
+### Assumptions check
+- AS1 — unverifiable from the diff; the two hand-written handoffs on record (2026-09-08, run D) support it, the live run will confirm.
+- AS2 — unverifiable from the diff; `make.md` step 2 now reads the block on resume, and a plain read of the whole file reaches it because the block is last.
+
+### Unknowns outcome
+- UK1 — still-open: needs a handoff after a harness compaction, which only real use produces.
+
+### Deviations from plan
+- `plugins/up/skills/ureview/SKILL.md` step 6 gained two lines (212233a), outside the plan's file list — review showed the Conclusion template would otherwise let a heading-to-end rewrite drop Handoff blocks written before review.
+- `summary.md` step 1 uses `find -maxdepth 2` instead of the inherited `ls` glob (0e33390) — under zsh the unmatched glob aborts the command (Verify CK1).
+
+Review findings:
+- Important: Handoff block sits inside the Conclusion section and `ureview` could overwrite it — resolved, 212233a (placeholder-only rule in `ureview` step 6).
+- Important: description and README defined the command by what the deleted agent did ("no subagent, no transcript") — resolved, 212233a.
+
+Verified by: one `up:reviewer` dispatch on Fable; the live `/up:summary` run on cccc-monorepo is deferred to the owner after install.
