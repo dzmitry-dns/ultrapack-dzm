@@ -1,6 +1,6 @@
 # Reviewer calibration: severity by real trigger, and no commit trailers from any stage
 
-**Status:** planning
+**Status:** executing
 **Branch:** main
 **Goal:** After the change, an `up:reviewer` dispatch reports as Important only findings with a named input that exists in today's code (or in a change the task file names) and produces a wrong result, a lost or doubled write, an exposure, a crash, or a failing build; every reported finding carries a three-part Trigger line (who, how often, what breaks); text nits land in a separate no-severity block. Separately, no commit made by any pack stage (including the `/up:make` Status-transition commits) carries a `Co-authored-by` or other trailer, stated once pack-wide. Confirmed by one `up:reviewer` dispatch on this task's own diff (Trigger line present on every finding, no wording-only finding above the text block) and by the commits of this task carrying no trailer.
 
@@ -53,7 +53,71 @@ TDD: no (reason: doc-only plugin, no runtime code; verified by one reviewer disp
 - UK2 — Whether a dispatched agent can read `${CLAUDE_PLUGIN_ROOT}` paths at all; if yes, `implementer.md` could point at the Commits section instead of keeping the inline copy.
 
 ## Plan
-<empty — filled by up:uplan; gains ### Rollout / ### Rollback when the change ships to a live system>
+
+Approach: edit the five prose files in place, one commit per file group, reviewer first so the ureview edit can name the definition it points at; bump last. Line numbers are from `main` at 1e0c9d7.
+
+### PH1 — reviewer.md: severity needs a named trigger
+
+- **1.1** `plugins/up/agents/reviewer.md:49` (modify)
+  - Replace the `(all are ≥ 80 confidence when found)` clause with two sentences: finding a scan item sets confidence, never severity; confidence says the issue is real, severity says it costs something, and a duplicated helper is fully real and usually costs nothing.
+  - Respects: IV1
+- **1.2** `plugins/up/agents/reviewer.md:58-72` (modify), section `### 3. Severity`
+  - Line 64 `Critical`: append one clause, a public or unauthenticated caller counts as high frequency whatever the traffic, so stored or rendered attacker-controlled content is Critical.
+  - Line 65 `Important`: replace with the one-sentence definition from Design point 2 (named input existing today or in a change the task file names; wrong result, lost or doubled write, exposure, crash, or failing build). Follow with one sentence listing what never reaches Important on its own (duplicated logic, naming drift, wording, file placement, type shape) and where it goes instead (`Below Important`).
+  - Lines 67-70 (two-operator race sentence): keep.
+  - Line 72: replace `No "Suggestion" tier. If it's below Important, don't report it.` with: real findings below Important go to `### Below Important`, at most 5, no fix line; a finding with no fillable Trigger is dropped, not downgraded.
+  - Respects: IV1, IV2, IV3
+- **1.3** `plugins/up/agents/reviewer.md:91-104` (modify), `## Findings` in the output format
+  - Lines 94 and 98: `- **<file:line>** — <issue> (confidence: NN)` plus a required second line `  Trigger: <who> · <how often> · <what breaks on that input>`; keep the `Fix:` line.
+  - After the `### Important` block, before `### Scope flag`: add `### Below Important (no fix required)   (omit when empty; max 5)` with one sample line `- <file:line> — <one line: wording, duplicate, bleed>`.
+  - Respects: IV1, IV2, AS1
+- **1.4** `plugins/up/agents/reviewer.md:110-114` (modify), `## Rules`
+  - Line 113: `No "Suggestion" tier — Critical, Important, or Below Important`.
+  - Add one rule: a Critical or Important finding whose Trigger line cannot be filled in all three parts is dropped, not downgraded.
+  - Respects: IV2, AS2
+- Commit: `fix(reviewer): Important needs a named trigger; Below Important shelf for real nits`
+
+### PH2 — ureview: same definition, handle the shelf
+
+- **2.1** `plugins/up/skills/ureview/SKILL.md:105` (modify), step 3.3
+  - Replace the second sentence onward with: apply the reviewer's own Important definition (`agents/reviewer.md` → Severity) to the finding; a finding that fails it is deferred with justification, not fixed as Important. Keep the two-operator race example.
+  - Respects: IV3
+- **2.2** `plugins/up/skills/ureview/SKILL.md:133` area (modify), after step 5 `Apply fixes`
+  - Add step `### 5b. Below Important`: no fair-evaluation loop; wording entries that check out are applied in one commit `fix: review text fixes`; duplicate or smell entries are appended to `## Code smells` as `file:line — smell`; nothing here changes the merge verdict.
+  - Respects: IV1
+- **2.3** `plugins/up/skills/ureview/SKILL.md:170-172` (modify), Conclusion template
+  - Under `Review findings:` add the optional line `- Text fixes: N applied (<sha>)   (omit when none)`.
+  - Respects: IV1
+- Commit: `fix(ureview): re-grade by the reviewer's Important definition; handle Below Important`
+
+### PH3 — Commits rule, single home
+
+- **3.1** `plugins/up/skills/_principles.md:17` (modify), new section `## Commits` between "Manual-only skills" and "Dispatch narration"
+  - Three sentences: every commit made by any stage, or by `/up:make` at a Status transition, is English, `<type>: <concise>`, and carries no `Co-authored-by` or other trailer; this is the single home; callers only point here.
+  - Respects: IV4
+- **3.2** `plugins/up/commands/make.md:197` (modify), `## Rules`, add after the last bullet
+  - `- Every commit this flow makes (task file, Status transitions) follows \`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md\` → Commits: no trailer of any kind`.
+  - Respects: IV4
+- **3.3** `plugins/up/skills/uexecute/SKILL.md:58` (modify)
+  - `3. Commit the phase; message rules in \`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md\` → Commits.`
+  - Respects: IV4
+- **3.4** `plugins/up/agents/implementer.md:53`: unchanged (Design: inline copy stays; UK2).
+- Commit: `docs(principles): single home for commit message rules; make and uexecute point there`
+
+### PH4 — version
+
+- **4.1** `plugins/up/.claude-plugin/plugin.json` (modify): read the version fresh, bump one patch (0.3.38 → 0.3.39 if unchanged).
+  - Respects: IV5
+- Commit: `chore(up): bump plugin version to 0.3.39`
+
+### Test strategy
+none (doc-only plugin). Verify runs `claude plugin validate plugins/up`, greps for IV2-IV4, and one reviewer dispatch on this diff.
+
+### Risks
+- RK1 — This session loaded the pack at 0.3.36, so an `up:reviewer` dispatch here runs the old agent text; verify uses a proxy (a general-purpose agent given the new `reviewer.md` body verbatim plus BASE/HEAD) and the Goal's real dispatch waits for the 0.3.39 install, Status stays `validating` until then.
+- RK2 — The narrowed Important definition could drop a real duplication the owner wanted fixed; the `Below Important` shelf keeps it visible, and UK1 measures it over the next five dispatches.
+
+Backwards compatibility: no phase removes a tier, a section, or a command; PH2.2 is a new step that runs only when the block is present, so a reviewer output without it (the 0.3.36 agent, or any older install) goes through steps 2-5 unchanged.
 
 ## Verify
 <empty — filled by up:uverify>
