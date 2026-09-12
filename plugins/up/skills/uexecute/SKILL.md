@@ -55,7 +55,7 @@ For each phase:
 <required>
 1. Announce the phase in one line ("PH2: <name>, starting").
 2. Implement the phase's bullets and nothing beyond them: stop short of actions that are clearly beyond what the plan asks. Dispatch `up:explorer` when you need codebase context beyond a quick Grep (below); stop and ask on ambiguity.
-3. Commit the phase. Message in English, `<type>: <concise>`; never add `Co-authored-by` or any other trailer.
+3. Commit the phase; message rules in `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Commits.
 4. **Plan-diff check.** Read the phase's commit (`git show <sha>`). For every plan bullet in this phase: is it reflected in the diff? For every change in the diff: is it covered by a bullet, or by a recorded deviation? Any unreported structural gap → record as a deviation and fix forward.
 5. **Consistency pass.** If the phase tightened a rule, renamed a symbol, or changed a pattern in one spot, grep the diff and the wider repo for the same pattern. Apply the same change everywhere in the same commit.
 6. Mark the phase `completed`.

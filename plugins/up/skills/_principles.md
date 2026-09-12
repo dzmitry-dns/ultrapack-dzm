@@ -15,6 +15,10 @@ GPC1–GPC8. Apply to every task unless clearly irrelevant. Deviations name the 
 
 A skill with `disable-model-invocation: true` (since 0.3.34: e, try, reflect, step-back, test-driven-development, git-worktrees, job-guardian, udocument) is invisible to the model and cannot be invoked through the Skill tool. A stage skill that needs its content reads the file at `${CLAUDE_PLUGIN_ROOT}/skills/<name>/SKILL.md`; a stage that wants the user to run it says "type `/up:<name>`". Never write "invoke `up:<name>`" for one of these. This is the single home of the rule; callers only point here.
 
+## Commits
+
+Every commit made by any stage, or by `/up:make` at a Status transition, is English, `<type>: <concise>`, and carries no `Co-authored-by` or any other trailer. This is the single home of the rule; callers only point here.
+
 ## Dispatch narration
 
 Before dispatching a subagent (`Agent` tool call) and after it returns, state one line: what's being dispatched / what it returned. The user sees no tool calls, only text — an unannounced dispatch reads as silence. This is the single home of the rule; callers only point here.
@@ -34,5 +38,6 @@ A pointer plus a sentence; the next reader opens the line. Recorded smells are `
 
 - `up:udesign` — surface GPC tradeoffs (layering, SSOT, fail-fast, debuggability) as Design decisions; reference by ID. Task-specific PCs only when deviating from a GPC or adding a rule the GPCs don't cover.
 - `up:uplan` — every phase consistent with GPCs; deviating bullets cite the GPC and why.
+- Commits — `/up:make`, `up:uexecute`, `up:ureview` point here for every commit they make.
 - `up:udebug` — anti-whack-a-mole: name the pattern behind a bug and grep for the same shape before closing (not a GPC, same family).
 - Incidental code smells — `up:udesign` / `up:uplan` fold an in-scope or easy fix into the design/plan, else record to `## Code smells`; `up:uexecute` fixes in-scope/easy ones, records the rest; `up:explorer` / `up:implementer` report passed smells in their output for the dispatcher to act on.

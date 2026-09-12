@@ -195,6 +195,7 @@ Stop and ask the user when:
 - Keep the task file as the single source of truth — each stage reads it, each stage writes to it
 - External spec / design docs (e.g. anything under `docs/specs/`) are read-only during execute. If a stage finds the spec is wrong, surface it to the user — don't mutate it silently
 - Don't assume prior session memory — the next agent may be a fresh context reading only the task file
+- Every commit this flow makes (task file, Status transitions) follows `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Commits: no trailer of any kind
 
 ## Terminal state
 
