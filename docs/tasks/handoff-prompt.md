@@ -1,11 +1,37 @@
 # Handoff prompt: replace the summarizer round-trip with a prompt written from the live context
 
-**Status:** design — 2026-09-11, research complete (handoff usage sweep, session-opener sweep, upstream summary check); design not started; see "Research findings" and "Next session" below
+**Status:** planning — design approved 2026-09-12
 **Branch:** main
-**Goal:** Ending a session inside `/up:make` (or ad hoc) costs one short main-session turn and yields a copy-pasteable prompt that the next session consumes as reliably as today's `/up:summary` draft; the summarizer subagent, the JSONL phrase search, and the "where to save" question are no longer on the path. Confirming it needs at least one real handoff on cccc-monorepo, not just the diff.
+**Goal:** `/up:summary` on cccc-monorepo, in one main-session turn with no subagent and no question, appends a dated `### Handoff` block to the active task file and prints a one-line prompt (`Продолжи docs/tasks/<slug>.md`); the next session, given only that line, reads the block via `/up:make` resume and starts with the recorded first action. Confirmed by one real handoff on cccc-monorepo, not by the diff alone.
 
 ## Design
-<empty — filled by up:udesign next session; the owner's constraints and the evidence are below>
+
+Purpose: replace the summarizer round-trip (subagent, JSONL phrase search, verbatim re-quote, destination question) with a write the main session does itself from the context it already holds. Measured on 4 real runs, the old path cost 2.7M to 7.7M cache-read tokens and 3 to 8 minutes per handoff and failed its transcript search every time; the two hand-written prompts (2026-09-08, run D) took under a minute and were consumed identically.
+
+Chosen approach: rewrite `/up:summary` in place (same name, so the checkpoint line in `make.md` and the owner's habit keep working), delete `agents/summarizer.md`, and make the task file carry the handoff so the prompt can be a single pointer.
+
+What the rewritten command does, in order:
+1. Detect the active task file: the most recently modified `docs/tasks/**/*.md` whose Status enum is not `done`, `shipped`, or `reference`. If several qualify, take the one this session edited. Ask only if that still leaves more than one.
+2. Ground state with `git status --short` and `git log -3 --oneline`, so the block reports what is committed and what is not from evidence, not memory.
+3. Append `### Handoff — YYYY-MM-DD` at the end of the task file (after `## Conclusion`), English, 5-12 bullets, only what the file and git do not already hold: position in the plan (phase, committed vs uncommitted), decisions taken in chat with reasons, dead ends tried, open question waiting on the owner, first action for the next session. No section is re-owned: `## Conclusion` stays `ureview`'s; blocks stack by date, newest last, and remain as history after `done`.
+4. Print the prompt in a fenced block so it copies whole: one line, `Продолжи docs/tasks/<slug>.md`. Below the fence, outside the prompt, one sentence for the human in the owner's language: where the work stands and what happens next (run D showed a model-oriented prompt does not orient the owner hours later).
+5. No commit: the command does not commit the task file; the block's first-action bullet says "commit the task file" when there are uncommitted changes, and the normal stage flow commits as usual.
+
+No active task file (ad hoc session, e.g. the Bun 1.4 decision): print the prompt with a Goal line and the same bullets inline, touch no file. This matches run A, which was consumed from chat.
+
+`/up:make` step 2 (resume check) gains one sentence: if the task file ends with one or more `### Handoff — <date>` blocks, read the latest one before resuming at the Status stage. This is what makes the one-line prompt sufficient. The task file template, steps 5-12, and the context checkpoint text are untouched; the checkpoint keeps saying "consider `/up:summary`".
+
+Rejected alternatives:
+- New command name with `/up:summary` kept or deleted: two mechanisms for one purpose, or a rename the owner has to relearn; "improve, never break" argues for in-place.
+- Handoff block inside `## Conclusion` as `### Summary — <date>` (today's convention): `ureview` fills Conclusion later and could clobber or trip over it.
+- Prompt carries the whole delta with no file write: measured pasted recaps cost about twice the turns of a pointer, and a closed chat loses the delta.
+- Keep `summarizer` for the no-task-file case: keeps the broken transcript search alive for one rare path.
+
+Backwards compatibility: nothing outside `commands/summary.md` and README references `up:summarizer` (checked in this repo, cccc-monorepo, and the global CLAUDE.md). Five cccc task files hold old `### Summary —` blocks; nothing reads them programmatically, they stay. `/up:make` resume behavior for files without a Handoff block is unchanged.
+
+Parallel work: `docs/tasks/upstream-integration.md` is being executed in another session and may touch `make.md` (template, Context section) and `plugin.json` (version). This task edits `make.md` step 2 only, one sentence; merge conflicts are limited to that line and the version number.
+
+TDD: no (reason: doc-only plugin prose, no runtime code; verified by install-and-invoke on a real cccc-monorepo handoff).
 
 ### Owner constraints (stated 2026-09-11)
 - Ultrapack works today. Improve it; never break the working flow. Any change must keep `/up:make` resume (step 2, Status-driven) behaving exactly as now.
@@ -60,32 +86,28 @@ Observations:
 
 Design implication (for `up:udesign` to confirm): the cheapest consumed handoff is a pointer to the task file plus a small delta, not a narrative. The prompt should be short, name the task file and the Status, and carry only what the task file does not yet hold.
 
-### Candidate shapes to evaluate in design (not decided)
-- S1: `/up:summary` rewritten to draft in the main session, no subagent; prints a fenced prompt block; optional one-line Status annotation write to the task file. Summarizer agent deleted or kept only for the "no task file, long ad hoc session" case.
-- S2: new command (name to be chosen with the owner) that prints only the prompt: `/up:make <slug>` line plus the delta not yet in the task file (decisions with reasons, in-flight state, dead ends, first action, do-not list). Task file stays the single source of truth; the prompt is a pointer plus delta.
-- S3: same as S2 but the context checkpoint in `make.md` offers it directly instead of suggesting `/up:summary`.
-- Native alternative to compare against, not replace: `/compact` with instructions, `claude --resume`.
-
 ### Prior art
 - `docs/tasks/summary-sonnet.md` — moved drafting to a Sonnet subagent to save main-model output; the measured cost now sits in re-read input, which that design did not anticipate.
 - `docs/tasks/session-hygiene.md` — context checkpoint in `make.md` steps 8-10 currently points at `/up:summary`; must be repointed by this task.
 - `plugins/up/commands/make.md` step 2 (resume check) and the rule "Don't assume prior session memory — the next agent may be a fresh context reading only the task file".
 
 ### Invariants
-- IV1 — `/up:make` resume (step 2) keeps working unchanged: a task file with a valid Status resumes at the same stage as today.
-- IV2 — No existing command or skill stops working mid-migration; if `/up:summary` is renamed or removed, the checkpoint line and any docs pointing at it change in the same commit.
-- IV3 — The handoff never depends on locating a JSONL transcript.
+- IV1 — A task file with a valid Status and no Handoff block resumes in `/up:make` exactly as today; the only step 2 change is reading the latest Handoff block when one exists.
+- IV2 — `/up:summary` keeps its name; the checkpoint line in `make.md` and the README entries stay valid after the change, and `agents/summarizer.md` is removed in the same commit that stops referencing it.
+- IV3 — `/up:summary` never locates or reads a JSONL transcript and never dispatches a subagent.
+- IV4 — `/up:summary` asks the owner at most one question, and only when more than one in-flight task file was edited this session.
+- IV5 — The task file template and `/up:make` steps 3-12 are not edited by this task.
 
 ### Principles
-- PC1 — The task file remains the single source of truth; the prompt carries only what is not in it yet.
-- PC2 — Minimal: one command, no new subagent, no hook.
+- PC1 — The task file is the single source of truth; the Handoff block holds only what the file and git do not already say, and the prompt holds only the pointer.
+- PC2 — The command has one side effect, the append to the task file; no commit, no new files, no hook.
 
 ### Assumptions
-- AS1 — The main session can write an adequate prompt from its own context in one turn (evidence: 2026-09-08 and run D).
+- AS1 — The main session can write an adequate Handoff block and prompt from its own context in one turn (evidence: 2026-09-08 and run D).
+- AS2 — A fresh session given only `Продолжи docs/tasks/<slug>.md` invokes `/up:make` resume or reads the whole file, so the trailing Handoff block is seen either way.
 
 ### Unknowns
-- UK1 — Whether the prompt alone is enough when the session was compacted before the handoff (context already summarized by the harness).
-- UK2 — Whether to write the delta into the task file as well, so a lost clipboard is recoverable, or keep the prompt chat-only.
+- UK1 — Whether the block is complete enough when the session was compacted by the harness before the handoff; only a real post-compaction handoff will show it.
 
 ## Plan
 <empty — filled by up:uplan>
@@ -95,6 +117,3 @@ Design implication (for `up:udesign` to confirm): the cheapest consumed handoff 
 
 ## Conclusion
 <empty — filled by up:ureview>
-
-## Next session
-Run `/up:make handoff-prompt`; it resumes at `design`. Start `up:udesign` from the "Candidate shapes" list and the findings above. Related task: `docs/tasks/upstream-integration.md` (independent, can run first or second).
