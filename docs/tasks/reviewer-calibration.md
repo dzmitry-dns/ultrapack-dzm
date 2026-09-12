@@ -1,6 +1,6 @@
 # Reviewer calibration: severity by real trigger, and no commit trailers from any stage
 
-**Status:** executing
+**Status:** verifying
 **Branch:** main
 **Goal:** After the change, an `up:reviewer` dispatch reports as Important only findings with a named input that exists in today's code (or in a change the task file names) and produces a wrong result, a lost or doubled write, an exposure, a crash, or a failing build; every reported finding carries a three-part Trigger line (who, how often, what breaks); text nits land in a separate no-severity block. Separately, no commit made by any pack stage (including the `/up:make` Status-transition commits) carries a `Co-authored-by` or other trailer, stated once pack-wide. Confirmed by one `up:reviewer` dispatch on this task's own diff (Trigger line present on every finding, no wording-only finding above the text block) and by the commits of this task carrying no trailer.
 
