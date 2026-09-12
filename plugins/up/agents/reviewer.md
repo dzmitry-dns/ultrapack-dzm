@@ -69,7 +69,7 @@ existing code path produces yet, is Important at most, and only when the fix is 
 data risk; otherwise leave it out. A concurrent-operator race on a low-traffic admin UI is not
 Critical, whatever the damage would be.
 
-Real findings below Important go to `### Below Important`: at most 5, one line each, no Fix line, no confidence. A Critical or Important finding whose Trigger line cannot be filled in all three parts is dropped, not downgraded.
+Real findings below Important go to `### Below Important`: at most 5, one line each, no Fix line, no confidence number printed (the ≥ 80 gate still applies). A Critical or Important finding whose Trigger line cannot be filled in all three parts is dropped, not downgraded.
 
 ## Bash use
 

@@ -94,6 +94,7 @@ Receive the reviewer's output. Do not immediately reply with fixes or pushback. 
 - Critical: fix before proceeding
 - Important: fix before merge
 - Plan finding: the plan itself may be wrong
+- Below Important: no verdict needed; handled in step 5b
 
 ### 3. Evaluate each item fairly
 
@@ -102,7 +103,7 @@ For every finding:
 
 1. Restate in your own words. If you can't restate it, ask the reviewer to clarify — don't guess.
 2. Verify against the codebase. Does the issue actually exist as described? Open the file, read the lines.
-3. Re-grade the tier as probability × damage. The reviewer's tier is an input, not the answer: apply the Important definition in `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md` → Severity (a named input that exists today, and a wrong result, lost or doubled write, exposure, crash, or failing build). A finding that fails it is deferred with justification, not fixed as Important. A finding that needs two operators on the same row inside one request window, or a state no existing code path produces yet, drops to Important at most, and to "deferred with justification" when the fix is more than one line.
+3. Re-grade the tier as probability × damage. The reviewer's tier is an input, not the answer: apply the Important definition in `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md` → Severity, as written there. A finding that fails it is deferred with justification, not fixed as Important. A finding that needs two operators on the same row inside one request window, or a state no existing code path produces yet, drops to Important at most, and to "deferred with justification" when the fix is more than one line.
 4. Evaluate technically: is the suggested fix right for *this* codebase and the Design?
 5. Decide: implement, push back with technical reasoning, or escalate to the user.
 </required>
@@ -132,7 +133,7 @@ Applying now."
 
 ### 5. Apply fixes
 
-Fix Critical and Important issues. Commit each as its own logical unit.
+Fix Critical and Important issues. Commit each as its own logical unit; message rules in `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Commits.
 
 <required>
 For every fix, run the consistency pass (same rule as `up:uexecute`): if you're tightening a rule or changing a pattern, grep the diff and the wider repo for the same pattern and apply the change everywhere in the same commit. Do not leave siblings in a mixed state — that's how the reviewer's next round finds the same class of issue four more times.
@@ -142,7 +143,7 @@ If fixes are substantial, re-dispatch the reviewer on the new diff.
 
 ### 5b. Below Important
 
-The reviewer's `### Below Important` block (when present) skips steps 2-4. Open each line once: a wording entry that checks out is applied, all of them in one commit `fix: review text fixes`; a duplicate or smell entry is appended to `## Code smells` as `file:line — smell` and decided at Future work. Nothing in the block changes the merge verdict.
+The reviewer's `### Below Important` block (when present) skips the fair-evaluation loop above (steps 2-4). Open each line once: a wording entry that checks out is applied, all of them in one commit `fix: review text fixes`; a duplicate or smell entry is appended to `## Code smells` as `file:line — smell` and decided at Future work. Nothing in the block changes the merge verdict.
 
 ### 6. Write the `## Conclusion`
 
