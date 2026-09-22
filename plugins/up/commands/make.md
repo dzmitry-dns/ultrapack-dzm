@@ -93,6 +93,8 @@ Based on the task description, classify size:
 - Small — single file or single concept change. Skip Design. Plan runs.
 - Medium / Large — full flow.
 
+A skipped Design leaves one line in `## Design`: `Skipped (<size>): <reason>`.
+
 Default to Medium silently. Jump to Trivial/Small only when the user's wording signals it — e.g. "quickly", "fast", "just", "one-line", "typo", "rename". Confirm before skipping any stage. When genuinely ambiguous, ask.
 
 ### 5. Design stage (unless skipped)
