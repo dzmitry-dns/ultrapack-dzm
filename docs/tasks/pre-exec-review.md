@@ -159,3 +159,10 @@ Revert the three phase commits and update the plugin; no data or state is touche
 
 ## Conclusion
 <empty — filled by up:ureview; after done/shipped grows dated ### Follow-up — <date> / ### Scope change — <date> entries and ### Deferred scope-parking>
+
+### Handoff — 2026-09-22
+- Position: executing, PH1 not started; committed: ea1626a (plan approved, status executing); uncommitted: none (untracked `.claude/` is unrelated to this task, leave it)
+- Decided: the owner approved Design and Plan after two independent review rounds each; all four rounds ran as general-purpose agents on Fable, because `up:plan-reviewer` does not exist yet and the Agent tool has no effort parameter
+- Decided: reviewer dispatches in this task (final `up:ureview` included) use `model: fable` as a dispatch-time override, announced in one line first; the new agent's frontmatter still pins `opus` per Design point 2
+- Decided: work on `main`, one commit per phase (PH1, PH2, PH3), no push until the owner says so
+- First action: `/up:make` resumes into `up:uexecute`; PH1 creates `plugins/up/agents/plan-reviewer.md` and `plugins/up/skills/uplan/review-before-code.md`
