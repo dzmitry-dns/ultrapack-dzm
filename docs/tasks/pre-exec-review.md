@@ -1,6 +1,6 @@
 # Pre-execution review: an independent reviewer on Design and Plan before any code
 
-**Status:** reviewing
+**Status:** validating — live run pending
 **Branch:** main
 **Goal:** In a Medium task, whether started through `/up:make` or by asking for a plan in plain words, an independent reviewer is dispatched automatically after the plan is written and before the plan-approval pause (announced in one line, skippable by the owner); a Large task (by the design signals below) also gets one after design; Small and Trivial get none; a round repeats only while it finds an accepted Critical or Important, at most twice without asking; `/up:make` resume from every Status still works. Confirming it needs one live run on a real Medium task (cccc or this repo), beyond the diff.
 
@@ -185,13 +185,41 @@ Goal: proxy only — the registered `up:plan-reviewer`, fired by `up:uplan` on a
 Notes: round 2 re-ran CK3 only; the fix changed one line of `review-before-code.md` and `plan-reviewer.md` is unchanged since the smoke. Smoke Below Important, for review: a re-plan's round 1 reads already-committed phases as wrong citations; the unchanged `reviewer.md` may report review-fix commits as unplanned.
 
 ## Code smells
-<empty — file:line + one-line smell passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
+- `plugins/up/skills/uplan/review-before-code.md:9` — copies the `make.md:54` Design placeholder string; a template edit silently breaks the plan-point test (GPC4)
 
 ## Conclusion
-<empty — filled by up:ureview; after done/shipped grows dated ### Follow-up — <date> / ### Scope change — <date> entries and ### Deferred scope-parking>
+
+Outcome: the review before code is built, verified, and reviewed (`ef3ace2`..`5cddf73`); the Goal still needs one live run on a real Medium task after push, `claude plugin update up@ultrapack`, and a fresh session.
+
+Invariants:
+- IV1 — make.md hunks only in steps 4, 5, 7 and Rules; resume table and Status enum untouched (CK6)
+- IV2 — the plan point skips a missing, placeholder, or `Skipped` Design, checked on 247 task files (CK3); make step 4 now writes the `Skipped` line (`caba670`)
+- IV3 — the prompt skeleton carries only the Design point 2 inputs; the smoke agent ignored the Handoff block (CK7)
+- IV4 — round 2 only when N is 1 and n ≥ 1; a third only on the owner's request (CK5)
+- IV5 — both reviewer agent files unchanged over `ee14e00`..`5cddf73` (CK8, both review rounds)
+- IV6 — the rules live only in `review-before-code.md`; make.md steps 5 and 7 reduced to pointers in review (CK9)
+- IV7 — tools Glob, Grep, Read, Bash with a read-only Bash list (CK10)
+
+### Assumptions check
+- AS1 — unverifiable yet: counted from the `Reviewed before code` lines of the next five tasks
+- AS2 — unverifiable yet: needs the live run in a fresh session after install
+
+### Unknowns outcome
+- UK1 — still-open: counted from the record lines of the next five tasks
+- UK2 — still-open: measured in the live run; the proxy smoke took 4.3 min on Fable
+- UK3 — resolved: procedure at `plugins/up/skills/uplan/review-before-code.md`, agent `up:plan-reviewer`
+- UK4 — still-open: the live run and the next five cccc task files
 
 ### Deviations from plan
 - 1.2 plan point: a Design whose text opens with `Skipped` also means no review, beyond the placeholder the plan named — verify CK3 found that every Small or Trivial task file with a `## Design` section (5 here, 8 in cccc) replaces the placeholder with such a note, so the placeholder test alone fired the review on Small tasks.
+
+### Known risks
+- A structural re-plan restarts the plan point at round 1 while HEAD already holds the finished phases, so `up:plan-reviewer` reports their citations as wrong and the dispatcher has to reject that noise — raised by the smoke and by the re-review; the fix, an `Executed so far: <phases, SHAs>` prompt field, changes the IV3 input list, so it waits for an owner decision.
+- `agents/reviewer.md` stays frozen (IV5), so the `ureview` step 5 re-dispatch fields work as prompt text only and the reviewer may still list review-fix commits as unplanned — accepted in Design point 5.
+
+Review findings:
+- Important: the `Skipped` exemption rested on no written rule, fixed in `caba670` (make step 4 writes `Skipped (<size>): <reason>`); the final-review re-dispatch had no cap, fixed in `55232e7` (one per review). The re-review's one Important (re-plan noise) is deferred to Known risks: it yields noise the dispatcher rejects, not a wrong edit, and its fix changes IV3.
+- Text fixes: 3 applied (`e28d1f7`), 1 applied (`5cddf73`)
 
 ### Handoff — 2026-09-22
 - Position: executing, PH1 not started; committed: ea1626a (plan approved, status executing); uncommitted: none (untracked `.claude/` is unrelated to this task, leave it)
