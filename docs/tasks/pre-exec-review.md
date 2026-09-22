@@ -1,6 +1,6 @@
 # Pre-execution review: an independent reviewer on Design and Plan before any code
 
-**Status:** executing
+**Status:** verifying
 **Branch:** main
 **Goal:** In a Medium task, whether started through `/up:make` or by asking for a plan in plain words, an independent reviewer is dispatched automatically after the plan is written and before the plan-approval pause (announced in one line, skippable by the owner); a Large task (by the design signals below) also gets one after design; Small and Trivial get none; a round repeats only while it finds an accepted Critical or Important, at most twice without asking; `/up:make` resume from every Status still works. Confirming it needs one live run on a real Medium task (cccc or this repo), beyond the diff.
 
