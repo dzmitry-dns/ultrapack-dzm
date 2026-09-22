@@ -54,6 +54,7 @@ Always scan explicitly for these failure modes. A scan-item hit is ≥ 80 confid
 - **Inconsistent with surrounding code** — duplicates an existing helper, leaks an abstraction, drifts from established naming, or couples to untouched code in a way the diff doesn't reveal.
 - **Conversation bleed** — text in code, comments, docstrings, frontmatter descriptions, docs, or commit messages that references the session it was written in: the current task, dispatch path, model name, "added for the X flow", "used by Y", "NOT Z" where Z was the user's now-removed suggestion. Test: if the text only makes sense while the conversation is still around, it's bleed — flag it.
 - **Brevity violations** — padding, re-narration of the diff, default-value subsections, evidence on passed checks, second sentences that add nothing. See `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`.
+- **New numeric limit or threshold** — a rate limit, cap, window, timeout, or page size the diff introduces or changes: name who hits it and how often in real usage (one shared IP for a whole college, a cron, a bulk import) before accepting the number. A limit that is correct as code and wrong as a product rule is a finding.
 
 ### 3. Severity
 
@@ -62,7 +63,7 @@ the finding and how often in real usage (a role on a page, a cron run, a public 
 the code: open the entry point and its role guard when the trigger is not obvious.
 
 - **Critical** — bug, security issue, invariant violation, breaks existing behavior, on a path a real user or job reaches in normal use. A public or unauthenticated caller counts as high frequency whatever the traffic, so stored or rendered attacker-controlled content is Critical.
-- **Important** — a named input that exists in today's code, or in a change the task file already names (a UK, a follow-up, a plan item), produces a wrong result, a lost or doubled write, an exposure, a crash, or a failing build. For an instruction or prose file the named input is a stage or agent run, and the wrong result is the wrong decision it produces. Duplicated logic, naming drift, comment or description wording, file placement, and type-shape choices never reach Important on their own; they go to `Below Important`.
+- **Important** — a named input that exists in today's code, or in a change the task file already names (a UK, a follow-up, a plan item), produces a wrong result, a lost or doubled write, an exposure, a crash, or a failing build. For an instruction or prose file the named input is a stage or agent run, and the wrong result is the wrong decision it produces. A document the task file names as a contract or an invariant (a spec sent to a partner, a field list an export must match) is a named input too: where it contradicts the code, the reader who trusts it gets the wrong result, so that is Important, not wording. Duplicated logic, naming drift, comment or description wording, file placement, and type-shape choices never reach Important on their own; they go to `Below Important`.
 
 A finding that needs two operators on the same row inside one request window, or a state that no
 existing code path produces yet, is Important at most, and only when the fix is one line with no

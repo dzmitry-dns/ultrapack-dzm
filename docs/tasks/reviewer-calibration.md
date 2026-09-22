@@ -172,6 +172,18 @@ Verified by: the review dispatch ran the 0.3.36 agent text (session loaded befor
 ### Deferred
 - `up:requirements-reviewer` calibration → a later task, after the audit measures it.
 
+### Validation (2026-09-22)
+
+Owner asked whether the calibrated reviewer under-finds. Evidence: 39 cccc dispatches mined from transcripts (23 reports before, 12 on the new text), 221 task-file Conclusions, and six A/B replays of the old text (25c8da8) against the new text (d0ec7f1) on four cccc diffs read at the review commit.
+
+- The 2026-09-12 audit graded from finding text alone; the owner graded nothing. Pre-calibration findings were real but cheap: 2 of 81 Critical/Important dismissed, about 89% fixed.
+- After: Important 3.2 → 0.77 per report, Critical 0.30 → 0.17 (7 vs 2, too few to call), 3.9 Below Important per report, 6 of 13 reports with zero Critical/Important (two of them after pre-exec review).
+- Post-calibration escapes: CATS-1635 cache invalidation (model variance: the new text found it on a re-run), CATS-1715 rate limiter 3/h per IP (both texts miss; product-rule class), CATS-1715 unstubbed hook (a verify miss), CATS-1669 phone prefill (regression from acting on a Scope flag).
+- New text on pre-calibration diffs: CATS-1688 found two real bugs the old run missed (fixed later in 512f5f385); CATS-1575 gave 0 and 2 Important in two samples, and in both the IV4 contract doc contradicting the code went to Below Important where the old text said Important.
+- Run-to-run variance of one text on one diff is as large as the difference between texts, so the re-dispatch rule in `up:ureview` matters more than wording.
+
+Applied (0.3.41): a document the task file names as a contract or invariant counts as a named input for Important; a new numeric limit or threshold is a scan item that needs a who/how-often line. UK1 answer so far: Below Important entries are mostly filed as smells, with 2-3 fixed per review when they are one-line text fixes.
+
 ### Deviations from plan
 - `_principles.md` "How to use" gained a Commits bullet (bfd4baa) — consistency pass: every other single-home rule in that file is listed there.
 - Conclusion template's `Review findings:` omit-condition now includes text fixes (ba2cbf2) — the new optional line could otherwise appear under a heading the rule says to omit.
