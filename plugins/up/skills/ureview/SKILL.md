@@ -141,7 +141,7 @@ Fix Critical and Important issues. Commit each as its own logical unit; message 
 For every fix, run the consistency pass (same rule as `up:uexecute`): if you're tightening a rule or changing a pattern, grep the diff and the wider repo for the same pattern and apply the change everywhere in the same commit. Do not leave siblings in a mixed state — that's how the reviewer's next round finds the same class of issue four more times.
 </required>
 
-A fix that changes behavior (not only wording) gets one re-dispatch of `up:reviewer` on the full task range, `BASE_SHA` to the new `HEAD`; a fix-only range would make every planned phase look missing. The prompt names the fix SHAs as review fixes, not plan deviations, and carries the text of the findings you rejected, without reasons, to be re-raised only on new evidence.
+A fix that changes behavior (not only wording) gets one re-dispatch of `up:reviewer` per review, whatever the re-dispatch finds; a further round runs only on the owner's request. It covers the full task range, `BASE_SHA` to the new `HEAD`; a fix-only range would make every planned phase look missing. The prompt names the fix SHAs as review fixes, not plan deviations, and carries the text of the findings you rejected, without reasons, to be re-raised only on new evidence.
 
 ### 5b. Below Important
 
