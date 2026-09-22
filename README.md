@@ -30,7 +30,7 @@ The plugin is named `up`; the marketplace is named `ultrapack` (hence `up@ultrap
 `/up:make` orchestrates the whole flow. It creates `docs/tasks/<slug>.md`, then walks the task through stages — each one a skill that reads the task file and writes its result back:
 
 1. **Design** — a short interactive dialogue: tradeoffs, the observable Goal, and the constraints the work must respect. You approve before anything else happens.
-2. **Plan** — the concrete delta: which files change, which line ranges, which interfaces, broken into ordered phases.
+2. **Plan** — the concrete delta: which files change, which line ranges, which interfaces, broken into ordered phases. Before you approve it, an independent reviewer checks it against the code and the ask (on Large tasks, the Design too), so a wrong premise costs a paragraph, not a rewrite.
 3. **Execute** — the plan is implemented phase by phase, each phase its own commit; a plan-declared interface graph runs independent phases in parallel.
 4. **Verify** — the change is attacked, not confirmed: happy-path, negative, invariant, and interface checks, plus an end-to-end smoke. Any demonstrated break loops back to execute.
 5. **Review** — an independent reviewer audits the diff against the plan and constraints, from the seat of whoever maintains this in six months.
@@ -111,6 +111,7 @@ Stages delegate focused work to subagents, each with fresh context. Roles:
 |-------|------|
 | `up:explorer` | Read-only codebase tracing: entry points, call chain, 3–5 essential files with `file:line` refs. |
 | `up:implementer` | Per-phase implementer in parallel waves: code, tests, commit, self-review. |
+| `up:plan-reviewer` | Independent review of the Design and Plan before any code: code citations, coverage of the ask, what breaks phase by phase, a simpler way. |
 | `up:reviewer` | Independent review against the Plan, Invariants, and Assumptions; confidence-filtered, severity-tiered. |
 | `up:requirements-reviewer` | Opt-in second reviewer: verbatim requirement + diff only, blind to plan and design — catches "built cleanly, but not the right thing". |
 | `up:researcher` | General-purpose investigation across the web, library docs, and the current codebase. |
