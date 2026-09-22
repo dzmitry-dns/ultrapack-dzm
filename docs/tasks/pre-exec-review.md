@@ -1,6 +1,6 @@
 # Pre-execution review: an independent reviewer on Design and Plan before any code
 
-**Status:** planning
+**Status:** executing
 **Branch:** main
 **Goal:** In a Medium task, whether started through `/up:make` or by asking for a plan in plain words, an independent reviewer is dispatched automatically after the plan is written and before the plan-approval pause (announced in one line, skippable by the owner); a Large task (by the design signals below) also gets one after design; Small and Trivial get none; a round repeats only while it finds an accepted Critical or Important, at most twice without asking; `/up:make` resume from every Status still works. Confirming it needs one live run on a real Medium task (cccc or this repo), beyond the diff.
 
@@ -33,7 +33,7 @@ Chosen approach (A of three): the review belongs to the design and plan stages, 
 3. Rounds and processing.
    - The main session processes findings with `up:ureview` steps 2-4: restate, verify against the code, re-grade, announce the verdict per finding before editing. Only the task file changes.
    - Round 2 runs only when round 1 produced an accepted Critical or Important that changed the document. Every round is a fresh agent. At most 2 automatic rounds per review point; a third only on the owner's request.
-   - After every round, one record line, updated in place: `Reviewed before code: <N> rounds, <n> Critical/Important fixed, <m> rejected, <date>`, or `Reviewed before code: skipped by owner, <date>`. Its slot is fixed: for the design point, the line right after `TDD:` in `## Design`; for the plan point, the line right after `Approach:` in `## Plan`. Never inside a subsection. A resumed stage reads the round count from it and runs another round only when the count is below 2 and the last round changed the document. The line also gives UK1 its data.
+   - After every round, one record line, updated in place: `Reviewed before code: <N> rounds, <n> Critical/Important fixed, <m> rejected, <date>`, or `Reviewed before code: skipped by owner, <date>`. Its slot is fixed: for the design point, the line right after `TDD:` in `## Design`; for the plan point, the line right after `Approach:` in `## Plan`. Never inside a subsection. A resumed stage reads the round count from it and runs another round only when the count is below 2 and the last round changed the document. A re-plan that `up:uexecute` invokes on a structural deviation is a new document: its line replaces the old one and the same rules apply. The line also gives UK1 its data.
 4. One home for the dispatch procedure: one shared file that `up:udesign` and `up:uplan` point to (location decided at plan). `/up:make` steps 5 and 7 gain one pointer line each; step numbers stay.
 5. Adjacent changes.
    - `plugins/up/skills/ureview/SKILL.md:142` "If fixes are substantial, re-dispatch the reviewer on the new diff" becomes: a fix that changes behavior (not only wording) gets one re-dispatch of `up:reviewer` on the full task range (`BASE_SHA` to the new `HEAD`), with the fix commit SHAs named in the prompt and, as in point 2, the text of the findings the dispatcher rejected, without reasons, re-raised only on new evidence. Not a fix-only range: the reviewer's Plan alignment step (`agents/reviewer.md:32-37`) would report every phase missing.
@@ -48,7 +48,7 @@ Rejected alternatives:
 
 Owner decisions (2026-09-22): Medium gets one review point, Large two; automatic, announced, skippable; opus pinned; Large detected by design signals; approach A; after the design review, a new API surface dropped from the Large signals.
 
-Backwards compatibility: no break. No new Status value, no new required header; resume reads Status only. Behavior changes the owner accepted: tasks at `design` or `planning` in consumer repos get the review on their next stage run after install; each Medium task costs 1-2 extra opus dispatches; a behavior-changing fix at the final review always gets one re-review. Sessions started before the install keep the old skill text. Task files written before the change have no `Backwards compatibility:` or `Size:` line, so they count as Medium and get only the after-plan review.
+Backwards compatibility: no break. No new Status value, no new required header; resume reads Status only. Behavior changes the owner accepted: tasks at `design` or `planning` in consumer repos get the review on their next stage run after install; each Medium task costs 1-2 extra opus dispatches; a behavior-changing fix at the final review always gets one re-review. Sessions started before the install keep the old skill text. Task files written before the change have no `Size:` line and seldom a `Backwards compatibility:` line with a hard break, so they mostly count as Medium and get only the after-plan review.
 
 TDD: no (reason: doc-only plugin, no runtime code; confirmed by a live run).
 Reviewed before code: 2 rounds, 6 Critical/Important fixed, 0 rejected, 2026-09-22.
@@ -86,7 +86,70 @@ Reviewed before code: 2 rounds, 6 Critical/Important fixed, 0 rejected, 2026-09-
 - UK4 — Whether the Large signals fire on the tasks the owner would call Large and stay quiet on ordinary features; checked in the live run and against the next five cccc task files.
 
 ## Plan
-<empty — filled by up:uplan; gains ### Rollout / ### Rollback when the change ships to a live system>
+
+Approach: two new files carry the whole feature (the agent, and one procedure file that is the single home of when, how, and how often the review runs); udesign, uplan, make.md, and ureview gain pointer lines and the small text changes the Design names. UK3 resolved: the procedure lives at `plugins/up/skills/uplan/review-before-code.md` (reference file next to its main caller, the `uexecute/waves.md` pattern; `ureview/SKILL.md` is already 227 lines and triggers after verify); the agent is `up:plan-reviewer`.
+Reviewed before code: 2 rounds, 3 Critical/Important fixed, 0 rejected, 2026-09-22.
+
+### PH1 — Agent and procedure
+
+- **1.1** `plugins/up/agents/plan-reviewer.md` (create)
+  - Frontmatter: `name: plan-reviewer`, description (reviews a task file's Design and Plan against the code and the ask before any code is written; dispatched from `up:uplan` and `up:udesign` per `review-before-code.md`), `tools: Glob, Grep, Read, Bash`, `model: opus`, `effort: high`.
+  - Sections: stance; what you receive (task file path, review point `design | plan`, working directory, optional verbatim ask, optional Jira ticket text, optional round-2 list of rejected finding texts with "re-raise only on new evidence"); what to read (`**Goal:**`, `## Design` and its subsections, `## Plan` at the plan point; never `## Verify` or `## Conclusion`); the four checks; two passes, report ≥ 80; severity by pointer to `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md` → Severity plus the one document mapping; read-only Bash list; output format (Critical, Important with Trigger / Evidence / Fix, Below Important max 5, Scope flag, Verdict `ready for <planning | execution>: yes | no`); rules.
+  - Respects: IV3, IV5, IV7, PC1.
+- **1.2** `plugins/up/skills/uplan/review-before-code.md` (create)
+  - `## When it runs`: plan point (Design holds more than the template placeholder); design point (Large signals read from the `## Design` text: a DB migration; a `Backwards compatibility:` line whose resolution is a hard break or a removal or rename without a shim, while "no break", "greenfield", deprecate-with-shim, and versioned do not fire; the line `Size: Large (owner)`); the skip phrase, covering every remaining point; resume rule from the record line, where a design slot reading `skipped by owner` also skips the plan point in a later session; a skip said during design is written to the design slot even when the design point did not fire; a re-plan invoked from `up:uexecute` (`uexecute/SKILL.md:177`) is a new document: the plan slot's line is replaced and the same rules apply, max 2 rounds.
+  - `## Dispatch`: narration per `_principles.md` Dispatch narration; `up:plan-reviewer`; the prompt skeleton; Jira text only when the task has a `**Jira:**` header and an Atlassian read tool is available; model override by pointer to `up:ureview` step 1 "Model".
+  - `## Findings`: by pointer to `up:ureview` steps 2-4, with the Important definition taken by pointer from `agents/plan-reviewer.md` Severity (which itself points to `agents/reviewer.md` and adds the document mapping); edits land in the task file only; Below Important wording entries applied when they check out, the rest dropped (not routed to `## Code smells` as ureview 5b does).
+  - `## Rounds`: round 2 only after an accepted Critical or Important changed the document; fresh agent; max 2 automatic; third on owner request.
+  - `## Record line`: format, the two fixed slots, updated in place after every round.
+  - Respects: IV2, IV3, IV4, IV6.
+- Commit: `feat(pack): plan-reviewer agent and review-before-code procedure`
+
+### PH2 — Wire the stages
+
+- **2.1** `plugins/up/skills/uplan/SKILL.md`
+  - `:53` step 10: "This is the final step before handoff" becomes "the last self-check before the review".
+  - `:54` new step 11: run the plan point of `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`; old step 11 becomes step 12.
+  - `:137` "Fix issues inline. No re-review loop." becomes "Fix issues inline. The independent review is step 11."
+  - `:183` terminal state: "step 11 exception" becomes "step 12 exception"; review named before presenting.
+  - Respects: IV1, IV6.
+- **2.2** `plugins/up/skills/udesign/SKILL.md`
+  - `:35` step 5: the resolution is recorded on the `Backwards compatibility:` line.
+  - `:39` step 9: the written Design carries the `Backwards compatibility:` line, and `Size: Large (owner)` when the owner called the task Large in the ask or the dialogue.
+  - `:40-41` new step 11: run the design point of `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`; old step 11 becomes step 12.
+  - `:171-174` output shape: `Backwards compatibility: <each break and its resolution | no break | greenfield>` and the optional `Size: Large (owner)` line, both before `TDD:`.
+  - Respects: IV1, IV2, IV6.
+- **2.3** `plugins/up/commands/make.md`
+  - `:100` step 5: one pointer line (a Design with a Large signal, as the procedure defines it, not step 4's classification, is reviewed before approval, `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`).
+  - `:113` step 7: one pointer line (the plan is reviewed before the approval pause when the task has a Design).
+  - `:191` "Never skip Review" gains "(the final `up:ureview`; the pre-code skip phrase covers only the review before code)".
+  - Respects: IV1, IV6.
+- **2.4** `plugins/up/skills/ureview/SKILL.md`
+  - `:142` "If fixes are substantial, re-dispatch the reviewer on the new diff." becomes: a fix that changes behavior (not only wording) gets one re-dispatch on the full `BASE_SHA`..new `HEAD` range, the prompt naming the fix SHAs as review fixes (not plan deviations) and carrying the text of rejected findings, without reasons, re-raised only on new evidence.
+  - `:64-66` red flag gains the one exception: a re-dispatch prompt may carry those two fields; neither is session history or rationale.
+  - `:70-75` prompt skeleton gains the two optional re-dispatch fields; they reach the agent only as prompt text, since `reviewer.md:19-24` stays unchanged (IV5).
+  - Respects: IV5 (the reviewer agent file stays untouched; only the dispatch prompt changes).
+- Commit: `feat(pack): review before code in udesign, uplan, make; concrete re-review rule in ureview`
+
+### PH3 — README and version
+
+- **3.1** `README.md:33` Plan stage line: one sentence on the review before code (Design too on Large tasks); `:110-116` agents table gains the `up:plan-reviewer` row, saying it reviews Design and Plan before code.
+- **3.2** `plugins/up/.claude-plugin/plugin.json:3` version `0.3.39` to `0.3.40`.
+- Commit: `chore(pack): document plan-reviewer, bump 0.3.40`
+
+### Test strategy
+none: doc-only plugin; uverify attacks the text, and the Goal needs a live run on a real Medium task after install.
+
+### Risks
+- RK1 — Medium is the default size, so most `/up:make` runs gain 1-2 opus dispatches of 2.5-10 minutes; accepted by the owner, measured by UK2.
+- RK2 — The make.md context checkpoint (3+ subagents since the last one) fires more often at step 8; advisory only, it never pauses.
+- RK3 — A session started before the install runs the old skill text, so the live run must start in a fresh session after `claude plugin update up@ultrapack`.
+
+### Rollout
+Owner pushes `main`; `claude plugin update up@ultrapack`; fresh session; one live run on a real Medium task (Goal). The live run checks AS2, UK2, UK4; AS1 and UK1 are counted from the record lines of the next five tasks. Compat: no Status or header change (IV1); task files written before the change carry no `Size:` line and seldom a hard-break compat line, so they mostly get only the plan point (1.2).
+
+### Rollback
+Revert the three phase commits and update the plugin; no data or state is touched.
 
 ## Verify
 <empty — filled by up:uverify>
