@@ -101,7 +101,7 @@ Default to Medium silently. Jump to Trivial/Small only when the user's wording s
 
 Invoke `up:udesign`. It populates `## Design`, `### Invariants` (IV), `### Principles` (PC), `### Assumptions` (AS), `### Unknowns` (UK), and records `TDD: yes / no (reason)`. Status → `planning`.
 
-A Design with a Large signal, as `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` defines it (not step 4's classification), is reviewed before approval; that file is the single home.
+Before approval the Design goes through the design point of `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`, the single home of when it runs (not step 4's classification).
 
 ### 6. Branch decision
 
