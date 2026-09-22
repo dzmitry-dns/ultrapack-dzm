@@ -6,7 +6,7 @@ When, how, and how often an independent `up:plan-reviewer` reviews a task file's
 
 Both points decide from the task file alone, never from a size held in session memory, so a resumed session reaches the same answer.
 
-- **Plan point**: in `up:uplan`, after the scope-creep check, before the plan goes to the owner for approval. Runs when `## Design` holds more than the template placeholder `<empty — filled by up:udesign>`. A placeholder or a missing Design (Small and Trivial tasks skip Design) means no review.
+- **Plan point**: in `up:uplan`, after the scope-creep check, before the plan goes to the owner for approval. Runs when `## Design` holds a design `up:udesign` wrote. No review when the section is missing, holds only the template placeholder `<empty — filled by up:udesign>`, or records that Design was skipped: Small and Trivial tasks skip Design and write a note that opens with `Skipped`.
 - **Design point**: in `up:udesign`, after the self-review, before the final approval. Runs only when the written `## Design` shows a Large signal:
   - a DB migration (schema or data) the design commits to;
   - a `Backwards compatibility:` line whose resolution is a hard break, or a removal or rename without a shim; "no break", "greenfield", deprecate with a shim, and a versioned new behavior do not fire;

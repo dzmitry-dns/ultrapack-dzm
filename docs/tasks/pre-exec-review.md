@@ -152,13 +152,46 @@ Owner pushes `main`; `claude plugin update up@ultrapack`; fresh session; one liv
 Revert the three phase commits and update the plugin; no data or state is touched.
 
 ## Verify
-<empty — filled by up:uverify>
+
+**Result:** failed
+
+Happy-path:
+- CK1 — a Design or Plan written by the current udesign/uplan lacks the trigger text or a record-line slot (`TDD:`, `Approach:`) — held
+- CK2 — a skip said during design, when the design point did not fire, is lost before a later plan point — held
+
+Negative:
+- CK3 (IV2) — a Small or Trivial task file whose skipped Design still fires the plan point — broke: every such file with a `## Design` section (5 here, e.g. `docs/tasks/verify-recipe.md`; 8 in cccc, e.g. `docs/tasks/archive/cats-1533-job-delete-authz.md`) replaces the placeholder with a note opening `Skipped`, which "holds more than the template placeholder"
+- CK4 — the pre-code skip phrase read as leave to skip the final `up:ureview` — held
+- CK5 (IV4) — a resume path that runs a third automatic round — held
+
+Invariants / assumptions:
+- CK6 (IV1) — make.md resume table or Status enum changed — held (hunks only at steps 5, 7, Rules)
+- CK7 (IV3) — an input beyond Design point 2 reaches the agent — held (the smoke agent ignored the Handoff block and said so)
+- CK8 (IV5) — held: `git diff ee14e00..HEAD` on both reviewer agent files is empty
+- CK9 (IV6) — procedure rules restated outside `review-before-code.md` — held
+- CK10 (IV7) — held: tools Glob, Grep, Read, Bash; Bash list read-only
+- CK11 (PC1) — Severity text copied into `plan-reviewer.md` — held
+- CK12 (AS2) — deferred: needs the live run
+
+Interfaces:
+- CK13 — a `→ Section` pointer in the new or edited files names a missing heading — held
+- CK14 — the step 11/12 renumbering breaks a reference — held
+- CK15 — the agent's output shape does not fit the procedure's processing (tier counts, verdict, Important by pointer) — held
+
+Smoke: `claude plugin validate plugins/up` → passed; `plan-reviewer.md` text dispatched as a general-purpose agent (Fable) on snapshot `ee14e00`, plan point → report in format, 0 Critical/Important, 2 Below Important, 4.3 min.
+
+Goal: proxy only — the registered `up:plan-reviewer`, fired by `up:uplan` on a real Medium task after push and plugin update, is not exercised.
+
+Notes: CK3 — the plan point should skip any Design that udesign did not write: the template placeholder, a missing section, or a note that Design was skipped (opens with `Skipped`). Loop back to execute: `review-before-code.md` → When it runs, plan point. Smoke Below Important, for review: a re-plan's round 1 reads already-committed phases as wrong citations; the unchanged `reviewer.md` may report review-fix commits as unplanned.
 
 ## Code smells
 <empty — file:line + one-line smell passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
 
 ## Conclusion
 <empty — filled by up:ureview; after done/shipped grows dated ### Follow-up — <date> / ### Scope change — <date> entries and ### Deferred scope-parking>
+
+### Deviations from plan
+- 1.2 plan point: a Design whose text opens with `Skipped` also means no review, beyond the placeholder the plan named — verify CK3 found that every Small or Trivial task file with a `## Design` section (5 here, 8 in cccc) replaces the placeholder with such a note, so the placeholder test alone fired the review on Small tasks.
 
 ### Handoff — 2026-09-22
 - Position: executing, PH1 not started; committed: ea1626a (plan approved, status executing); uncommitted: none (untracked `.claude/` is unrelated to this task, leave it)
