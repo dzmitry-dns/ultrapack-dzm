@@ -1,6 +1,6 @@
 # Pre-execution review: an independent reviewer on Design and Plan before any code
 
-**Status:** verifying
+**Status:** reviewing
 **Branch:** main
 **Goal:** In a Medium task, whether started through `/up:make` or by asking for a plan in plain words, an independent reviewer is dispatched automatically after the plan is written and before the plan-approval pause (announced in one line, skippable by the owner); a Large task (by the design signals below) also gets one after design; Small and Trivial get none; a round repeats only while it finds an accepted Critical or Important, at most twice without asking; `/up:make` resume from every Status still works. Confirming it needs one live run on a real Medium task (cccc or this repo), beyond the diff.
 
@@ -153,14 +153,14 @@ Revert the three phase commits and update the plugin; no data or state is touche
 
 ## Verify
 
-**Result:** failed
+**Result:** passed (round 2, after fix 3570418)
 
 Happy-path:
 - CK1 — a Design or Plan written by the current udesign/uplan lacks the trigger text or a record-line slot (`TDD:`, `Approach:`) — held
 - CK2 — a skip said during design, when the design point did not fire, is lost before a later plan point — held
 
 Negative:
-- CK3 (IV2) — a Small or Trivial task file whose skipped Design still fires the plan point — broke: every such file with a `## Design` section (5 here, e.g. `docs/tasks/verify-recipe.md`; 8 in cccc, e.g. `docs/tasks/archive/cats-1533-job-delete-authz.md`) replaces the placeholder with a note opening `Skipped`, which "holds more than the template placeholder"
+- CK3 (IV2) — a Small or Trivial task file whose skipped Design still fires the plan point — broke in round 1: every such file with a `## Design` section (5 here, e.g. `docs/tasks/verify-recipe.md`; 8 in cccc, e.g. `docs/tasks/archive/cats-1533-job-delete-authz.md`) replaces the placeholder with a note opening `Skipped`, which "holds more than the template placeholder". Held in round 2: the fixed rule, applied to all 247 task files with a Design in both repos, skips all 13 notes; the one skip-like opening it fires on (cccc `hide-open-positions-for-completed-events.md`) is a Trivial task with a deliberate Design, and Trivial skips Plan
 - CK4 — the pre-code skip phrase read as leave to skip the final `up:ureview` — held
 - CK5 (IV4) — a resume path that runs a third automatic round — held
 
@@ -182,7 +182,7 @@ Smoke: `claude plugin validate plugins/up` → passed; `plan-reviewer.md` text d
 
 Goal: proxy only — the registered `up:plan-reviewer`, fired by `up:uplan` on a real Medium task after push and plugin update, is not exercised.
 
-Notes: CK3 — the plan point should skip any Design that udesign did not write: the template placeholder, a missing section, or a note that Design was skipped (opens with `Skipped`). Loop back to execute: `review-before-code.md` → When it runs, plan point. Smoke Below Important, for review: a re-plan's round 1 reads already-committed phases as wrong citations; the unchanged `reviewer.md` may report review-fix commits as unplanned.
+Notes: round 2 re-ran CK3 only; the fix changed one line of `review-before-code.md` and `plan-reviewer.md` is unchanged since the smoke. Smoke Below Important, for review: a re-plan's round 1 reads already-committed phases as wrong citations; the unchanged `reviewer.md` may report review-fix commits as unplanned.
 
 ## Code smells
 <empty — file:line + one-line smell passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
