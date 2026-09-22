@@ -221,6 +221,8 @@ Review findings:
 - Important: the `Skipped` exemption rested on no written rule, fixed in `caba670` (make step 4 writes `Skipped (<size>): <reason>`); the final-review re-dispatch had no cap, fixed in `55232e7` (one per review). The re-review's one Important (re-plan noise) is deferred to Known risks: it yields noise the dispatcher rejects, not a wrong edit, and its fix changes IV3.
 - Text fixes: 3 applied (`e28d1f7`), 1 applied (`5cddf73`)
 
+Verified by: `up:requirements-reviewer` (Fable) on `ee14e00`..`6b19a7b`, the owner's ask taken verbatim from the 2026-09-22 design session transcript: delivers the ask, 0 Critical/Important.
+
 ### Handoff — 2026-09-22
 - Position: executing, PH1 not started; committed: ea1626a (plan approved, status executing); uncommitted: none (untracked `.claude/` is unrelated to this task, leave it)
 - Decided: the owner approved Design and Plan after two independent review rounds each; all four rounds ran as general-purpose agents on Fable, because `up:plan-reviewer` does not exist yet and the Agent tool has no effort parameter
