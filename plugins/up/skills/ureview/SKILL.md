@@ -62,7 +62,7 @@ Dispatch the `up:reviewer` agent with:
 - Working directory (explicitly — the agent does not inherit `cwd` reliably)
 
 <red-flags>
-Do **not** pass session history to the reviewer. The reviewer must not see the rationale behind changes — only the Plan, Invariants, and diff. Independence is the point.
+Do **not** pass session history to the reviewer. The reviewer must not see the rationale behind changes — only the Plan, Invariants, and diff. Independence is the point. The one exception is a re-dispatch after fixes (step 5): its prompt may carry the fix SHAs and the text of rejected findings, without reasons. Neither is session history or rationale.
 </red-flags>
 
 **Dispatch prompt skeleton** (guidance):
@@ -72,6 +72,8 @@ Task file: <docs/tasks/<slug>.md>
 BASE_SHA: <merge-base with main, or branch point>
 HEAD_SHA: <current HEAD>
 Working directory: <absolute path>
+Review fixes (re-dispatch only; not plan deviations): <fix commit SHAs>
+Rejected earlier (re-dispatch only; text only, re-raise only on new evidence): <one line per finding>
 ```
 
 Model: the agent pins its own default. When the user asks for a specific model for this review ("review on Fable", "review on the session model"), pass it as the dispatch-time model override for that run only — never edit the agent's frontmatter pin for a one-off. Applies equally to the 1b dispatch below.
@@ -139,7 +141,7 @@ Fix Critical and Important issues. Commit each as its own logical unit; message 
 For every fix, run the consistency pass (same rule as `up:uexecute`): if you're tightening a rule or changing a pattern, grep the diff and the wider repo for the same pattern and apply the change everywhere in the same commit. Do not leave siblings in a mixed state — that's how the reviewer's next round finds the same class of issue four more times.
 </required>
 
-If fixes are substantial, re-dispatch the reviewer on the new diff.
+A fix that changes behavior (not only wording) gets one re-dispatch of `up:reviewer` on the full task range, `BASE_SHA` to the new `HEAD`; a fix-only range would make every planned phase look missing. The prompt names the fix SHAs as review fixes, not plan deviations, and carries the text of the findings you rejected, without reasons, to be re-raised only on new evidence.
 
 ### 5b. Below Important
 

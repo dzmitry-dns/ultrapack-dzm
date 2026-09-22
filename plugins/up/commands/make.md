@@ -99,6 +99,8 @@ Default to Medium silently. Jump to Trivial/Small only when the user's wording s
 
 Invoke `up:udesign`. It populates `## Design`, `### Invariants` (IV), `### Principles` (PC), `### Assumptions` (AS), `### Unknowns` (UK), and records `TDD: yes / no (reason)`. Status → `planning`.
 
+A Design with a Large signal, as `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` defines it (not step 4's classification), is reviewed before approval; that file is the single home.
+
 ### 6. Branch decision
 
 After Design (or immediately for trivial/small tasks), decide:
@@ -110,7 +112,7 @@ Always confirm with the user. If a branch is created, update the task file's `**
 
 ### 7. Plan stage (unless skipped)
 
-Invoke `up:uplan`. It populates `## Plan`. Status → `executing`. If Jira is configured, invoke `up:ujira` at this transition — the start draft rides the plan-approval pause, minus whatever the project set `auto` to, which `up:ujira` has already applied.
+Invoke `up:uplan`. It populates `## Plan`. When the task has a Design, the plan is reviewed before the approval pause, per `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`. Status → `executing`. If Jira is configured, invoke `up:ujira` at this transition — the start draft rides the plan-approval pause, minus whatever the project set `auto` to, which `up:ujira` has already applied.
 
 Plan-approval gate (single home; `up:uplan` defers to it): `up:uplan` waits for the user's approval unless you tell it, in the invocation, that the task is Small and the plan touches fewer than 3 files, no DB migration, and no new API surface; then it presents the highlights and proceeds. Medium / Large always pause. Trivial skips Plan entirely (step 4). A manual or resumed `up:uplan` has no size and always waits.
 
@@ -188,7 +190,7 @@ Stop and ask the user when:
 
 ## Rules
 
-- Never skip Review
+- Never skip Review (the final `up:ureview`; the pre-code skip phrase covers only the review before code)
 - Never auto-merge or auto-push — the user chooses at step 12
 - Never mark `done` until the Goal is confirmed achieved (step 11) — verified + reviewed is not done
 - Never create a worktree without confirming with the user

@@ -32,13 +32,14 @@ Follow these steps in order. Do not combine or skip.
 2. Scope check — split into multiple tasks now if the ask is too large.
 3. Ask clarifying questions, one at a time. Prefer multiple choice.
 4. Propose 2–3 approaches. Each with explicit tradeoffs and unknowns.
-5. Backwards-compat check — flag anything that could break already-running or already-used systems. Ask the user how to resolve before proceeding.
+5. Backwards-compat check — flag anything that could break already-running or already-used systems. Ask the user how to resolve before proceeding. The resolution is recorded on the Design's `Backwards compatibility:` line.
 6. Present the design in sections. Get per-section approval.
 7. Identify invariants (IV), principles (PC), assumptions (AS), and unknowns (UK).
 8. Decide TDD — yes or no, with reason. Use the applicability rule in `${CLAUDE_PLUGIN_ROOT}/skills/test-driven-development/SKILL.md` (read the file; the skill is not model-invocable).
-9. Write to task file — set the `**Goal:**` header (the definition of done — see below), then `## Design`, `### Prior art`, `### Invariants`, `### Principles`, `### Assumptions`, `### Unknowns`.
+9. Write to task file — set the `**Goal:**` header (the definition of done — see below), then `## Design`, `### Prior art`, `### Invariants`, `### Principles`, `### Assumptions`, `### Unknowns`. `## Design` carries the `Backwards compatibility:` line, and `Size: Large (owner)` when the user called the task Large in the ask or the dialogue.
 10. Self-review for placeholders, contradictions, scope, ambiguity. Fix inline.
-11. Wait for user approval before invoking `up:uplan`.
+11. Independent review before code: run the design point of `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`.
+12. Wait for user approval before invoking `up:uplan`.
 </required>
 
 ## Scope check — split before planning
@@ -171,6 +172,8 @@ TDD: no (reason: one-off migration script; no reusable logic)
 ```markdown
 ## Design
 <purpose, scope, chosen approach, key decisions, tradeoffs that settled it>
+Backwards compatibility: <each break and its resolution | no break | greenfield>
+<Size: Large (owner) — only when the user called the task Large>
 <TDD: yes|no (reason)>
 
 ### Prior art

@@ -50,8 +50,9 @@ Before writing the Plan, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply 
 7. Add snippets only for the single most critical component per phase.
 8. Backwards-compat check — restate Design's compat risks in concrete plan terms.
 9. Self-review inline (placeholders, consistency, invariants, spec coverage).
-10. Scope-creep / simpler-way check — see below. This is the final step before handoff.
-11. Present the plan to the user and wait for approval. The one exception is the plan-approval gate defined in `/up:make` step 7: when `/up:make` told you in this invocation that the task is Small and the plan stays under its threshold, present the highlights and proceed. Invoked manually or on resume, you were not told, so you wait. Then invoke `up:uexecute`.
+10. Scope-creep / simpler-way check — see below. This is the last self-check before the review.
+11. Independent review before code: run the plan point of `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`.
+12. Present the plan to the user and wait for approval. The one exception is the plan-approval gate defined in `/up:make` step 7: when `/up:make` told you in this invocation that the task is Small and the plan stays under its threshold, present the highlights and proceed. Invoked manually or on resume, you were not told, so you wait. Then invoke `up:uexecute`.
 </required>
 
 ## Required contents
@@ -134,7 +135,7 @@ A multi-phase plan MAY declare `### Interfaces` and `### Interface graph` so `up
 6. If `### Interface graph` is present: run the "Planner self-review for the graph" checklist in `${CLAUDE_PLUGIN_ROOT}/skills/uexecute/waves.md`.
 </required>
 
-Fix issues inline. No re-review loop.
+Fix issues inline. The independent review is step 11.
 
 ## Backwards-compat check — restate the design's risks in plan terms
 
@@ -180,4 +181,4 @@ If this check surfaces real simplifications, rewrite the plan. Don't stack warni
 
 ## Terminal state
 
-Plan written, self-reviewed, scope-checked. Present highlights, wait for approval unless the step 11 exception applies, invoke `up:uexecute`.
+Plan written, self-reviewed, scope-checked, step 11 run (reviewed, skipped, or not applicable). Present highlights, wait for approval unless the step 12 exception applies, invoke `up:uexecute`.
