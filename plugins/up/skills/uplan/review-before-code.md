@@ -24,7 +24,7 @@ Before running a point, read its slot (see Record line):
 
 - No line → round 1.
 - `skipped by owner` → no review. A design slot reading `skipped by owner` also skips the plan point.
-- `1 round` with at least one Critical/Important fixed → round 2.
+- `N` is 1 and `n` is at least 1 → round 2.
 - Anything else → no further round; go on to approval.
 
 A re-plan that `up:uexecute` invokes on a structural deviation (`${CLAUDE_PLUGIN_ROOT}/skills/uexecute/SKILL.md` → Deviations from plan, item 4) is a new document: the plan point starts again at round 1, its line replaces the old one in the plan slot, and the same rules apply. A recorded skip still holds.

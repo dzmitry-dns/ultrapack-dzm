@@ -114,7 +114,7 @@ Always confirm with the user. If a branch is created, update the task file's `**
 
 ### 7. Plan stage (unless skipped)
 
-Invoke `up:uplan`. It populates `## Plan`. When the task has a Design, the plan is reviewed before the approval pause, per `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`. Status → `executing`. If Jira is configured, invoke `up:ujira` at this transition — the start draft rides the plan-approval pause, minus whatever the project set `auto` to, which `up:ujira` has already applied.
+Invoke `up:uplan`. It populates `## Plan`. Before the approval pause the plan goes through the plan point of `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`, the single home of when it runs. Status → `executing`. If Jira is configured, invoke `up:ujira` at this transition — the start draft rides the plan-approval pause, minus whatever the project set `auto` to, which `up:ujira` has already applied.
 
 Plan-approval gate (single home; `up:uplan` defers to it): `up:uplan` waits for the user's approval unless you tell it, in the invocation, that the task is Small and the plan touches fewer than 3 files, no DB migration, and no new API surface; then it presents the highlights and proceeds. Medium / Large always pause. Trivial skips Plan entirely (step 4). A manual or resumed `up:uplan` has no size and always waits.
 
