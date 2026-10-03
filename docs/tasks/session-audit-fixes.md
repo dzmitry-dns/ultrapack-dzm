@@ -1,6 +1,6 @@
 # Session audit fixes
 
-**Status:** planning
+**Status:** executing
 **Branch:** main
 **Goal:** The pack says on its own what the owner kept asking for in the 2026-09-18..10-02 sessions: whether the task can be closed, whether another review is needed, and what a question is about before asking it; plan-reviewer round 2 and the final up:reviewer dispatch run only where the audit showed they pay off. Confirmed by the diff, a reinstall, and one real `/up:make` run in cccc showing the approval line and the closing line (owner sign-off).
 

@@ -30,7 +30,7 @@ Follow these steps in order. Do not combine or skip.
 
 1. Explore project context — how it works now, what's been tried, existing patterns, recent commits. Inform the ideal; don't let current state constrain it. No exceptions. Prior art is part of this step: scan `docs/tasks/` (and `docs/tasks/archive/` if present) for related past tasks; cite `file:line` for anything that informs this design, or record "none found" — the citations land in `### Prior art`. Record incidental code smells you pass — if one is in scope or an easy win, note it for the plan to fix, else add it to `## Code smells` (see `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Incidental code smells).
 2. Scope check — split into multiple tasks now if the ask is too large.
-3. Ask clarifying questions, one at a time. Prefer multiple choice.
+3. Ask clarifying questions, one at a time. Prefer multiple choice. Each question follows `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Questions to the owner.
 4. Propose 2–3 approaches. Each with explicit tradeoffs and unknowns.
 5. Backwards-compat check — flag anything that could break already-running or already-used systems. Ask the user how to resolve before proceeding. The resolution is recorded on the Design's `Backwards compatibility:` line.
 6. Present the design in sections. Get per-section approval.
@@ -198,7 +198,7 @@ Backwards compatibility: <each break and its resolution | no break | greenfield>
 
 ## Rules
 
-- One question per message. No batching.
+- One question per message. No batching. Context first: `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Questions to the owner.
 - YAGNI ruthlessly. Cut anything not needed for the stated goal.
 - Follow existing patterns. Targeted improvements only if they serve this task.
 - Isolation. Units with one clear purpose; interfaces understandable without reading internals.

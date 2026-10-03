@@ -54,7 +54,7 @@ A fenced block so it copies whole:
 
 Use the file's real path: an epic child lives at `docs/tasks/<epic>/<slug>.md`. `/up:make` reads the latest Handoff block on resume, so the one line is enough.
 
-Below the fence, outside the prompt, one sentence for the owner in the owner's language: where the work stands and what happens next.
+Below the fence, outside the prompt, the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closing line). At a handoff the task is normally not closable; `Left` names the first action.
 
 ## No active task file
 
@@ -69,7 +69,7 @@ Goal: <one sentence>
 - First action: ...
 ```
 
-Same owner sentence below the fence.
+Same Closing line below the fence.
 
 ## Rules
 

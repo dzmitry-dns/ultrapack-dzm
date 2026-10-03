@@ -23,6 +23,18 @@ Every commit made by any stage, or by `/up:make` at a Status transition, is Engl
 
 Before dispatching a subagent (`Agent` tool call) and after it returns, state one line: what's being dispatched / what it returned. The user sees no tool calls, only text — an unannounced dispatch reads as silence. This is the single home of the rule; callers only point here.
 
+## Closing line
+
+Whoever ends the workflow turn prints one line, once, in the owner's chat language:
+
+`Done: <what>. Left: <what, or nothing>. Close: <task yes/no; Jira yes/no, or no ticket> — <why not, when no>.`
+
+When a review ran in the same turn, append `Another review: <no | yes> — <why>.` The line is never a recap of the message above it. This is the single home of the rule; callers only point here.
+
+## Questions to the owner
+
+Before each question to the owner (plain text or AskUserQuestion), write 2-4 plain sentences in the owner's chat language: what the situation is, why the answer is needed now, what each option changes. Option labels name the consequence, never an internal ID (`IV2`, `PH3`, `UK1`). Task-file and pack text stays English. This is the single home of the rule; callers only point here.
+
 ## Incidental code smells
 
 While exploring code for a task you'll pass smells unrelated to the change — a 200-line function, a duplicated helper, a leaked layer boundary. Two outcomes, no third:
@@ -39,5 +51,7 @@ A pointer plus a sentence; the next reader opens the line. Recorded smells are `
 - `up:udesign` — surface GPC tradeoffs (layering, SSOT, fail-fast, debuggability) as Design decisions; reference by ID. Task-specific PCs only when deviating from a GPC or adding a rule the GPCs don't cover.
 - `up:uplan` — every phase consistent with GPCs; deviating bullets cite the GPC and why.
 - Commits — `/up:make`, `up:uexecute`, `up:ureview` point here for every commit they make.
+- Closing line — `/up:make` step 12, a manual `up:ureview`, and `/up:summary` print it.
+- Questions to the owner — `up:udesign` (step 3, Rules) and `up:uplan` (step 12) follow it for every question they ask.
 - `up:udebug` — anti-whack-a-mole: name the pattern behind a bug and grep for the same shape before closing (not a GPC, same family).
 - Incidental code smells — `up:udesign` / `up:uplan` fold an in-scope or easy fix into the design/plan, else record to `## Code smells`; `up:uexecute` fixes in-scope/easy ones, records the rest; `up:explorer` / `up:implementer` report passed smells in their output for the dispatcher to act on.
