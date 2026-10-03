@@ -144,3 +144,9 @@ Verified by: `up:reviewer` (Fable) merge-ready, no Critical or Important; `up:re
 - Decided: owner wants `up:requirements-reviewer` after all edits (ureview step 1b); his verbatim ask is in transcript `~/.claude/projects/-Users-svirins-dev-current-ultrapack-dzm/70bee2c7-bd80-4745-aa3e-d1f6da030965.jsonl` (first user message, "Делаем 1, 2, 3, 4, 5 обсуждаем отдельно", the AskUserQuestion answers, "после заврешения всех правок сделай requirements review")
 - Decided: out of scope, tracked elsewhere: cccc `.env` helper (owner chose a script that prints host and DB name without the password; a separate cccc task) and the session-length checkpoint (to discuss); cccc commit/push rule already landed as cccc 719e77731
 - First action: `/up:make` resumes `planning` → plan review round 2 (`up:plan-reviewer`), then the plan approval request with the Approval line
+
+### Handoff — 2026-10-03
+- Position: validating; all phases, verify, review, and two requirements reviews done; 0.3.43 pushed (446993d) and installed; uncommitted: none (untracked `.claude/` is unrelated, leave it)
+- Decided: the 2026-10-02 Handoff above is superseded; nothing in it is open
+- Open: the owner's choice whether the context-before-questions rule also covers `/up:make` step 4 and step 6 questions (offered, not requested)
+- First action: ask the owner whether the real `/up:make` run in a fresh cccc session showed the approval request with a link and one line per phase, plain per-finding lines, and the closing line; on yes, Status `done`, then step 12
