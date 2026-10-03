@@ -1,6 +1,7 @@
 tmp/
 .worktrees/
 local/
+.claude/
 
 # Editor / OS
 .DS_Store

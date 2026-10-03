@@ -1,6 +1,6 @@
 # Session audit fixes
 
-**Status:** validating — pushed and installed 0.3.43 on 2026-10-03; one real `/up:make` run in cccc pending
+**Status:** done — 0.3.43 pushed and installed 2026-10-03; the cccc run was waived by the owner
 **Branch:** main
 **Goal:** The pack says on its own what the owner kept asking for in the 2026-09-18..10-02 sessions: whether the task can be closed, whether another review is needed, and what a question is about before asking it; plan-reviewer round 2 and the final up:reviewer dispatch run only where the audit showed they pay off. Confirmed by the diff, a reinstall, and one real `/up:make` run in cccc showing the approval line and the closing line (owner sign-off).
 
@@ -150,3 +150,6 @@ Verified by: `up:reviewer` (Fable) merge-ready, no Critical or Important; `up:re
 - Decided: the 2026-10-02 Handoff above is superseded; nothing in it is open
 - Open: the owner's choice whether the context-before-questions rule also covers `/up:make` step 4 and step 6 questions (offered, not requested)
 - First action: ask the owner whether the real `/up:make` run in a fresh cccc session showed the approval request with a link and one line per phase, plain per-finding lines, and the closing line; on yes, Status `done`, then step 12
+
+### Follow-up — 2026-10-03
+Owner closed the task without the real `/up:make` run in cccc ("закроем задачу сейчас. Поставь статус дан"). The Goal's last check is waived, not done: the first real cccc task on 0.3.43 is the live test of the approval line, the per-finding lines, and the closing line. The 2026-10-03 Handoff's open question (context before `/up:make` step 4 and 6 questions) stays open.
