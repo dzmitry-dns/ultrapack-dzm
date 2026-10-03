@@ -6,7 +6,7 @@
 
 ## Design
 
-Source: audit of 129 sessions (124 cccc, 5 this repo), 2026-09-18..10-02, reconciled by a cross-check pass. Owner-approved scope, items 1-6 below. Out of scope: the session-length checkpoint (discussed separately), the cccc `.env` helper (cccc task), the 2026-09-13 upstream commit `ff8cf41` (ML debugging and the disabled job-guardian; nothing to port).
+Source: audit of 129 sessions (124 cccc, 5 this repo), 2026-09-18..10-02, reconciled by a cross-check pass. Owner-approved scope, items 1-6 below; item 7 added 2026-10-03 from an owner question. Out of scope: the session-length checkpoint (discussed separately), the cccc `.env` helper (cccc task), the 2026-09-13 upstream commit `ff8cf41` (ML debugging and the disabled job-guardian; nothing to port).
 
 1. **Closing line.** Owner asked "можно закрывать?" / "что осталось?" 25 times in ~20 sessions, still on 10-02. New single-home section `_principles.md` → Closing line: one line in the owner's chat language, three parts: what is done, what is left (or "nothing"), whether the task and the Jira ticket can be closed and why not. When a review ran in the same turn, a fourth part says whether another review is needed. Printed once, by whoever ends the workflow turn: `/up:make` step 12, a manual `up:ureview`, and `/up:summary` step 4 (replaces its current "one sentence for the owner").
 2. **Approval line.** Owner asked "нужен ли еще ревью?" 9 times, usually at the approval pause. New section in `review-before-code.md` → Approval line: the design and plan approval requests carry one line: which pre-code review ran (rounds, fixed, rejected) or why none ran, and whether another round is needed, with the reason. `up:udesign` and `up:uplan` step 12 point to it.
@@ -14,6 +14,7 @@ Source: audit of 129 sessions (124 cccc, 5 this repo), 2026-09-18..10-02, reconc
 4. **Final up:reviewer on Small tasks.** 18 real dispatches, Important in 2, Critical never. `up:ureview` step 1 reads the size from the task file (same rule as review-before-code: decided from the file, never from session memory): a first `## Design` line opening with `Skipped` → no dispatch by default; one line offers it, no pause. Everything else dispatches as today. `up:ureview` itself still always runs and writes the Conclusion (`/up:make` → Rules "Never skip Review" stays true); `Verified by:` records the skipped dispatch. The requirements-reviewer offer (step 1b) is unchanged. Format slip: `agents/reviewer.md` gets the rule that a check that passed is not a finding and is never listed under a tier (5a674ad7 listed 8 "checked, OK" bullets under Important).
 5. **Context before a question.** 15+ sessions where the owner could not follow, 4 rejected AskUserQuestion calls. New single-home section `_principles.md` → Questions to the owner: before each question (plain text or AskUserQuestion), 2-4 plain sentences in the owner's chat language: what the situation is, why the answer is needed now, what each option changes. `up:udesign` (step 3 and Rules) and `up:uplan` point to it.
 6. **Close `pre-exec-review.md`.** Its Status waits on one live run; there have been 31 real plan-reviewer runs and 14 cccc task files carry a `Reviewed before code:` line. Status → `done`, a dated Follow-up records the evidence; the uncommitted 2026-09-22 Handoff block lands in the same commit.
+7. **Findings the owner can judge.** Added by the owner's question 2026-10-03: after plan review round 1 the chat said "2 serious, 5 minor", then one compressed sentence for both Important findings ("marker format unstable, narrow rule catches 2 of 9 files"), and the minor ones were never named. `up:ureview` step 4 already asks for one line per finding; it does not ask for plain words. Step 4 (also used by review-before-code) now says: each Critical and Important finding gets its own line in the owner's chat language, naming what breaks and on what input, never the reviewer's label alone, then the verdict and its reason; `Below Important` findings are one line: how many, which were applied, in a few words each.
 
 Backwards compatibility: no break. Task files keep their format; the plan-point Record line gains an optional `round 2: <needed | not needed>` field that Resume reads, and a line without it (0.3.41 files) resumes by the old round-count rule. Small tasks lose the default final up:reviewer dispatch: deliberate, owner-approved, recorded in the Conclusion.
 
@@ -73,7 +74,8 @@ Reviewed before code: 1 rounds, 2 Critical/Important fixed, 0 rejected, 2026-10-
 - **3.4** `plugins/up/skills/ureview/SKILL.md:~224` ("Never" list) — "Run review on yourself" reads: when a review runs, it is the subagent; the size gate skips it, never replaces it with a self-review. Respects: IV3
 - **3.5** `plugins/up/skills/ureview/SKILL.md:229` (modify) — Terminal state: a manual invocation (not from `/up:make`) ends with the Closing line; under `/up:make` step 12 prints it. Respects: IV2
 - **3.6** `plugins/up/agents/reviewer.md:114-124` (modify) — Rules: a check that passed is not a finding and is never listed under a tier; "nothing at ≥80" stays the one sentence in Findings. Respects: IV1
-- Commit: `feat(ureview): final up:reviewer opt-in on Small tasks; passed checks are not findings`
+- **3.7** `plugins/up/skills/ureview/SKILL.md:113-131` (modify) — step 4 (Design item 7): one line per Critical and Important finding, never merged; the line is in the owner's chat language and says what breaks and on what input, then the verdict (fix / push back / defer) and its reason; `Below Important` gets one line: count, which were applied, a few words each. The good-example gains one such line. review-before-code.md `## Findings` already routes through step 4; no edit there. Respects: IV2, PC1
+- Commit: `feat(ureview): final up:reviewer opt-in on Small tasks; passed checks are not findings; findings in plain words`
 
 ### PH4 — Close pre-exec-review, version
 
@@ -94,3 +96,11 @@ none — doc-only pack. Verification: reinstall (`claude plugin update up@ultrap
 
 ## Conclusion
 <empty — filled by up:ureview>
+
+### Handoff — 2026-10-02
+- Position: planning, plan written, plan review round 1 done, owner approval pending; committed: c680ab0 (design and plan); uncommitted: `docs/tasks/pre-exec-review.md` (2026-09-22 Handoff block, lands in the PH4 commit per plan 4.1), untracked `.claude/` is unrelated, leave it
+- Decided: Design approved by the owner 2026-10-02 in chat; no design-point review (no Large signal), owner agreed
+- Decided: round 1 had 2 accepted Important (size gate spelling, Resume vs round-2 rule), both changed a Design statement, so round 2 is due under both the 0.3.41 rule and the new one; resume runs it automatically from the Record line
+- Decided: owner wants `up:requirements-reviewer` after all edits (ureview step 1b); his verbatim ask is in transcript `~/.claude/projects/-Users-svirins-dev-current-ultrapack-dzm/70bee2c7-bd80-4745-aa3e-d1f6da030965.jsonl` (first user message, "Делаем 1, 2, 3, 4, 5 обсуждаем отдельно", the AskUserQuestion answers, "после заврешения всех правок сделай requirements review")
+- Decided: out of scope, tracked elsewhere: cccc `.env` helper (owner chose a script that prints host and DB name without the password; a separate cccc task) and the session-length checkpoint (to discuss); cccc commit/push rule already landed as cccc 719e77731
+- First action: `/up:make` resumes `planning` → plan review round 2 (`up:plan-reviewer`), then the plan approval request with the Approval line
