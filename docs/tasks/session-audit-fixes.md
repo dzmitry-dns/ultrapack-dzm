@@ -1,6 +1,6 @@
 # Session audit fixes
 
-**Status:** executing
+**Status:** verifying
 **Branch:** main
 **Goal:** The pack says on its own what the owner kept asking for in the 2026-09-18..10-02 sessions: whether the task can be closed, whether another review is needed, and what a question is about before asking it; plan-reviewer round 2 and the final up:reviewer dispatch run only where the audit showed they pay off. Confirmed by the diff, a reinstall, and one real `/up:make` run in cccc showing the approval line and the closing line (owner sign-off).
 
@@ -92,7 +92,29 @@ none — doc-only pack. Verification: reinstall (`claude plugin update up@ultrap
 - RK2 — Approval and closing lines become boilerplate the owner skims; mitigated by the one-line cap and "never a recap".
 
 ## Verify
-<empty — filled by up:uverify>
+
+**Result:** passed (after one fix)
+
+Happy-path:
+- CK1 — Closing line: a caller in `_principles.md` → How to use that never points to it, or a double print under `/up:make` — held (make.md:31,152, summary.md:57,72, ureview Terminal state; make step 10 tells ureview who invoked it)
+- CK2 — Approval line not reachable from both approval requests — held (udesign step 12, uplan step 12)
+- CK3 — Resume table on hand-made Record lines (0.3.41 `1 rounds, 2 fixed`; `round 2: not needed`; `2 rounds`) — held, each lands on the intended branch
+
+Negative:
+- CK4 (AS1) — size gate on the 9 real skipped-Design files in cccc — broke: 7 of 9 have a blank line between `## Design` and `Skipped`, and the gate said "the first line"; fixed in a431186 ("first non-empty line"), re-probe matches 9 of 9
+- CK5 — 19 real cccc Record lines (no `round 2:` field, `round`/`rounds`, `skipped, small task`) misread by the new Resume rule — held, same outcome as 0.3.41
+
+Invariants / assumptions:
+- CK6 (IV2) — Closing line, Questions, Approval line formats restated outside their home — held, grep finds each format once
+- CK7 (IV3) — size gate path that skips the Conclusion or breaks make.md "Never skip Review" — held (gate goes to step 6; make.md:195 unchanged)
+- CK8 (IV1) — old Below Important wording ("steps 2-4", "fair-evaluation loop") left contradicting step 4 — held, none left in `plugins/up`
+
+Interfaces:
+- CK9 — new reviewer.md rule contradicts the Output format — held (`nothing at ≥80` sentence unchanged)
+
+Smoke: `claude plugin validate plugins/up` and `.` → passed (marketplace description warning is old)
+
+Goal: proxy only — reinstall needs a push to GitHub; the real `/up:make` run in cccc showing the approval line and the closing line is the owner's step
 
 ## Conclusion
 <empty — filled by up:ureview>
