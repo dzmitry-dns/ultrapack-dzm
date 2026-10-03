@@ -117,6 +117,7 @@ If nothing at ≥80 confidence: say so explicitly in the Findings section, then 
 
 - No prose preamble. No "I reviewed the code and..."
 - No "Suggestion" tier — Critical, Important, or Below Important
+- A check that passed is not a finding — never list it under a tier; "nothing at ≥80" stays the one sentence in Findings
 - No false positives — if confidence < 80, silent
 - No Trigger, no finding — a Critical or Important whose Trigger line lacks any of its three parts is dropped, not downgraded
 - No rewrites — one-line fix suggestion per issue

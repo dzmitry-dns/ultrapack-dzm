@@ -1,6 +1,6 @@
 ---
 name: ureview
-description: Use after verify passes for the future maintainer's audit — sit in the chair of the person who'll touch this code in 3-6 months and ask "what will bite us later?" at the decision level. Surfaces wrong abstractions, load-bearing-but-unobvious shapes, next-change traps, drift from surrounding code; raises a Scope flag if the whole change looks like the wrong call. Dispatches up:reviewer (critical, high-confidence filter), processes findings fairly, fills the task file's `## Conclusion`.
+description: Use after verify passes for the future maintainer's audit — sit in the chair of the person who'll touch this code in 3-6 months and ask "what will bite us later?" at the decision level. Surfaces wrong abstractions, load-bearing-but-unobvious shapes, next-change traps, drift from surrounding code; raises a Scope flag if the whole change looks like the wrong call. Dispatches up:reviewer (critical, high-confidence filter; unless Design was skipped, step 1), processes findings fairly, fills the task file's `## Conclusion`.
 ---
 
 # Review
@@ -20,7 +20,7 @@ Review is a process, not just a section. Its end product is the `## Conclusion` 
 - After `up:uverify` passes
 - Before merge to main
 - Before opening a PR
-- Never skipped, regardless of task size
+- Never skipped, regardless of task size: the skill always runs and writes the Conclusion; only the `up:reviewer` dispatch follows step 1's size gate
 
 Relation to the built-in `/code-review`: that skill hunts bugs in a diff and knows nothing about the task file. This skill is the maintainability audit against Plan, Invariants, and Assumptions, and it writes the Conclusion. They complement each other; for a Medium+ diff, offer `/code-review` first unless it already ran on this diff in the task (the owner's post-feature checklist often runs it), and hand its unresolved findings to the reviewer dispatch as context-free facts, never as rationale. One bug hunt per diff, never two.
 
@@ -49,6 +49,8 @@ The asymmetry is deliberate. A tough reviewer catches more real issues; a fair d
 See `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Dispatch narration.
 
 ### 1. Dispatch `up:reviewer`
+
+Size gate first, decided from the task file alone, never from a size held in session memory. The first line of `## Design` opens with `Skipped` (any case, any punctuation after it; the same rule as `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` → When it runs) → no dispatch. Print one line offering it ("final code review not run: Design was skipped; say so to run it"), do not pause, skip steps 1b-5 and go to step 6. If the owner takes the offer after the Conclusion is written, run steps 1-5 then and rewrite `Verified by:` and `Review findings`. Any other `## Design` → dispatch as below.
 
 Get git SHAs:
 ```bash
@@ -96,7 +98,7 @@ Receive the reviewer's output. Do not immediately reply with fixes or pushback. 
 - Critical: fix before proceeding
 - Important: fix before merge
 - Plan finding: the plan itself may be wrong
-- Below Important: no verdict needed; handled in step 5b
+- Below Important: no per-finding verdict; one summary line in step 4, carried out in step 5b
 
 ### 3. Evaluate each item fairly
 
@@ -113,10 +115,12 @@ For every finding:
 ### 4. Announce the plan before editing
 
 <required>
-Before any fix goes in, tell the user what you decided for each finding. One line per finding:
-- what the reviewer said,
-- your verdict (fix / push back / defer),
+Before any fix goes in, tell the user what you decided for each finding, in the owner's chat language. One line per Critical and Important finding, never two findings merged into one line:
+- what breaks, and on what input, in plain words; never the reviewer's label alone,
+- your verdict (fix / push back / defer) and its reason,
 - if fixing: the exact change you are about to make.
+
+The `Below Important` block gets one line: how many, which you will apply and which you drop, a few words each. Step 5b carries it out.
 
 This is a short summary — the user can interject, then you apply the fixes.
 </required>
@@ -125,10 +129,15 @@ This is a short summary — the user can interject, then you apply the fixes.
 "Evaluating reviewer findings fairly." *(then a flurry of edits with no explanation)*
 </bad-example>
 
+<bad-example>
+"2 Important, 5 minor. Confirmed: marker format unstable (narrow rule catches 2 of 9 files), and resume runs round 2 without the fix. Accepting both plus the minor ones." *(two findings in one line, reviewer labels instead of what breaks, minor ones never named)*
+</bad-example>
+
 <good-example>
 "Reviewer findings:
-- Important #1: `parseConfig` swallows a malformed line instead of raising (IV2). Verdict: fix. Editing `config.ts:41`.
-- Important #2: duplicate of an existing helper in `utils/slug.ts`. Verdict: fix. Replacing the copy with an import.
+- Important #1: a config file with one malformed line loads silently, and the service starts with that setting missing (`parseConfig`, IV2). Verdict: fix, fail-fast is the Design rule. Editing `config.ts:41` to raise.
+- Important #2: the new slug helper copies `utils/slug.ts`; the next fix to slug rules would land in one copy only. Verdict: fix. Replacing the copy with an import.
+- Below Important (3): applying two wording fixes (README typo, stale `file:line`); dropping one style note (naming taste, no effect).
 
 Applying now."
 </good-example>
@@ -145,7 +154,7 @@ A fix that changes behavior (not only wording) gets one re-dispatch of `up:revie
 
 ### 5b. Below Important
 
-The reviewer's `### Below Important` block (when present) skips the fair-evaluation loop above (steps 2-4). Open each line once: a wording entry that checks out is applied, all of them in one commit `fix: review text fixes`; a duplicate or smell entry is appended to `## Code smells` as `file:line — smell` and decided at Future work. Nothing in the block changes the merge verdict.
+The reviewer's `### Below Important` block (when present) skips the per-finding loop above (steps 2-3); step 4 prints its one summary line as the decision, and this step carries it out. Open each line once: a wording entry that checks out is applied, all of them in one commit `fix: review text fixes`; a duplicate or smell entry is appended to `## Code smells` as `file:line — smell` and decided at Future work. Nothing in the block changes the merge verdict.
 
 ### 6. Write the `## Conclusion`
 
@@ -188,7 +197,7 @@ Future work:   (omit entire subsection if none — do not write "none")
 ### Deferred   (omit if nothing was parked — scope intentionally punted out of this task)
 - <what> → <ticket | task file>
 
-Verified by: <only non-default items: deferred smokes, manual checks the next reader needs to know about>   (omit if only the routine reviewer+verify ran)
+Verified by: <only non-default items: deferred smokes, manual checks the next reader needs to know about>   (omit if only the routine reviewer+verify ran; required when step 1's size gate skipped the dispatch: `no up:reviewer dispatch (Small; offered, not requested)`)
 ```
 
 A violated AS is always material — it means the design rested on a premise that turned out false. Record evidence and, if it invalidates the outcome, either redo the affected phase or surface it to the user.
@@ -222,8 +231,8 @@ Pushback is legitimate when:
 - Accept "ready to merge" without evidence
 - Merge with open Critical or Important findings
 - Skip the Conclusion write-up
-- Run review on yourself (always use the subagent — preserve independence)
+- Run review on yourself (when a review runs, it is the subagent — preserve independence; step 1's size gate skips the dispatch, never replaces it with a self-review)
 
 ## Terminal state
 
-Conclusion written, all Critical/Important resolved or explicitly deferred with justification → Status → `validating`. Review does not mark `done`: control returns to `/up:make` to validate the Goal (step 11) before any finish action. The user chooses the finish action; you don't auto-merge.
+Conclusion written, all Critical/Important resolved or explicitly deferred with justification → Status → `validating`. Review does not mark `done`: control returns to `/up:make` to validate the Goal (step 11) before any finish action. The user chooses the finish action; you don't auto-merge. Invoked manually, end with the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closing line); when `/up:make` said it invoked this skill, its step 12 prints the line instead, so it prints once.

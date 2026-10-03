@@ -130,7 +130,7 @@ Status → `verifying` once every plan phase is committed. Run the context check
 
 ### 10. Review stage
 
-Status → `reviewing`. Run the context checkpoint (see below). Invoke `up:ureview`. It dispatches `up:reviewer`, processes findings, fills `## Conclusion`. Status → `validating` — code is verified and reviewed, but the task is not `done` until its Goal is confirmed achieved (step 11).
+Status → `reviewing`. Run the context checkpoint (see below). Invoke `up:ureview` and tell it `/up:make` invoked it. It dispatches `up:reviewer` (unless Design was skipped, step 1), processes findings, fills `## Conclusion`. Status → `validating` — code is verified and reviewed, but the task is not `done` until its Goal is confirmed achieved (step 11).
 
 ### 11. Validate the goal
 
