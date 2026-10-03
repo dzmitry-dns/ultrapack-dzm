@@ -1,6 +1,6 @@
 # Session audit fixes
 
-**Status:** validating — pushed and installed 0.3.42 on 2026-10-03; one real `/up:make` run in cccc pending
+**Status:** validating — pushed and installed 0.3.43 on 2026-10-03; one real `/up:make` run in cccc pending
 **Branch:** main
 **Goal:** The pack says on its own what the owner kept asking for in the 2026-09-18..10-02 sessions: whether the task can be closed, whether another review is needed, and what a question is about before asking it; plan-reviewer round 2 and the final up:reviewer dispatch run only where the audit showed they pay off. Confirmed by the diff, a reinstall, and one real `/up:make` run in cccc showing the approval line and the closing line (owner sign-off).
 
@@ -135,7 +135,7 @@ Invariants:
 Review findings:
 - Text fixes: 5 applied (c04c46d)
 
-Verified by: `up:reviewer` (Fable) merge-ready, no Critical or Important; `up:requirements-reviewer` (Fable) on the owner's 2026-10-02 and 2026-10-03 words, delivers-the-ask: yes, all 8 clauses met
+Verified by: `up:reviewer` (Fable) merge-ready, no Critical or Important; `up:requirements-reviewer` (Fable) on the owner's 2026-10-02 and 2026-10-03 words, delivers-the-ask: yes, all 8 clauses met; a second `up:requirements-reviewer` run on the owner's request (`c680ab0`..`b71056f`, reachability on resume, manual, Small, Goal-pending paths) also yes; its below-threshold note that a resume at `reviewing` could print the Closing line twice was fixed in make.md's resume table (0.3.43)
 
 ### Handoff — 2026-10-02
 - Position: planning, plan written, plan review round 1 done, owner approval pending; committed: c680ab0 (design and plan); uncommitted: `docs/tasks/pre-exec-review.md` (2026-09-22 Handoff block, lands in the PH4 commit per plan 4.1), untracked `.claude/` is unrelated, leave it
