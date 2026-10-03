@@ -1,6 +1,6 @@
 # Pre-execution review: an independent reviewer on Design and Plan before any code
 
-**Status:** validating — live run pending
+**Status:** done — live use confirmed 2026-10-02
 **Branch:** main
 **Goal:** In a Medium task, whether started through `/up:make` or by asking for a plan in plain words, an independent reviewer is dispatched automatically after the plan is written and before the plan-approval pause (announced in one line, skippable by the owner); a Large task (by the design signals below) also gets one after design; Small and Trivial get none; a round repeats only while it finds an accepted Critical or Important, at most twice without asking; `/up:make` resume from every Status still works. Confirming it needs one live run on a real Medium task (cccc or this repo), beyond the diff.
 
@@ -229,3 +229,19 @@ Verified by: `up:requirements-reviewer` (Fable) on `ee14e00`..`6b19a7b`, the own
 - Decided: reviewer dispatches in this task (final `up:ureview` included) use `model: fable` as a dispatch-time override, announced in one line first; the new agent's frontmatter still pins `opus` per Design point 2
 - Decided: work on `main`, one commit per phase (PH1, PH2, PH3), no push until the owner says so
 - First action: `/up:make` resumes into `up:uexecute`; PH1 creates `plugins/up/agents/plan-reviewer.md` and `plugins/up/skills/uplan/review-before-code.md`
+
+### Handoff — 2026-09-22
+- Position: validating, Goal pending one live run; committed: 458b193 (requirements review delivers the ask), pushed to origin/main; uncommitted: none (untracked `.claude/` is unrelated, leave it)
+- Decided: plugin updated to 0.3.40 with `claude plugin update up@ultrapack`; the installed cache matches `plugins/up` (only the harness `.in_use` marker differs); sessions started before the update still run 0.3.39
+- Decided: the re-plan Known risk (no `Executed so far` prompt field) stays as is unless the owner decides otherwise, because a structural re-plan is rare and it costs only noise the dispatcher rejects
+- Decided: the owner's verbatim ask for `up:requirements-reviewer` lives in transcript `2051867a-a3a2-4066-8dfa-9312127f43aa.jsonl` (messages 09:19, 09:24, 10:06 plus AskUserQuestion answers)
+- Open: none
+- First action: in a fresh session, run a real Medium task through `/up:make` (cccc or this repo) and check for the announce line, the `up:plan-reviewer` dispatch, and the `Reviewed before code:` line under `Approach:`; then record AS2, UK2, UK4 in this Conclusion and set Status `done`
+
+### Follow-up — 2026-10-02
+Live use replaced the single live run: 31 real `up:plan-reviewer` runs in cccc 2026-09-22..10-02, 14 cccc task files carry a `Reviewed before code:` line. Numbers come from the 129-session audit reconciled in `docs/tasks/session-audit-fixes.md` → Design.
+- AS1 — partly supported: 18 final `up:reviewer` dispatches in the same window found Important in 2 and Critical in 0; there is no before/after comparison, so the effect of the review before code is not isolated.
+- AS2 — not measured: every counted run started through `/up:make`; a plain-words start was not identified in the audit.
+- UK1 — resolved: round 1 found an accepted Important in 12 of 12 paired tasks, round 2 in 4 of 12; `session-audit-fixes` narrows round 2 to structural changes.
+- UK2 — resolved: 4-6 min per round.
+- UK4 — not measured: the audit did not count design-point runs against tasks the owner would call Large.
