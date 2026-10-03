@@ -52,7 +52,7 @@ Before writing the Plan, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply 
 9. Self-review inline (placeholders, consistency, invariants, spec coverage).
 10. Scope-creep / simpler-way check — see below. This is the last self-check before the review.
 11. Independent review before code: run the plan point of `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`.
-12. Present the plan to the user and wait for approval. The one exception is the plan-approval gate defined in `/up:make` step 7: when `/up:make` told you in this invocation that the task is Small and the plan stays under its threshold, present the highlights and proceed. Invoked manually or on resume, you were not told, so you wait. A question to the owner here (an open question, a simpler-way option) follows `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Questions to the owner. Then invoke `up:uexecute`.
+12. Present the plan to the user with the Approval line (`${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` → Approval line) and wait for approval. The one exception is the plan-approval gate defined in `/up:make` step 7: when `/up:make` told you in this invocation that the task is Small and the plan stays under its threshold, present the highlights and proceed. Invoked manually or on resume, you were not told, so you wait. A question to the owner here (an open question, a simpler-way option) follows `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Questions to the owner. Then invoke `up:uexecute`.
 </required>
 
 ## Required contents

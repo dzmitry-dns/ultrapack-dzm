@@ -24,7 +24,8 @@ Before running a point, read its slot (see Record line):
 
 - No line → round 1.
 - `skipped by owner` → no review. A design slot reading `skipped by owner` also skips the plan point.
-- `N` is 1 and `n` is at least 1 → round 2.
+- `N` is 1 and `round 2: needed` → round 2.
+- `N` is 1, the line has no `round 2:` field (written by 0.3.41 or earlier), and `n` is at least 1 → round 2.
 - Anything else → no further round; go on to approval.
 
 A re-plan that `up:uexecute` invokes on a structural deviation (`${CLAUDE_PLUGIN_ROOT}/skills/uexecute/SKILL.md` → Deviations from plan, item 4) is a new document: the plan point starts again at round 1, its line replaces the old one in the plan slot, and the same rules apply. A recorded skip still holds.
@@ -61,7 +62,7 @@ Process them by `${CLAUDE_PLUGIN_ROOT}/skills/ureview/SKILL.md` steps 2-4: class
 
 ## Rounds
 
-- Round 2 runs only when round 1 produced an accepted Critical or Important that changed the document.
+- Round 2 runs only when an accepted Critical or Important in round 1 changed a design decision, the phase list, or the phase order. Corrected citations, line numbers, file paths, and wording fixes do not count.
 - Every round is a fresh dispatch.
 - At most 2 automatic rounds per review point; a third runs only on the owner's request.
 
@@ -71,9 +72,25 @@ After every round, write or update in place one line in the point's slot:
 
 `Reviewed before code: <N> rounds, <n> Critical/Important fixed, <m> rejected, <date>`
 
+After round 1 the line ends with `, round 2: <needed | not needed>` (Rounds decides which). The round-2 write drops the field, so a resume after round 2 never runs a third round.
+
 `n` and `m` count Critical and Important findings over all rounds of the point; `Below Important` is not counted. On a skip the line is `Reviewed before code: skipped by owner, <date>`.
 
 Slots, never inside a subsection:
 
 - Design point: the line right after `TDD:` in `## Design`.
 - Plan point: the line right after `Approach:` in `## Plan`.
+
+## Approval line
+
+The design and plan approval requests (`up:udesign` and `up:uplan` step 12) open with, in the owner's chat language:
+
+1. A clickable `docs/tasks/<slug>.md:<line>` link to the `## Design` or `## Plan` heading being approved.
+2. One line per design point or plan phase: what it changes, in plain words.
+3. One line on the review before code:
+
+   `Review before code: <N rounds, n fixed, m rejected | not run — <reason>>. Another round: <no | yes> — <reason>.`
+
+   Reasons come from this file: design point without a Large signal, Design skipped, skipped by owner, round 1 changed no decision or phase order, 2-round cap.
+
+This is the single home of the rule; callers only point here.

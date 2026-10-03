@@ -39,7 +39,7 @@ Follow these steps in order. Do not combine or skip.
 9. Write to task file — set the `**Goal:**` header (the definition of done — see below), then `## Design`, `### Prior art`, `### Invariants`, `### Principles`, `### Assumptions`, `### Unknowns`. `## Design` carries the `Backwards compatibility:` line, and `Size: Large (owner)` when the user called the task Large in the ask or the dialogue.
 10. Self-review for placeholders, contradictions, scope, ambiguity. Fix inline.
 11. Independent review before code: run the design point of `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`.
-12. Wait for user approval before invoking `up:uplan`.
+12. Ask for approval with the Approval line (`${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` → Approval line). Wait for user approval before invoking `up:uplan`.
 </required>
 
 ## Scope check — split before planning
