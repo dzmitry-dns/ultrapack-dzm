@@ -50,7 +50,7 @@ See `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Dispatch narration.
 
 ### 1. Dispatch `up:reviewer`
 
-Size gate first, decided from the task file alone, never from a size held in session memory. The first non-empty line under `## Design` opens with `Skipped` (any case, any punctuation after it; a blank line after the heading does not count; the same rule as `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` → When it runs) → no dispatch. Print one line offering it ("final code review not run: Design was skipped; say so to run it"), do not pause, skip steps 1b-5 and go to step 6. If the owner takes the offer after the Conclusion is written, run steps 1-5 then and rewrite `Verified by:` and `Review findings`. Any other `## Design` → dispatch as below.
+Size gate first, decided from the task file alone, never from a size held in session memory. Design was skipped (the skipped-Design test in `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` → When it runs, Plan point) → no dispatch. Print one line offering it ("final code review not run: Design was skipped; say so to run it"), do not pause, skip steps 1b-5 and go to step 6. If the owner takes the offer after the Conclusion is written, run steps 1-5 then, from `Get git SHAs` on (past this gate), and rewrite `Verified by:` and `Review findings`. Any other `## Design` → dispatch as below.
 
 Get git SHAs:
 ```bash
@@ -154,7 +154,7 @@ A fix that changes behavior (not only wording) gets one re-dispatch of `up:revie
 
 ### 5b. Below Important
 
-The reviewer's `### Below Important` block (when present) skips the per-finding loop above (steps 2-3); step 4 prints its one summary line as the decision, and this step carries it out. Open each line once: a wording entry that checks out is applied, all of them in one commit `fix: review text fixes`; a duplicate or smell entry is appended to `## Code smells` as `file:line — smell` and decided at Future work. Nothing in the block changes the merge verdict.
+The reviewer's `### Below Important` block (when present) skips the per-finding evaluation above (step 3); step 4 prints its one summary line as the decision, and this step carries it out. Open each line once: a wording entry that checks out is applied, all of them in one commit `fix: review text fixes`; a duplicate or smell entry is appended to `## Code smells` as `file:line — smell` and decided at Future work. Nothing in the block changes the merge verdict.
 
 ### 6. Write the `## Conclusion`
 

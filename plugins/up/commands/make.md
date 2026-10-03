@@ -28,7 +28,7 @@ Status format: `<enum> — <optional annotation>`. The enum is everything before
   - `executing` → run `up:uexecute`
   - `verifying` → run `up:uverify` (step 9); the plan is already implemented, do not re-run execute
   - `reviewing` → run `up:ureview`
-  - `validating` → re-check the Goal with the user (step 11); on confirmation → `done`, then step 12, so the Closing line prints in the session that closes the task
+  - `validating` → re-check the Goal with the user (step 11); on confirmation, step 11's `done` path (docs refresh included), then step 12, so the Closing line prints in the session that closes the task
   - `done` / `shipped` → ask the user what they want to do (start a follow-up, re-open, view conclusion)
   - `reference` → not a task — an epic overview; ask which child task the user means
   - anything else → ask the user how to proceed
