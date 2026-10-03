@@ -50,7 +50,7 @@ See `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Dispatch narration.
 
 ### 1. Dispatch `up:reviewer`
 
-Size gate first, decided from the task file alone, never from a size held in session memory. The first line of `## Design` opens with `Skipped` (any case, any punctuation after it; the same rule as `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` → When it runs) → no dispatch. Print one line offering it ("final code review not run: Design was skipped; say so to run it"), do not pause, skip steps 1b-5 and go to step 6. If the owner takes the offer after the Conclusion is written, run steps 1-5 then and rewrite `Verified by:` and `Review findings`. Any other `## Design` → dispatch as below.
+Size gate first, decided from the task file alone, never from a size held in session memory. The first non-empty line under `## Design` opens with `Skipped` (any case, any punctuation after it; a blank line after the heading does not count; the same rule as `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` → When it runs) → no dispatch. Print one line offering it ("final code review not run: Design was skipped; say so to run it"), do not pause, skip steps 1b-5 and go to step 6. If the owner takes the offer after the Conclusion is written, run steps 1-5 then and rewrite `Verified by:` and `Review findings`. Any other `## Design` → dispatch as below.
 
 Get git SHAs:
 ```bash
