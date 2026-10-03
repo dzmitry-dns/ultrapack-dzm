@@ -1,6 +1,6 @@
 # Session audit fixes
 
-**Status:** verifying
+**Status:** validating — push, reinstall, one real `/up:make` run in cccc pending
 **Branch:** main
 **Goal:** The pack says on its own what the owner kept asking for in the 2026-09-18..10-02 sessions: whether the task can be closed, whether another review is needed, and what a question is about before asking it; plan-reviewer round 2 and the final up:reviewer dispatch run only where the audit showed they pay off. Confirmed by the diff, a reinstall, and one real `/up:make` run in cccc showing the approval line and the closing line (owner sign-off).
 
@@ -117,7 +117,25 @@ Smoke: `claude plugin validate plugins/up` and `.` → passed (marketplace descr
 Goal: proxy only — reinstall needs a push to GitHub; the real `/up:make` run in cccc showing the approval line and the closing line is the owner's step
 
 ## Conclusion
-<empty — filled by up:ureview>
+
+Outcome: all seven Design items are in the pack as 0.3.42 (`2d8925c`..`c04c46d`); the Goal still needs a push, `claude plugin update up@ultrapack`, and one real `/up:make` run in cccc showing the approval line and the closing line.
+
+Invariants:
+- IV1 — verify CK3, CK5: 19 real cccc Record lines and hand-made 0.3.41 lines resume as before; make.md resume table only gained the step-12 tail
+- IV2 — verify CK6 plus review: each format has one home; the skipped-Design test moved to `review-before-code.md` only (c04c46d)
+- IV3 — verify CK7: the size gate goes to step 6, make.md "Never skip Review" unchanged
+- IV4 — the gate reads the first non-empty line under `## Design`, nothing from session memory
+
+### Assumptions check
+- AS1 — held: 9 of 9 skipped-Design files in cccc match the gate after a431186
+
+### Deviations from plan
+- 3.2 said "the first line of `## Design`"; the gate reads the first non-empty line — verify CK4 found a blank line after the heading in 7 of 9 real files (a431186)
+
+Review findings:
+- Text fixes: 5 applied (c04c46d)
+
+Verified by: `up:reviewer` (Fable) merge-ready, no Critical or Important; `up:requirements-reviewer` (Fable) on the owner's 2026-10-02 and 2026-10-03 words, delivers-the-ask: yes, all 8 clauses met
 
 ### Handoff — 2026-10-02
 - Position: planning, plan written, plan review round 1 done, owner approval pending; committed: c680ab0 (design and plan); uncommitted: `docs/tasks/pre-exec-review.md` (2026-09-22 Handoff block, lands in the PH4 commit per plan 4.1), untracked `.claude/` is unrelated, leave it
