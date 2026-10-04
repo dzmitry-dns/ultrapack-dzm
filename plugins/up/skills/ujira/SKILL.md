@@ -1,6 +1,6 @@
 ---
 name: ujira
-description: Sync thin-layer Jira updates at task Status transitions. Comments post automatically where the project opted in (`auto: comment`); description edits always wait for owner approval; ticket transitions are never drafted unless the project set `transitions: propose`. Entry paths — invoked by /up:make at its trigger points, or manually via /up:ujira. In a project with no Jira adapter config it is a silent no-op.
+description: Sync thin-layer Jira updates at task Status transitions and when work moves between tickets (the source ticket's description is redrafted). Comments post automatically where the project opted in (`auto: comment`); description edits always wait for owner approval; ticket transitions are never drafted unless the project set `transitions: propose`. Entry paths — invoked by /up:make at its trigger points, or manually via /up:ujira. In a project with no Jira adapter config it is a silent no-op.
 ---
 
 # Jira adapter
