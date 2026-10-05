@@ -37,10 +37,11 @@ Append at the end of the task file, after `## Conclusion`. English, 5–12 bulle
 - Decided: <decision>, because <reason>
 - Dead end: <what was tried>, <why it failed>
 - Open: <question waiting on the owner>
+- Owner has not seen: <results or findings the owner asked for and has not yet read in chat, or "none">
 - First action: <one line, a command where possible>
 ```
 
-`Decided` and `Dead end` repeat as needed and are omitted when empty; `Open` is at most one line. When step 2 shows uncommitted changes, `First action` starts with committing them.
+`Decided` and `Dead end` repeat as needed and are omitted when empty; `Open` is at most one line. When step 2 shows uncommitted changes, `First action` starts with committing them. When `Owner has not seen` is not "none", `First action` is "tell the owner those results in plain words": the work step comes after.
 
 Only what the file and git do not already say: decisions taken in chat and their reasons, dead ends, the open question, the next step. Do not restate Design, Plan, or the diff.
 
@@ -66,6 +67,7 @@ Goal: <one sentence>
 - Decided: ...
 - Dead end: ...
 - Open: ...
+- Owner has not seen: ...
 - First action: ...
 ```
 
