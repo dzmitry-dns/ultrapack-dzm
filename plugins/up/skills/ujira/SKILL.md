@@ -64,7 +64,7 @@ Comment: "PH2 done — make.md:110 hook landed in a1b2c3d, IV4 holds." — task-
 
 ## Triggers & coalescing
 
-Two drafting moments per `/up:make` session; each draft covers every transition not yet synced:
+Two drafting moments per `/up:make` session, plus the Scope move below whenever it happens; each draft covers every transition not yet synced:
 
 1. Status → `executing` — rides the plan-approval pause; when `/up:make` skipped that pause (Small under the gate), auto items still post here and gated items move to the terminal draft. One start comment, a description item per the match verdict (skip / targeted update / replace), and, only under `transitions: propose`, a ticket transition proposal (e.g. To Do → In Progress).
 2. Terminal pause — `/up:make` step 12 finish menu, or session end. One comment line per phase crossed since the last sync (validating / done / shipped), plus, only under `transitions: propose`, a ticket transition proposal when done or shipped.

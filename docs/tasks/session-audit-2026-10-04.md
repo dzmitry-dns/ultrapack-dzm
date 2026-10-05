@@ -1,6 +1,6 @@
 # Session audit 2026-10-04
 
-**Status:** reviewing
+**Status:** validating
 **Branch:** main
 **Goal:** Every permission prompt and every owner complaint of 2026-10-03/04 has a named root cause and a fix in the place that caused it (dippy config, global CLAUDE.md, cccc rules or memory, or this pack), proven by a dippy replay of every Bash call of those two days and by a probe per new rule.
 
@@ -30,10 +30,25 @@ TDD: no (doc and config change).
 
 ## Verify
 
-- Replay of the 838 calls against the new config: 779 allow → allow, 40 ask → allow, 19 ask → ask, no other change (no deny → allow, no allow → ask). After that run three more rules were added (env-prefixed psql, `psql -f *.sql`, `kill $(lsof ...)`), each probed: the two commands from the owner's screenshot now allow; `kill 12345`, `psql -c "drop table x"`, `git push --force`, `claude plugin uninstall`, production `gh workflow run` still ask or deny.
+- Final replay of the 838 calls against the finished config: 779 allow → allow, 48 ask → allow, 11 ask → ask, no other change (no deny → allow, no allow → ask). The 11 left: production `gh workflow run`, `git checkout --`, `brew install`, `docker build`, `python3 -`, a redirect into `apps/main-app/src`, `mv` inside the repo, `rsvg-convert`, and a `for ... set --` az loop. Probed separately: the two commands from the owner's screenshot allow; `kill 12345`, `psql -c "drop table x"`, `git push --force`, `claude plugin uninstall`, production `gh workflow run` still ask or deny.
 - Stop hook: blocks the real 07:29 English answer cut from transcript 7655d12b; passes a full Russian session (27cbe9c1), a Russian answer, an answer under 15 words, an owner message asking for English, and `stop_hook_active`.
 - cccc push d6d37c519 ran without a prompt.
 
 ## Conclusion
 
-Pending review.
+Reviewed by `up:reviewer` twice (Fable 5.1 and Opus 5.5, same prompt, as a paired model comparison) and `up:requirements-reviewer` (Fable 5.1, verdict: delivers the ask).
+
+Accepted and fixed:
+- Critical (both reviewers): removing the main-push gate let `git push origin main --force`, `--force-with-lease`, `+main`, `--delete`, `main:production-demo` through. Now: any flag right after `push` asks except `-q`/`-u`; any later option, `+` or `:` refspec asks; every `--force` / `-f` / `--mirror` spelling is denied. Probed 15 shapes.
+- Important: `kill $(lsof -ti*` matched `kill $(lsof -ti)` (every user pid). Narrowed to exactly `kill $(lsof -tiTCP:<port> -sTCP:LISTEN)`.
+- Important (both): `psql -f *.sql` let production writes through, and `-c "drop ..." -f a.sql` slipped past dippy's `-c` check; cccc `never.md` requires the owner's yes for data-fix scripts. Now only a read-only session (`PGOPTIONS=...default_transaction_read_only=on...`) runs unasked; CLAUDE.md tells agents to use that form for reads. The bare `psql -f q4.sql` from the owner's screenshot asks again, deliberately.
+- Important: the ujira Scope move paragraph had no caller. `make.md` Rules now invoke `up:ujira` at a scope move, at any stage (d7be495).
+- Important (Opus): check 9 read as "any next message approves". Now "only after his explicit yes to that item".
+- Requirements review: `git -C <dir> add|commit` and `cd <scratch> && bash __probe*.sh` now allow; push and reset with `-C` still ask.
+- Below Important: "Seven checks" → "Nine checks"; ujira "Two drafting moments" names the scope move; memory frontmatter covers prod builds; `gh workflow run *Prod*` (display names).
+
+Rejected: none. Left: F5 (memory edit refused by the auto-mode classifier, owner's call); cccc `workflow.md` "staging still needs the owner" stays true (the owner orders staging in chat; only dippy's second click is gone).
+
+Final replay of the 838 calls of 2026-10-03/04: 48 of 59 asks gone, 11 still ask (production deploy, `git checkout --`, `brew install`, `docker build`, `python3 -`, repo redirect/mv, `rsvg-convert`, an az loop), no deny → allow.
+
+Model comparison on this diff: both found the force-push regression. Fable alone found the `kill $(lsof -ti)` hole and the ujira caller gap; Opus alone found the `-c ... -f` bypass and the check 9 wording, and ran more probes. One pair is not a rule; Anthropic's published pricing puts Fable 5.1 at 2.5x Opus 5.5.
