@@ -29,7 +29,7 @@ The block reports committed and uncommitted work from this output, not from memo
 
 ### 3. Append the Handoff block
 
-Append at the end of the task file, after `## Conclusion`. English, 5–12 bullets. Earlier Handoff blocks stay; the newest is always last.
+Append at the end of the task file, after `## Conclusion`, with the Edit tool (anchor on the file's last line). Never `cat >> file <<'EOF'`: a shell redirect into a repo file asks the owner for permission. English, 5–12 bullets. Earlier Handoff blocks stay; the newest is always last.
 
 ```markdown
 ### Handoff — YYYY-MM-DD
