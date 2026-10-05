@@ -1,6 +1,6 @@
 # Session audit 2026-10-04
 
-**Status:** validating
+**Status:** done — 2026-10-05
 **Branch:** main
 **Goal:** Every permission prompt and every owner complaint of 2026-10-03/04 has a named root cause and a fix in the place that caused it (dippy config, global CLAUDE.md, cccc rules or memory, or this pack), proven by a dippy replay of every Bash call of those two days and by a probe per new rule.
 
@@ -50,5 +50,7 @@ Accepted and fixed:
 Rejected: none. Left: F5 (memory edit refused by the auto-mode classifier, owner's call); cccc `workflow.md` "staging still needs the owner" stays true (the owner orders staging in chat; only dippy's second click is gone).
 
 Final replay of the 838 calls of 2026-10-03/04: 48 of 59 asks gone, 11 still ask (production deploy, `git checkout --`, `brew install`, `docker build`, `python3 -`, repo redirect/mv, `rsvg-convert`, an az loop), no deny → allow.
+
+Added after the reviews (2026-10-05, 21bbf93, 0.3.45, not reviewed): `/up:summary` handoff gains an `Owner has not seen` line; `/up:make` resume tells the owner those results first. Source: F6 (answers the owner never saw). Post-check 2026-10-05: neither 0.3.44 nor 0.3.45 acts outside its trigger (a scope move; a resume from a handoff), so neither explains the owner's report of bad behavior after 2026-10-04. The F7 Stop hook is not the cause either: 61 runs from 2026-10-04 18:57 to 2026-10-05 11:23 (+0300), 0 blocks, 0 hook errors.
 
 Model comparison on this diff: both found the force-push regression. Fable alone found the `kill $(lsof -ti)` hole and the ujira caller gap; Opus alone found the `-c ... -f` bypass and the check 9 wording, and ran more probes. One pair is not a rule; Anthropic's published pricing puts Fable 5.1 at 2.5x Opus 5.5.
