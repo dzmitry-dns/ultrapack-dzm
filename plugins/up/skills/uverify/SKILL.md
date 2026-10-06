@@ -114,23 +114,23 @@ Format:
 **Result:** passed | failed
 
 Happy-path:
-- CK1 — <attack hypothesis> — held
-- CK2 — <attack hypothesis> — broke: <evidence>
+- CK1: <attack hypothesis>: held
+- CK2: <attack hypothesis>: broke: <evidence>
 
 Negative:
-- CK3 — <attack hypothesis> — held
+- CK3: <attack hypothesis>: held
 
 Invariants / assumptions:
-- CK4 (IV1) — <attack hypothesis> — held: <how attacked>
-- CK5 (AS1) — <attack hypothesis> — deferred: <what blocks>
+- CK4 (IV1): <attack hypothesis>: held: <how attacked>
+- CK5 (AS1): <attack hypothesis>: deferred: <what blocks>
 
 Interfaces:
-- CK6 (IF1) — <attack hypothesis> — held
-- CK7 (IF2) — <attack hypothesis> — broke: <evidence>
+- CK6 (IF1): <attack hypothesis>: held
+- CK7 (IF2): <attack hypothesis>: broke: <evidence>
 
 Smoke: `<command>` → <one-line result>   (omit if not run; never substitute a non-smoke)
 
-Goal: proxy only — <what the smoke covered, what real-world validation remains>   (omit when the smoke exercised the full Goal)
+Goal: proxy only; <what the smoke covered, what real-world validation remains>   (omit when the smoke exercised the full Goal)
 
 Notes: <break repros, deferrals, re-runs>   (omit if none)
 ```
@@ -146,22 +146,22 @@ Fully-passing terse form (every attack held):
 **Result:** passed
 
 Happy-path:
-- CK1 — unicode/long/double-submit POST /items — held
-- CK2 — LF/CRLF/BOM variants of good.csv — held
+- CK1: unicode/long/double-submit POST /items: held
+- CK2: LF/CRLF/BOM variants of good.csv: held
 
 Negative:
-- CK3 — null/empty/whitespace/missing name on POST /items — held (all 400)
-- CK4 — missing/dir/symlink-to-null inputs to Dataset.load — held (all raise)
+- CK3: null/empty/whitespace/missing name on POST /items: held (all 400)
+- CK4: missing/dir/symlink-to-null inputs to Dataset.load: held (all raise)
 
 Invariants / assumptions:
-- CK5 (IV1) — grep + re-export sweep for `from training` in `src/dataset/` — held
-- CK6 (IV2) — manual trace of write paths — held, all go through `transaction()`
+- CK5 (IV1): grep + re-export sweep for `from training` in `src/dataset/`: held
+- CK6 (IV2): manual trace of write paths: held, all go through `transaction()`
 
 Interfaces:
-- CK7 (IF1) — caller-type sweep for `Dataset.load` — held
-- CK8 (IF2) — malformed AST to Formatter.render — held (raises ValueError, doesn't violate `-> str`)
+- CK7 (IF1): caller-type sweep for `Dataset.load`: held
+- CK8 (IF2): malformed AST to Formatter.render: held (raises ValueError, doesn't violate `-> str`)
 
-Smoke: `curl -X POST /items ... → 201` — end-to-end OK
+Smoke: `curl -X POST /items ... → 201`: end-to-end OK
 ```
 </good-example>
 
@@ -173,7 +173,7 @@ Failing form (a break landed):
 **Result:** failed
 
 Negative:
-- CK3 — null name on POST /items — broke: `{"name": null}` → 500 (TypeError in handler), not 400
+- CK3: null name on POST /items: broke: `{"name": null}` → 500 (TypeError in handler), not 400
 
 Notes: validation layer doesn't reject `null` before the handler; should reject with 400 "name is required". Loop back to execute.
 ```
@@ -183,6 +183,8 @@ Notes: validation layer doesn't reject `null` before the handler; should reject 
 
 - Every attack held (or justifiably deferred) → declare verify passed. Invoke `up:ureview`.
 - Any attack broke → for each, describe how it *should have* worked conceptually (not "add the missing line" — the behavior it was supposed to exhibit under the attack). Loop back to `up:uexecute` with these notes. Do not move forward.
+- Each loop-back reports in one line what changed since the last run and what the owner would see differently.
+- From the third run on, re-run only the failed checks plus one smoke. The full set runs once more, freshly, before the pass.
 
 <good-example>
 Break note: "POST /items returned 500 instead of 400 when `name` was `null`. The validation layer should reject the payload with a 400 and a 'name is required' message before the handler runs, for null/empty/whitespace equally."

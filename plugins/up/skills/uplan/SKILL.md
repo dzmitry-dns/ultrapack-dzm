@@ -68,7 +68,7 @@ Required always:
 
 Plan introduces two entity types, numbered within the task file:
 
-- PH1, PH2, … — Phases. Each phase heading is `### PH<N> — <name>`.
+- PH1, PH2, … — Phases. Each phase heading is `### PH<N>: <name>`.
 - RK1, RK2, … — Risks. Each is one sentence.
 
 References to Design entities use IDs (IV3, AS1, UK2) — never re-quote the full sentence.
@@ -90,15 +90,15 @@ Optional:
 
 Approach: <1-2 sentences>
 
-### PH1 — <name>
+### PH1: <name>
 
 - **1.1** `path/to/file.ext:lineA-lineB` (create|modify)
-  - `ClassName.method_name(arg: Type) -> Ret` — <what changes, by name>
+  - `ClassName.method_name(arg: Type) -> Ret`: <what changes, by name>
   - Respects: IV2, AS1
 - **1.2** ...
 - Commit: `<message>`
 
-### PH2 — <name>
+### PH2: <name>
 ...
 
 ### Test strategy   (always present; `none` when the change needs no test)
@@ -108,8 +108,8 @@ Approach: <1-2 sentences>
 <what blocks what, parallelizable phases>
 
 ### Risks   (optional — omit if none non-trivial)
-- RK1 — <one-sentence risk and mitigation>
-- RK2 — <...>
+- RK1: <one-sentence risk and mitigation>
+- RK2: <...>
 
 ### Rollout   (optional — only when the change ships to a live system)
 <how it lands: order, feature flags, migrations, verification gates>
@@ -167,6 +167,8 @@ Before handing off to the user, check:
 1. Scope creep: is every phase directly serving the Design, or have I snuck in "while I'm here" refactors, extra validation layers, speculative generality?
 2. Elegance: can any pair of phases merge? Are there accidental duplicate data paths? Does the plan introduce abstractions that aren't pulling their weight?
 3. Simpler way: is there a one-paragraph alternative plan that gets 90% of the value with 30% of the work? If yes, propose it to the user as an option.
+4. For a render or data-shape defect, measure the real defect on a sample before writing a rule.
+5. Drop cases no real user reaches (two people acting in the same second, a retry path for a failure monitoring already shows); name them in one line as out of scope.
 </required>
 
 <good-example>

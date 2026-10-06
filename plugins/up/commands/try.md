@@ -15,8 +15,8 @@ Steps:
 
 Report format:
 ```
-Pos: [PASS/FAIL] — <what happened>
-Neg: [PASS/FAIL] — <what happened>
+Pos: [PASS/FAIL]: <what happened>
+Neg: [PASS/FAIL]: <what happened>
 ```
 
 Rules:

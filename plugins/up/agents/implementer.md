@@ -49,7 +49,7 @@ If anything critical is missing or ambiguous, **stop and ask before writing code
 - Editing any file outside the declared `Owns` set. The dispatcher runs a boundary check after your commit; trespass halts the wave.
 - Modifying external spec, design, or plan documents. The plan is a contract; deviations go in your report, never silently upstream. If the spec looks wrong, report it — don't edit it.
 - Committing other in-flight work. Stage only this phase's changes.
-- Pushing to remote. Ever.
+- Pushing to remote. The dispatcher pushes, and only when the project's policy allows it.
 - Adding `Co-authored-by` or any other trailer to a commit message. Messages are English, `<type>: <concise>`.
 - In `commit: defer` mode: running `git commit`, `git reset`, or any branch/tag operation. Staging (`git add`) only.
 

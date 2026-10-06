@@ -20,9 +20,9 @@ Derive a kebab-case slug from the description, 3 words max (e.g. "flaky-login-te
 
 Before creating a new task file, check if the slug already exists — scan `docs/tasks/**/*.md` (tasks may live in epic folders).
 
-Status format: `<enum> — <optional annotation>`. The enum is everything before the first ` — `; the annotation is free text (dates, PR links, ship notes). Enum values: `design`, `planning`, `executing`, `verifying`, `reviewing`, `validating`, `done`, `shipped`, plus `reference` for epic overview files. Reopening a task = setting Status back to an earlier enum value with a dated annotation (e.g. `executing — reopened 2026-08-01, edge case PROJ-1204`). Ignore header fields you don't recognize — older files may carry retired ones.
+Status format: new files write `<enum> (<optional annotation>)` or `<enum>: <annotation>`. When reading, the enum is the first word of the Status value, so older files written as `<enum> — <annotation>` still parse. The annotation is free text (dates, PR links, ship notes). Enum values: `design`, `planning`, `executing`, `verifying`, `reviewing`, `validating`, `done`, `shipped`, plus `reference` for epic overview files. Reopening a task = setting Status back to an earlier enum value with a dated annotation (e.g. `executing (reopened 2026-08-01, edge case PROJ-1204)`). Ignore header fields you don't recognize — older files may carry retired ones.
 
-- Exists: read `**Status:**` from the header. If the file ends with one or more `### Handoff — <date>` blocks, read the latest one first — it holds what the previous session left uncommitted or undecided, and its first action. If it has an `Owner has not seen` line that is not "none", the first chat message of the session tells the owner those results in plain words, before any question and before any work step. Resume from the next stage:
+- Exists: read `**Status:**` from the header. If the file ends with one or more Handoff blocks (`### Handoff: <date>`, or `### Handoff — <date>` in older files), read the latest one first — it holds what the previous session left uncommitted or undecided, and its first action. If it has an `Owner has not seen` line that is not "none", the first chat message of the session tells the owner those results in plain words, before any question and before any work step. Resume from the next stage:
   - `design` → continue design
   - `planning` → run `up:uplan`
   - `executing` → run `up:uexecute`
@@ -46,6 +46,7 @@ Template:
 
 **Status:** design
 **Branch:** main
+**Worktree:** <absolute path of the worktree folder, omit the line if none>
 **Jira:** <ticket id/link — omit the line if none>
 **Depends on:** <task file or ticket — omit the line if none>
 **Goal:** <observable success condition that defines done — note if confirming it needs a real-world run or user sign-off beyond the diff>
@@ -78,7 +79,7 @@ Template:
 <empty — file:line + one-line smell passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
 
 ## Conclusion
-<empty — filled by up:ureview; after done/shipped grows dated ### Follow-up — <date> / ### Scope change — <date> entries and ### Deferred scope-parking>
+<empty — filled by up:ureview; after done/shipped grows dated ### Follow-up: <date> / ### Scope change: <date> entries and ### Deferred scope-parking>
 ```
 
 ### Epics — folder convention
@@ -110,7 +111,11 @@ After Design (or immediately for trivial/small tasks), decide:
 - Complex / long-running / touches many files → suggest a dedicated branch.
 - Easy fix / small scope → suggest working on the current branch (usually `main`).
 
-Always confirm with the user. If a branch is created, update the task file's `**Branch:**` header. When the work additionally needs filesystem isolation (a second live checkout), the user runs `/up:git-worktrees` (manual-only skill); suggest it, never invoke it.
+If the project's rules define a branch or worktree convention (for example a `workflow.md` that puts branch work in a git worktree), follow it without asking. Record the folder as `**Worktree:** <path>` in the task file header.
+
+Otherwise always confirm with the user. When the work additionally needs filesystem isolation (a second live checkout), the user runs `/up:git-worktrees` (manual-only skill); suggest it, never invoke it.
+
+Either way, if a branch is created, update the task file's `**Branch:**` header.
 
 ### 7. Plan stage (unless skipped)
 
@@ -145,7 +150,7 @@ If the Goal is still pending, proceed to step 12 to offer finish actions — the
 
 Once `done`, run the docs-refresh check (see below).
 
-`shipped` comes after `done`: set it when the merge/deploy is confirmed real, with the evidence in the annotation (e.g. `shipped — merged PR #294, prod 2026-08-03`). If the finish action chosen at step 12 completes the merge and nothing else gates the ship, set it there; otherwise a later session (or the owner) flips it when reality catches up.
+`shipped` comes after `done`: set it when the merge/deploy is confirmed real, with the evidence in the annotation (e.g. `shipped (merged PR #294, prod 2026-08-03)`). If the finish action chosen at step 12 completes the merge and nothing else gates the ship, set it there; otherwise a later session (or the owner) flips it when reality catches up.
 
 ### 12. Finish
 
@@ -182,6 +187,8 @@ Rules:
 
 Runs right before invoking the stage skill at steps 8, 9, and 10 — one check per transition, covering everything since the previous checkpoint (step 8's check covers steps 5–7). Count subagents dispatched and tool outputs long enough to fill roughly a screen. Either count at 3+ subagents or 2+ large outputs → print one line: "This session has grown large — consider `/up:summary` before continuing." Then proceed to the stage regardless; advisory only, never a pause.
 
+At each phase commit of a Medium or Large task, and at every Status transition, append the Handoff block by `/up:summary` steps 1-3 without asking. Print no prompt at these points. This is never a pause either.
+
 ## Stop conditions
 
 Stop and ask the user when:
@@ -193,9 +200,9 @@ Stop and ask the user when:
 ## Rules
 
 - Never skip Review (the final `up:ureview`; the pre-code skip phrase covers only the review before code)
-- Never auto-merge or auto-push — the user chooses at step 12
+- Never auto-merge: the user chooses at step 12. Push follows the project's policy file when it allows pushing (for example a `workflow.md` that says push without asking). With no such policy, the user chooses at step 12
 - Never mark `done` until the Goal is confirmed achieved (step 11) — verified + reviewed is not done
-- Never create a worktree without confirming with the user
+- Never create a worktree without confirming with the user, unless the project's rules define a worktree convention (step 6)
 - Keep the task file as the single source of truth — each stage reads it, each stage writes to it
 - External spec / design docs (e.g. anything under `docs/specs/`) are read-only during execute. If a stage finds the spec is wrong, surface it to the user — don't mutate it silently
 - Don't assume prior session memory — the next agent may be a fresh context reading only the task file

@@ -76,7 +76,7 @@ Then run the project's tests to confirm a clean baseline. If tests fail before y
 
 ```
 Worktree ready at <full-path>
-Baseline: <test summary, or "skipped — no test command">
+Baseline: <test summary, or "skipped: no test command">
 ```
 
 ## Cleanup when task is done

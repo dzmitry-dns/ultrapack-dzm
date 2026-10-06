@@ -158,7 +158,7 @@ The reviewer's `### Below Important` block (when present) skips the per-finding 
 
 ### 6. Write the `## Conclusion`
 
-Replace the placeholder line only. Any `### Handoff — <date>` blocks that follow it (written by `/up:summary`) stay below the written Conclusion.
+Replace the placeholder line only. Any Handoff blocks that follow it stay below the written Conclusion. `/up:summary` writes them as `### Handoff: <date>`; older files use `### Handoff — <date>`.
 
 ```markdown
 ## Conclusion
@@ -166,22 +166,22 @@ Replace the placeholder line only. Any `### Handoff — <date>` blocks that foll
 Outcome: <≤1 sentence on whether the Goal is achieved or what real-world validation remains, + commit SHA. Don't re-narrate the diff.>
 
 Invariants:
-- IV1 — <how it was verified>
-- IV2 — <...>
+- IV1: <how it was verified>
+- IV2: <...>
 
 ### Assumptions check   (omit entire subsection if the task had no AS)
-- AS1 — held | violated | unverifiable — <one-line evidence or "why unverifiable">
-- AS2 — ...
+- AS1: held | violated | unverifiable; <one-line evidence or "why unverifiable">
+- AS2: ...
 
 ### Unknowns outcome   (omit entire subsection if the task had no UK)
-- UK1 — resolved | still-open — <one-line resolution, or why it's still open>
-- UK2 — ...
+- UK1: resolved | still-open; <one-line resolution, or why it's still open>
+- UK2: ...
 
 ### Deviations from plan   (omit entire subsection if no deviations; execute creates it, review keeps it)
-- <what changed> — <why>
+- <what changed>: <why>
 
 ### Known risks   (omit entire subsection if none; execute creates it when a plan gap was left to raise)
-- <risk> — <why it was left and what would resolve it>
+- <risk>: <why it was left and what would resolve it>
 
 Review findings:   (omit entire subsection if no Critical, Important, or text fixes)
 - Critical: <resolved, how>
@@ -192,7 +192,7 @@ Scope flag:   (omit unless reviewer raised one — never auto-act; surface verba
 - <reviewer's flag, 1-2 sentences>
 
 Future work:   (omit entire subsection if none — do not write "none")
-- <item> — Justification: <Design-scope line> OR <new fact discovered>
+- <item>. Justification: <Design-scope line> OR <new fact discovered>
 
 ### Deferred   (omit if nothing was parked — scope intentionally punted out of this task)
 - <what> → <ticket | task file>
@@ -202,7 +202,7 @@ Verified by: <only non-default items: deferred smokes, manual checks the next re
 
 A violated AS is always material — it means the design rested on a premise that turned out false. Record evidence and, if it invalidates the outcome, either redo the affected phase or surface it to the user.
 
-After `done`/`shipped`, the Conclusion is a living log: post-merge reality gets appended as dated subsections — `### Follow-up — <date>`, `### Scope change — <date>` — never by rewriting the original review record.
+After `done`/`shipped`, the Conclusion is a living log: post-merge reality gets appended as dated subsections — `### Follow-up: <date>`, `### Scope change: <date>` — never by rewriting the original review record.
 
 ## Receiving feedback — rules
 

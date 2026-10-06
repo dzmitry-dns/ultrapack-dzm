@@ -89,7 +89,7 @@ The design and plan approval requests (`up:udesign` and `up:uplan` step 12) open
 2. One line per design point or plan phase: what it changes, in plain words.
 3. One line on the review before code:
 
-   `Review before code: <N rounds, n fixed, m rejected | not run — <reason>>. Another round: <no | yes> — <reason>.`
+   `Review before code: <N rounds, n fixed, m rejected | not run (<reason>)>. Another round: <no | yes> (<reason>).`
 
    Reasons come from this file: design point without a Large signal, Design skipped, skipped by owner, round 1 changed no decision or phase order, 2-round cap.
 

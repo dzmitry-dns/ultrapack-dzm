@@ -38,7 +38,7 @@ The Exception clause still holds: deviations, deferrals, and known risks always 
 <red-flags>
 Editing the wrong repository is one of the most common bugs. Before any write, confirm:
 
-- `pwd` is inside the intended checkout (the main repo, or the worktree if the user created one with `/up:git-worktrees`)
+- `pwd` is inside the intended checkout: the main repo, or the worktree named in the task file's `**Worktree:**` header. If the project's rules define a branch or worktree convention, follow it without asking and record `**Worktree:** <path>` in the header. Otherwise confirm with the user, and suggest `/up:git-worktrees` when the work needs a second live checkout
 - `git branch --show-current` matches `**Branch:**`
 
 When you dispatch a subagent (`up:explorer`, `up:researcher`), pass the intended working directory explicitly in the prompt. Subagents do not inherit your `cwd` reliably across harnesses.
@@ -172,7 +172,7 @@ A deviation is any structural change from what the plan says. File moved to a di
 When a deviation happens:
 
 1. Do not edit the Plan inline. The plan is the contract that was approved; it stays as-is for the review.
-2. Record the deviation in the task file's `## Conclusion` under a `### Deviations from plan` subsection (create if missing). Format: `- <what changed> — <why>`. If no deviation happens, do not create the subsection at all — per `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`, empty subsections are deleted, not written.
+2. Record the deviation in the task file's `## Conclusion` under a `### Deviations from plan` subsection (create if missing). Format: `- <what changed>: <why>`. If no deviation happens, do not create the subsection at all — per `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`, empty subsections are deleted, not written.
 3. If the deviation is minor (renamed a helper, swapped two steps) — continue execution.
 4. If the deviation is structural enough that later phases in the plan no longer apply — stop executing. Invoke `up:uplan` with enough context (what was done, what no longer applies, what new reality is). Let the planner skill update the plan before resuming.
 </required>
@@ -205,7 +205,7 @@ Don't force through. Ask.
 - Start on `main`/`master` without explicit user consent if the plan specified a branch
 - Skip the commit between phases
 - Claim complete without running what you built
-- Push to remote without explicit user consent
+- Push to remote without explicit user consent, unless the project's policy allows it
 - Edit the Plan section to hide a deviation
 - Edit an upstream spec file during execute (flag issues, don't mutate)
 - Invent a silent fallback to avoid stopping

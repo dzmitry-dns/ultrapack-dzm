@@ -46,6 +46,9 @@ Follow these steps in order. Do not combine or skip.
 
 If the ask spans multiple independent subsystems, stop and propose a split. Each piece gets its own task file. We work on one in this dialogue; the rest wait.
 
+- For a render or data-shape defect, measure the real defect on a sample before writing a rule.
+- Drop cases no real user reaches (two people acting in the same second, a retry path for a failure monitoring already shows); name them in one line as out of scope.
+
 <good-example>
 User: "Add auth, billing, and admin dashboard."
 
@@ -177,23 +180,23 @@ Backwards compatibility: <each break and its resolution | no break | greenfield>
 <TDD: yes|no (reason)>
 
 ### Prior art
-- `docs/tasks/archive/<file>.md:<line>` — <what it informs here>   (or the single line "none found")
+- `docs/tasks/archive/<file>.md:<line>`: <what it informs here>   (or the single line "none found")
 
 ### Invariants
-- IV1 — <specific thing that must hold>
-- IV2 — <...>
+- IV1: <specific thing that must hold>
+- IV2: <...>
 
 ### Principles
-- PC1 — <softer guidance — concrete enough to check>
-- PC2 — <...>
+- PC1: <softer guidance, concrete enough to check>
+- PC2: <...>
 
 ### Assumptions
-- AS1 — <unverified premise the design rests on>
-- AS2 — <...>
+- AS1: <unverified premise the design rests on>
+- AS2: <...>
 
 ### Unknowns
-- UK1 — <open question left to plan / execute>
-- UK2 — <...>
+- UK1: <open question left to plan / execute>
+- UK2: <...>
 ```
 
 ## Rules

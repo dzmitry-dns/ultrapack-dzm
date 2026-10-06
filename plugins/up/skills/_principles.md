@@ -27,9 +27,9 @@ Before dispatching a subagent (`Agent` tool call) and after it returns, state on
 
 Whoever ends the workflow turn prints one line, once, in the owner's chat language:
 
-`Done: <what>. Left: <what, or nothing>. Close: <task yes/no; Jira yes/no, or no ticket> — <why not, when no>.`
+`Done: <what>. Left: <what, or nothing>. Close: <task yes/no; Jira yes/no, or no ticket> (<why not, when no>).`
 
-When a review ran in the same turn, append `Another review: <no | yes> — <why>.` The line is never a recap of the message above it. This is the single home of the rule; callers only point here.
+When a review ran in the same turn, append `Another review: <no | yes> (<why>).` The line is never a recap of the message above it. This is the single home of the rule; callers only point here.
 
 ## Questions to the owner
 
@@ -42,7 +42,7 @@ While exploring code for a task you'll pass smells unrelated to the change — a
 - In task scope, or a genuinely easy and low-risk win → fix it (Boy-Scout rule, GPC2/GPC8). The fix lands in the diff; nothing to record.
 - Out of scope and non-trivial — a wide rename, a risky refactor, a new test surface → don't balloon the task. Record it, one line, in the task file's `## Code smells` section:
 
-  `- <file:line> — <smell, one sentence> (<GPC it offends, if one fits>)`
+  `- <file:line>: <smell, one sentence> (<GPC it offends, if one fits>)`
 
 A pointer plus a sentence; the next reader opens the line. Recorded smells are `Future work` candidates decided at review — recording one does not authorize fixing it now.
 

@@ -71,7 +71,7 @@ Two drafting moments per `/up:make` session, plus the Scope move below whenever 
 
 Scope move — not a Status transition, so it is easy to miss. When part of this task's work moves to another ticket (a split, a follow-up ticket, "do X in a separate ticket"), draft a description item for THIS ticket in the same step that creates or links the other one; do not wait for the next trigger. Re-read the live description against the new scope: the what+why and the acceptance checklist must no longer promise the moved part, and one line points to the other ticket ("Moved to PROJ-456: ..."). The item follows the normal gate (owner approval, never `auto`). Same check in reverse when work moves in. Incident: a walk-in email moved to a new ticket, and the source ticket still said "decide whether walk-ins get an email and build it if yes" until the owner noticed.
 
-Sync state lives in the `**Jira:**` header annotation: `**Jira:** PROJ-123 — synced executing 2026-07-21`. Update it after the owner approves or skips a draft, and immediately after an auto comment lands — an applied comment the annotation does not know about is a duplicate on the next run. Everything after the recorded enum is not yet synced. Internal churn (design → planning) never drafts.
+Sync state lives in the `**Jira:**` header annotation: `**Jira:** PROJ-123 (synced executing 2026-07-21)`. Older files write `PROJ-123 — synced executing 2026-07-21`; read the enum after the word `synced` in both. Update it after the owner approves or skips a draft, and immediately after an auto comment lands — an applied comment the annotation does not know about is a duplicate on the next run. Everything after the recorded enum is not yet synced. Internal churn (design → planning) never drafts.
 
 Manual invocation (`/up:ujira`): same rules — read the header annotation, draft whatever is unsynced, hand over.
 
@@ -80,7 +80,7 @@ Manual invocation (`/up:ujira`): same rules — read the header annotation, draf
 One block per ticket, copy-paste-ready (plain text that Jira renders as-is):
 
 ```
-Jira draft — PROJ-123 (docs/tasks/<slug>.md)
+Jira draft: PROJ-123 (docs/tasks/<slug>.md)
 
 1. Comment:
    Started work on <plain-language summary>.
