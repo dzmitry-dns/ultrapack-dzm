@@ -85,7 +85,7 @@ Dispatch with tight scope and pass the working directory explicitly. Don't over-
 **Dispatch prompt skeleton:**
 
 ```
-Scope: <what to trace — feature name, entry point, or specific question>
+Scope: <what to trace: feature name, entry point, or specific question>
 Working directory: <absolute path>
 ```
 
@@ -100,9 +100,9 @@ If the question is purely about the current codebase, prefer `up:explorer`. If i
 
 ```
 Question: <the research question, in the shape you want the answer to take>
-Sub-questions: <optional — pre-decomposed bullets if you already know the shape>
+Sub-questions: <optional: pre-decomposed bullets if you already know the shape>
 Working directory: <absolute path, if codebase context is relevant>
-Scope hints: <optional — preferred sources, depth, time budget>
+Scope hints: <optional: preferred sources, depth, time budget>
 ```
 
 ## Consistency pass — when changing a pattern, sweep for others
@@ -121,7 +121,7 @@ Fix one spot, commit, reviewer finds four more siblings, two rounds of fixups, n
 
 ## Incidental code smells
 
-Implementers and `up:explorer` report smells they pass; you also hit them while reading code to coordinate. For each: fix it in the same commit when it's in task scope or an easy, low-risk win (Boy-Scout); otherwise append it to the task file's `## Code smells` section — `file:line — one-line smell` — and leave it for review's Future-work call. Don't let out-of-scope smells balloon the change. See `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Incidental code smells.
+Implementers and `up:explorer` report smells they pass; you also hit them while reading code to coordinate. For each: fix it in the same commit when it's in task scope or an easy, low-risk win (Boy-Scout); otherwise append it to the task file's `## Code smells` section as `- <file:line>: <one-line smell>`, and leave it for review's Future-work call. Don't let out-of-scope smells balloon the change. See `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Incidental code smells.
 
 ## Don't modify upstream specs or external design docs
 
@@ -183,7 +183,7 @@ When a deviation happens:
 Appended to `## Conclusion`:
 > - Phase 3: used existing `cache.backend.CacheBackend` instead of creating a new one.
 
-Continuing to phase 4 — later phases are unaffected."
+Continuing to phase 4: later phases are unaffected."
 </good-example>
 
 <bad-example>

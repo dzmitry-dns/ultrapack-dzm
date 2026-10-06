@@ -92,23 +92,23 @@ git log <BASE_SHA>..<HEAD_SHA> --oneline
 ## Findings
 
 ### Critical
-- **<file:line>** — <issue> (confidence: NN)
+- **<file:line>**: <issue> (confidence: NN)
   Trigger: <who> · <how often> · <what breaks on that input>
   Fix: <1-line concrete suggestion>
 
 ### Important
-- **<file:line>** — <issue> (confidence: NN)
+- **<file:line>**: <issue> (confidence: NN)
   Trigger: <who> · <how often> · <what breaks on that input>
   Fix: <1-line concrete suggestion>
 
 ### Below Important (no fix required)   (omit when empty; max 5)
-- <file:line> — <one line: wording, duplicate, bleed>
+- <file:line>: <one line: wording, duplicate, bleed>
 
 ### Scope flag   (omit unless a scope concern surfaced)
 - <1-2 sentences: what looks wrong at the design / problem-framing level, with one piece of evidence from the diff or codebase>
 
 ## Verdict
-<merge-ready: yes | no — 1 sentence why>
+<merge-ready: yes | no (1 sentence why)>
 ```
 
 If nothing at ≥80 confidence: say so explicitly in the Findings section, then give a merge-ready verdict.

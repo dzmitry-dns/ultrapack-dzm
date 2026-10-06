@@ -78,15 +78,15 @@ End with a recommendation and why. Don't hedge on the recommendation — if the 
 <good-example>
 "Option A: Redis-backed rate limiter.
 - Tradeoff: fast, durable across restarts. Adds Redis as a required dep in prod.
-- Unknown: our existing Redis cluster's latency from the edge nodes — need to measure before committing.
+- Unknown: our existing Redis cluster's latency from the edge nodes (need to measure before committing).
 
 Option B: In-memory token bucket per pod.
 - Tradeoff: zero new infra, simpler code. Loses limits on pod restart; uneven limits across horizontally-scaled pods.
-- Unknown: how often pods cycle — if it's every 10 minutes, users see limit resets.
+- Unknown: how often pods cycle (if it's every 10 minutes, users see limit resets).
 
 Option C: Postgres-backed counter with short TTL.
 - Tradeoff: uses existing DB; no new infra. DB write per request is expensive at our RPS.
-- Unknown: whether our DB can absorb the extra write load — need a napkin calc.
+- Unknown: whether our DB can absorb the extra write load (need a napkin calc).
 
 Recommendation: B for now, revisit when we outgrow it. The redis latency unknown (A) and write-load unknown (C) both need measurement work before committing, and B is cheap to replace."
 </good-example>
@@ -99,7 +99,7 @@ Before presenting the design, enumerate anything in the chosen approach that cou
 
 <good-example>
 "Backwards-compat risks:
-- `GET /api/v1/users` response shape changes — field `name` splits into `first_name`/`last_name`. Any existing client expecting `name` breaks. Options: (a) return both until v2, (b) hard-break with a migration note, (c) ship as `/api/v2/users` and leave v1 alone. Which?
+- `GET /api/v1/users` response shape changes: field `name` splits into `first_name`/`last_name`. Any existing client expecting `name` breaks. Options: (a) return both until v2, (b) hard-break with a migration note, (c) ship as `/api/v2/users` and leave v1 alone. Which?
 - Config key `log_level` renamed to `logging.level`. Running deployments on old configs will silently fall through to the default. Options: (a) read both for one release, warn on old, (b) fail loud on old key. Which?"
 </good-example>
 
@@ -115,10 +115,10 @@ Entities in the task file are assigned short IDs so later sections (Plan, Verify
 
 Design owns four entity types:
 
-- IV1, IV2, … — Invariants
-- PC1, PC2, … — Principles
-- AS1, AS2, … — Assumptions
-- UK1, UK2, … — Unknowns
+- IV1, IV2, …: Invariants
+- PC1, PC2, …: Principles
+- AS1, AS2, …: Assumptions
+- UK1, UK2, …: Unknowns
 
 Rules:
 - Defined once with a full sentence at first appearance; later mentions are ID-only.
@@ -131,27 +131,27 @@ Plan owns PH (phases) and RK (risks). Verify owns CK (checks). Those are introdu
 ## Identifying invariants, principles, assumptions, unknowns
 
 <invariants>
-IV — specific things that must hold. Concrete enough to check against the code.
-- IV1 — The `Dataset` class must not import from `training/`.
-- IV2 — All DB writes go through the `transaction()` helper.
+IV: specific things that must hold. Concrete enough to check against the code.
+- IV1: The `Dataset` class must not import from `training/`.
+- IV2: All DB writes go through the `transaction()` helper.
 </invariants>
 
 <principles>
-PC — softer abstract guidance. Still concrete enough to audit. Task-specific only — the Global Principles (GPC1–GPC8) in `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` apply everywhere and don't need to be restated. List a PC only when the task deviates from a GPC (name which one and why) or when it needs an extra rule the GPCs don't cover.
-- PC1 — Fail fast, no silent fallbacks.
-- PC2 — Prefer composition over inheritance.
+PC: softer abstract guidance. Still concrete enough to audit. Task-specific only: the Global Principles (GPC1–GPC8) in `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` apply everywhere and don't need to be restated. List a PC only when the task deviates from a GPC (name which one and why) or when it needs an extra rule the GPCs don't cover.
+- PC1: Fail fast, no silent fallbacks.
+- PC2: Prefer composition over inheritance.
 </principles>
 
 <assumptions>
-AS — unverified premises the design rests on. Conclusion must report whether each held.
-- AS1 — The upstream `users` service returns `email` as UTF-8 in every response.
-- AS2 — Nightly batch volume stays under 10M rows for the next quarter.
+AS: unverified premises the design rests on. Conclusion must report whether each held.
+- AS1: The upstream `users` service returns `email` as UTF-8 in every response.
+- AS2: Nightly batch volume stays under 10M rows for the next quarter.
 </assumptions>
 
 <unknowns>
-UK — open questions the design cannot answer alone. Resolved during plan, execute, or explicitly deferred. Conclusion must report outcome.
-- UK1 — Whether the existing Redis cluster has spare capacity for this workload.
-- UK2 — Exact failure mode when the upstream API rate-limits mid-batch.
+UK: open questions the design cannot answer alone. Resolved during plan, execute, or explicitly deferred. Conclusion must report outcome.
+- UK1: Whether the existing Redis cluster has spare capacity for this workload.
+- UK2: Exact failure mode when the upstream API rate-limits mid-batch.
 </unknowns>
 
 **Not principles:** "prefer composition" (too vague without "over inheritance"). "Be consistent." "Write clean code."
@@ -176,7 +176,7 @@ TDD: no (reason: one-off migration script; no reusable logic)
 ## Design
 <purpose, scope, chosen approach, key decisions, tradeoffs that settled it>
 Backwards compatibility: <each break and its resolution | no break | greenfield>
-<Size: Large (owner) — only when the user called the task Large>
+<Size: Large (owner)>   (only when the user called the task Large)
 <TDD: yes|no (reason)>
 
 ### Prior art

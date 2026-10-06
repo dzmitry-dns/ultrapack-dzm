@@ -42,21 +42,21 @@ The attack list lives in-session. It is not written to the task file.
 <good-example>
 ```
 Happy-path:
-- CK1 — POST /items: try unicode name, 10KB body, double-submit — find one that doesn't 201
-- CK2 — Dataset.load("good.csv"): try LF vs CRLF, BOM, trailing newline — find a "good" file it mishandles
+- CK1: POST /items: try unicode name, 10KB body, double-submit (find one that doesn't 201)
+- CK2: Dataset.load("good.csv"): try LF vs CRLF, BOM, trailing newline (find a "good" file it mishandles)
 
 Negative:
-- CK3 — POST /items: try {name: ""}, {name: null}, {name: "  "}, missing field entirely — find one that doesn't 400
-- CK4 — Dataset.load: try missing file, directory, symlink to /dev/null, file with no read perms — find one that doesn't raise cleanly
+- CK3: POST /items: try {name: ""}, {name: null}, {name: "  "}, missing field entirely (find one that doesn't 400)
+- CK4: Dataset.load: try missing file, directory, symlink to /dev/null, file with no read perms (find one that doesn't raise cleanly)
 
 Invariants / assumptions:
-- CK5 (IV1) — grep "from training" src/dataset/ and re-export chains — try to find a smuggled import
-- CK6 (IV2) — find a DB write that bypasses transaction() (raw cursor, ORM escape hatch)
-- CK7 (AS1) — sample upstream /users — find a non-UTF-8 `email` in the wild
+- CK5 (IV1): grep "from training" src/dataset/ and re-export chains (try to find a smuggled import)
+- CK6 (IV2): find a DB write that bypasses transaction() (raw cursor, ORM escape hatch)
+- CK7 (AS1): sample upstream /users (find a non-UTF-8 `email` in the wild)
 
 Interfaces:
-- CK8 (IF1) — grep `Parser.parse` callers — find one passing non-str
-- CK9 (IF2) — invoke Formatter.render with malformed AST — find a return that violates `-> str`
+- CK8 (IF1): grep `Parser.parse` callers (find one passing non-str)
+- CK9 (IF2): invoke Formatter.render with malformed AST (find a return that violates `-> str`)
 ```
 </good-example>
 

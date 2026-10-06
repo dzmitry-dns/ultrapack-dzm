@@ -68,8 +68,8 @@ Required always:
 
 Plan introduces two entity types, numbered within the task file:
 
-- PH1, PH2, … — Phases. Each phase heading is `### PH<N>: <name>`.
-- RK1, RK2, … — Risks. Each is one sentence.
+- PH1, PH2, …: Phases. Each phase heading is `### PH<N>: <name>`.
+- RK1, RK2, …: Risks. Each is one sentence.
 
 References to Design entities use IDs (IV3, AS1, UK2) — never re-quote the full sentence.
 
@@ -102,22 +102,22 @@ Approach: <1-2 sentences>
 ...
 
 ### Test strategy   (always present; `none` when the change needs no test)
-<named tests, per file or per phase — the cap on what execute may write; bug fix = one red reproduction>
+<named tests, per file or per phase: the cap on what execute may write; bug fix = one red reproduction>
 
-### Order & dependencies   (optional — omit for single-phase or obviously-sequential plans)
+### Order & dependencies   (optional: omit for single-phase or obviously-sequential plans)
 <what blocks what, parallelizable phases>
 
-### Risks   (optional — omit if none non-trivial)
+### Risks   (optional: omit if none non-trivial)
 - RK1: <one-sentence risk and mitigation>
 - RK2: <...>
 
-### Rollout   (optional — only when the change ships to a live system)
+### Rollout   (optional: only when the change ships to a live system)
 <how it lands: order, feature flags, migrations, verification gates>
 
-### Rollback   (optional — only when the change ships to a live system)
+### Rollback   (optional: only when the change ships to a live system)
 <how to back out post-ship: revert / disable path, and what data it touches>
 
-### Interfaces + ### Interface graph   (optional — only for parallel dispatch; format in uexecute/waves.md)
+### Interfaces + ### Interface graph   (optional: only for parallel dispatch; format in uexecute/waves.md)
 ```
 
 ## Interfaces for parallel dispatch
@@ -172,7 +172,7 @@ Before handing off to the user, check:
 </required>
 
 <good-example>
-"Plan says 7 phases. It's really 3 — phases 4-7 are a generalization layer for a second caller that doesn't exist. Cut to 3, flag the generalization as future work."
+"Plan says 7 phases. It's really 3: phases 4-7 are a generalization layer for a second caller that doesn't exist. Cut to 3, flag the generalization as future work."
 </good-example>
 
 <bad-example>

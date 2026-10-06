@@ -47,39 +47,39 @@ Template:
 **Status:** design
 **Branch:** main
 **Worktree:** <absolute path of the worktree folder, omit the line if none>
-**Jira:** <ticket id/link — omit the line if none>
-**Depends on:** <task file or ticket — omit the line if none>
-**Goal:** <observable success condition that defines done — note if confirming it needs a real-world run or user sign-off beyond the diff>
+**Jira:** <ticket id/link (omit the line if none)>
+**Depends on:** <task file or ticket (omit the line if none)>
+**Goal:** <observable success condition that defines done (note if confirming it needs a real-world run or user sign-off beyond the diff)>
 
 ## Design
-<empty — filled by up:udesign>
+<empty: filled by up:udesign>
 
 ### Prior art
-<empty — filled by up:udesign: file:line citations from docs/tasks/ and archive/, or "none found">
+<empty: filled by up:udesign with file:line citations from docs/tasks/ and archive/, or "none found">
 
 ### Invariants
-<empty — IV1, IV2, … : hard constraints that must hold>
+<empty: IV1, IV2, … are hard constraints that must hold>
 
 ### Principles
-<empty — PC1, PC2, … : softer guidance>
+<empty: PC1, PC2, … are softer guidance>
 
 ### Assumptions
-<empty — AS1, AS2, … : unverified premises the design rests on; conclusion must report whether each held>
+<empty: AS1, AS2, … are unverified premises the design rests on; conclusion must report whether each held>
 
 ### Unknowns
-<empty — UK1, UK2, … : open questions left to plan / execute; conclusion must report whether each resolved>
+<empty: UK1, UK2, … are open questions left to plan / execute; conclusion must report whether each resolved>
 
 ## Plan
-<empty — filled by up:uplan; gains ### Rollout / ### Rollback when the change ships to a live system>
+<empty: filled by up:uplan; gains ### Rollout / ### Rollback when the change ships to a live system>
 
 ## Verify
-<empty — filled by up:uverify>
+<empty: filled by up:uverify>
 
 ## Code smells
-<empty — file:line + one-line smell passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
+<empty: `- <file:line>: <one-line smell>` lines passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
 
 ## Conclusion
-<empty — filled by up:ureview; after done/shipped grows dated ### Follow-up: <date> / ### Scope change: <date> entries and ### Deferred scope-parking>
+<empty: filled by up:ureview; after done/shipped grows dated ### Follow-up: <date> / ### Scope change: <date> entries and ### Deferred scope-parking>
 ```
 
 ### Epics — folder convention
@@ -158,6 +158,8 @@ Print the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closin
 - Merge / open PR (if on a branch)
 - Move on
 
+When the project's policy file says to open PRs with auto-merge, the PR is opened with `gh pr merge --auto` (it merges once the required checks pass), and a PR already opened that way is reported, not offered for merge. With no such policy, the merge waits for the user's choice here.
+
 If Jira is configured, present the `up:ujira` terminal draft alongside these options. Items `up:ujira` auto-applied appear there as receipts, not as choices.
 
 Execute only after the user chooses.
@@ -200,7 +202,7 @@ Stop and ask the user when:
 ## Rules
 
 - Never skip Review (the final `up:ureview`; the pre-code skip phrase covers only the review before code)
-- Never auto-merge: the user chooses at step 12. Push follows the project's policy file when it allows pushing (for example a `workflow.md` that says push without asking). With no such policy, the user chooses at step 12
+- Never merge on your own initiative. When the project's policy file says to open PRs with auto-merge (`gh pr merge --auto`, which merges once the required checks pass), turn it on when the PR is created. With no such policy, the user chooses at step 12. Push follows the project's policy file when it allows pushing (for example a `workflow.md` that says push without asking). With no such policy, the user chooses at step 12
 - Never mark `done` until the Goal is confirmed achieved (step 11) — verified + reviewed is not done
 - Never create a worktree without confirming with the user, unless the project's rules define a worktree convention (step 6)
 - Keep the task file as the single source of truth — each stage reads it, each stage writes to it

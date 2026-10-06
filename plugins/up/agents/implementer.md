@@ -62,7 +62,7 @@ Use exactly one of the two variants below based on your commit mode. Do not emit
 Status: DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
 
 Implemented:
-- <file:line> — <what changed>
+- <file:line>: <what changed>
 
 Tests: <command> → <pass/fail + counts>
 Smoke: <command> → <result>
@@ -72,11 +72,11 @@ Commit: <sha> <message>
 Deviations from the phase text (if any):
 - <what changed vs. the plan bullet, and why>
 
-Incidental code smells (passed but not fixed — out of `Owns` or non-trivial):
-- <file:line> — <one-line smell> (<GPC if one fits>)
+Incidental code smells (passed but not fixed: out of `Owns` or non-trivial):
+- <file:line>: <one-line smell> (<GPC if one fits>)
 
 Assumption status (only if any IV/AS was invalidated or now looks shaky):
-- AS<N> — <what you observed that contradicts it>
+- AS<N>: <what you observed that contradicts it>
 
 Concerns (if DONE_WITH_CONCERNS):
 - <what you're unsure about>
@@ -87,7 +87,7 @@ Concerns (if DONE_WITH_CONCERNS):
 Status: DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
 
 Implemented:
-- <file:line> — <what changed>
+- <file:line>: <what changed>
 
 Tests: <command> → <pass/fail + counts>
 Smoke: <command> → <result>
@@ -98,11 +98,11 @@ Staged files: <path>, <path>
 Deviations from the phase text (if any):
 - <what changed vs. the plan bullet, and why>
 
-Incidental code smells (passed but not fixed — out of `Owns` or non-trivial):
-- <file:line> — <one-line smell> (<GPC if one fits>)
+Incidental code smells (passed but not fixed: out of `Owns` or non-trivial):
+- <file:line>: <one-line smell> (<GPC if one fits>)
 
 Assumption status (only if any IV/AS was invalidated or now looks shaky):
-- AS<N> — <what you observed that contradicts it>
+- AS<N>: <what you observed that contradicts it>
 
 Concerns (if DONE_WITH_CONCERNS):
 - <what you're unsure about>

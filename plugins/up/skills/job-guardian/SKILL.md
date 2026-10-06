@@ -118,7 +118,7 @@ On unrecoverable: capture the failure (last log lines, error, what you tried), t
 1. Preserve outputs first — pull checkpoints, logs, results off the pod *before* any teardown, in case teardown destroys the disk.
 2. Release the resource (done, gave up, budget hit) with the reversible teardown (`stop`, not destroy). Verify it actually released (pod stopped) — a teardown you didn't confirm is not done (GPC5).
 3. Write the record: outcome, final metrics or error, recovery actions taken, where logs/checkpoints live, plus the two decision lists — `### Decisions` and `### Needs user input`.
-4. `PushNotification` on the contracted terminal events, lead with what the user acts on: `"migration done: 1.2M rows in 14 min, host released"`, `"job died — OOM, 3 restarts failed, container stopped, log saved"`. Not routine progress.
+4. `PushNotification` on the contracted terminal events, lead with what the user acts on: `"migration done: 1.2M rows in 14 min, host released"`, `"job died: OOM, 3 restarts failed, container stopped, log saved"`. Not routine progress.
 </required>
 
 ## Never

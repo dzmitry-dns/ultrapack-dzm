@@ -154,7 +154,7 @@ A fix that changes behavior (not only wording) gets one re-dispatch of `up:revie
 
 ### 5b. Below Important
 
-The reviewer's `### Below Important` block (when present) skips the per-finding evaluation above (step 3); step 4 prints its one summary line as the decision, and this step carries it out. Open each line once: a wording entry that checks out is applied, all of them in one commit `fix: review text fixes`; a duplicate or smell entry is appended to `## Code smells` as `file:line — smell` and decided at Future work. Nothing in the block changes the merge verdict.
+The reviewer's `### Below Important` block (when present) skips the per-finding evaluation above (step 3); step 4 prints its one summary line as the decision, and this step carries it out. Open each line once: a wording entry that checks out is applied, all of them in one commit `fix: review text fixes`; a duplicate or smell entry is appended to `## Code smells` as `- <file:line>: <smell>` and decided at Future work. Nothing in the block changes the merge verdict.
 
 ### 6. Write the `## Conclusion`
 
@@ -188,13 +188,13 @@ Review findings:   (omit entire subsection if no Critical, Important, or text fi
 - Important: <resolved or explicitly deferred with justification>
 - Text fixes: N applied (<sha>)   (omit when none)
 
-Scope flag:   (omit unless reviewer raised one — never auto-act; surface verbatim for the user)
+Scope flag:   (omit unless reviewer raised one; never auto-act, surface verbatim for the user)
 - <reviewer's flag, 1-2 sentences>
 
-Future work:   (omit entire subsection if none — do not write "none")
+Future work:   (omit entire subsection if none; do not write "none")
 - <item>. Justification: <Design-scope line> OR <new fact discovered>
 
-### Deferred   (omit if nothing was parked — scope intentionally punted out of this task)
+### Deferred   (scope intentionally punted out of this task; omit if nothing was parked)
 - <what> → <ticket | task file>
 
 Verified by: <only non-default items: deferred smokes, manual checks the next reader needs to know about>   (omit if only the routine reviewer+verify ran; required when step 1's size gate skipped the dispatch: `no up:reviewer dispatch (Small; offered, not requested)`)
@@ -235,4 +235,4 @@ Pushback is legitimate when:
 
 ## Terminal state
 
-Conclusion written, all Critical/Important resolved or explicitly deferred with justification → Status → `validating`. Review does not mark `done`: control returns to `/up:make` to validate the Goal (step 11) before any finish action. The user chooses the finish action; you don't auto-merge. Invoked manually, end with the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closing line); when `/up:make` said it invoked this skill, its step 12 prints the line instead, so it prints once.
+Conclusion written, all Critical/Important resolved or explicitly deferred with justification → Status → `validating`. Review does not mark `done`: control returns to `/up:make` to validate the Goal (step 11) before any finish action. The user chooses the finish action; you never merge on your own initiative. Auto-merge on a PR follows the project's policy file (`/up:make` → Rules). Invoked manually, end with the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closing line); when `/up:make` said it invoked this skill, its step 12 prints the line instead, so it prints once.

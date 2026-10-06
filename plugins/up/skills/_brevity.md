@@ -24,13 +24,13 @@ Applies to anything that outlives the conversation: code, comments, docstrings, 
 
      <bad>
      (Both resolved in design dialogue; kept here as record.)
-     - UK1 — Pre-seed `### Assumptions` and `### Unknowns` in the `/up:make` template. Resolved: yes.
-     - UK2 — Conclusion gets dedicated `### Assumptions check` and `### Unknowns outcome` subsections. Resolved: yes, dedicated.
+     - UK1: Pre-seed `### Assumptions` and `### Unknowns` in the `/up:make` template. Resolved: yes.
+     - UK2: Conclusion gets dedicated `### Assumptions check` and `### Unknowns outcome` subsections. Resolved: yes, dedicated.
      </bad>
 
      <good>
-     - UK1 — Pre-seed `### Assumptions` and `### Unknowns` in the `/up:make` template. Resolved: yes.
-     - UK2 — Conclusion gets dedicated `### Assumptions check` and `### Unknowns outcome` subsections. Resolved: yes, dedicated.
+     - UK1: Pre-seed `### Assumptions` and `### Unknowns` in the `/up:make` template. Resolved: yes.
+     - UK2: Conclusion gets dedicated `### Assumptions check` and `### Unknowns outcome` subsections. Resolved: yes, dedicated.
      </good>
 
      Why it's bleed: the parenthetical addresses a reader ("kept here as record") and references "the design dialogue" — a conversation that, from the file's point of view, never happened. The file is the record; it doesn't need to explain why it's the record. A stranger reading six months later sees the two resolved items and understands them on their own; the parenthetical only makes sense if you were in the chat where they were being debated.

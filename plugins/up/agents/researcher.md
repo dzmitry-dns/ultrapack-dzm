@@ -56,7 +56,7 @@ Every non-trivial claim has a source. Inline link or `(source: <short citation>)
 <restate the question you answered, or note if you refined it>
 
 ## Answer
-<the actual answer, structured for the question type — prose, list, or comparison>
+<the actual answer, structured for the question type: prose, list, or comparison>
 
 ## Evidence
 <key citations, grouped by sub-question if helpful>

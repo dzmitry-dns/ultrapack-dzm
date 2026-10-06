@@ -26,24 +26,24 @@ Short. Structured. Every claim backed by `file:line`.
 
 ```
 ## Entry points
-- <file:line> — <short description>
+- <file:line>: <short description>
 
 ## Call chain
-1. <file:line> — <what happens here>
-2. <file:line> — <what happens here>
+1. <file:line>: <what happens here>
+2. <file:line>: <what happens here>
 3. ...
 
 ## Essential files (3-5)
-- <file> — <one-line responsibility>
+- <file>: <one-line responsibility>
 
 ## Dependencies & assumptions
-- <config/env/lib> — <why it matters>
+- <config/env/lib>: <why it matters>
 
 ## Notes
-<gotchas, patterns, surprising choices — 2-3 bullets max>
+<gotchas, patterns, surprising choices: 2-3 bullets max>
 
 ## Code smells
-- <file:line> — <one-line smell passed on the traced path> (<GPC if one fits>)
+- <file:line>: <one-line smell passed on the traced path> (<GPC if one fits>)
 ```
 
 ## Rules

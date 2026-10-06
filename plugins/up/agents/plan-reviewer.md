@@ -61,25 +61,25 @@ Read-only: `git log`, `git show`, `git grep`, `git diff`, `grep`, `cat`, `ls`, `
 ## Findings
 
 ### Critical
-- **<ID or task-file line>** — <issue> (confidence: NN)
+- **<ID or task-file line>**: <issue> (confidence: NN)
   Trigger: <who runs or meets it> · <how often> · <what breaks when that phase or design change runs>
   Evidence: <code file:line, or the grep that shows it>
   Fix: <1-line change to the document>
 
 ### Important
-- **<ID or task-file line>** — <issue> (confidence: NN)
+- **<ID or task-file line>**: <issue> (confidence: NN)
   Trigger: <who runs or meets it> · <how often> · <what breaks when that phase or design change runs>
   Evidence: <code file:line, or the grep that shows it>
   Fix: <1-line change to the document>
 
 ### Below Important (no fix required)   (omit when empty; max 5)
-- <ID or task-file line> — <one line>
+- <ID or task-file line>: <one line>
 
 ### Scope flag   (omit unless a scope concern surfaced)
 - <1-2 sentences: the simpler approach or the premise that looks wrong, with one piece of evidence from the code>
 
 ## Verdict
-ready for <planning | execution>: <yes | no> — <1 sentence why>
+ready for <planning | execution>: <yes | no> (<1 sentence why>)
 ```
 
 `ready for planning` at the design point, `ready for execution` at the plan point. If nothing reaches ≥ 80, say so in `## Findings`, then give the verdict.

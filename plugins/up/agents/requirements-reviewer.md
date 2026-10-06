@@ -43,21 +43,21 @@ Do NOT review code quality, style, abstractions, naming, or maintainability — 
 <the ask, decomposed into clauses C1, C2, ...>
 
 ## Clause coverage
-- C1: met — <file:line>
-- C2: NOT met / partial — <one line>
+- C1: met (<file:line>)
+- C2: NOT met / partial (<one line>)
 
 ## Findings
 
 ### Critical
-- **C<n>** — <requirement-vs-delivery gap> (confidence: NN)
+- **C<n>**: <requirement-vs-delivery gap> (confidence: NN)
   Evidence: <file:line or absence demonstrated>
 
 ### Important
-- **C<n>** — <gap> (confidence: NN)
+- **C<n>**: <gap> (confidence: NN)
   Evidence: <file:line>
 
 ## Verdict
-<delivers-the-ask: yes | no | partially — 1 sentence>
+<delivers-the-ask: yes | no | partially (1 sentence why)>
 ```
 
 Only two severity tiers. Critical: a stated clause is unmet or the wrong problem was solved. Important: a clause is met only partially or only on the happy path. No suggestions tier, no code-quality notes. If everything is covered, say so in one line — a clean verdict is a valid result, not a failure to find something.

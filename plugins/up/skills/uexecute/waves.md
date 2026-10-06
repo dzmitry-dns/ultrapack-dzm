@@ -8,14 +8,16 @@ The optional parallel path for `up:uexecute`, and the declaration format `up:upl
 
 ```markdown
 ### Interfaces
-- IF1 — `<signature>` — <contract sentence>
-- IF2 [blocks] — `<signature>` — <contract sentence, including why it blocks>
+- IF1: `<signature>`: <contract sentence>
+- IF2 [blocks]: `<signature>`: <contract sentence, including why it blocks>
 
 ### Interface graph
 - PH1              -> IF1, IF2   @ src/foo/parser.py
 - PH2  IF1         -> IF3        @ src/bar/consumer.py
 - PH3  IF2, IF3 ->               @ tests/test_wiring.py
 ```
+
+Older plans separate the parts of an IF line with ` — `; read both forms.
 
 ### Semantics
 
@@ -94,7 +96,7 @@ For `model: sonnet` dispatches, append the scope-check paragraph to the prompt:
 
 ```
 Scope check: this phase was dispatched as trivial. Before writing, sanity-check that it
-really is — single file or tightly localized, mechanical (no design judgment), no new
+really is: single file or tightly localized, mechanical (no design judgment), no new
 logic, no TDD. If the phase requires reading multiple files to make a decision,
 introducing or changing an interface, or any non-mechanical reasoning, stop and report
 NEEDS_CONTEXT stating why it isn't trivial. Do not silently push through.
