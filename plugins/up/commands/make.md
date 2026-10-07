@@ -113,6 +113,8 @@ After Design (or immediately for trivial/small tasks), decide:
 
 If the project's rules define a branch or worktree convention (for example a `workflow.md` that puts branch work in a git worktree), follow it without asking. Record the folder as `**Worktree:** <path>` in the task file header.
 
+A new worktree has none of the main checkout's git-ignored env files, and the first check run fails without them. Before the first command in it, symlink each one from the main checkout: use the list in the project's rules, or else `git -C <main checkout> ls-files --others --ignored --exclude-standard | grep -E '(^|/)\.env'`, then `ln -s <main checkout>/<f> <worktree>/<f>` per file. Symlinks, not copies: an env change in the main checkout reaches every worktree.
+
 Otherwise always confirm with the user. When the work additionally needs filesystem isolation (a second live checkout), the user runs `/up:git-worktrees` (manual-only skill); suggest it, never invoke it.
 
 Either way, if a branch is created, update the task file's `**Branch:**` header.
@@ -158,7 +160,9 @@ Print the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closin
 - Merge / open PR (if on a branch)
 - Move on
 
-When the project's policy file says to open PRs with auto-merge, the PR is opened with `gh pr merge --auto` (it merges once the required checks pass), and a PR already opened that way is reported, not offered for merge. With no such policy, the merge waits for the user's choice here.
+When the project's policy file says to open PRs with auto-merge (`gh pr merge --auto`, which merges once the required checks pass), turn it on only once Status is `done`; a PR already opened that way is reported, not offered for merge. While Status is `validating` the user is still checking the result: open the PR without auto-merge and offer the merge here as its own question. With no such policy, the merge waits for the user's choice here.
+
+A merge into `main` needs a yes to a question that names only the merge: the PR, the target branch, and the release that will ship it when one is known ("this goes into tomorrow's release"). A plan approval, a yes to a list, or a merge line inside a longer message never counts. Turning auto-merge back on after it was turned off (the user found a problem, a fix followed) needs that same separate yes.
 
 If Jira is configured, present the `up:ujira` terminal draft alongside these options. Items `up:ujira` auto-applied appear there as receipts, not as choices.
 
@@ -202,7 +206,7 @@ Stop and ask the user when:
 ## Rules
 
 - Never skip Review (the final `up:ureview`; the pre-code skip phrase covers only the review before code)
-- Never merge on your own initiative. When the project's policy file says to open PRs with auto-merge (`gh pr merge --auto`, which merges once the required checks pass), turn it on when the PR is created. With no such policy, the user chooses at step 12. Push follows the project's policy file when it allows pushing (for example a `workflow.md` that says push without asking). With no such policy, the user chooses at step 12
+- Never merge on your own initiative. Under a project auto-merge policy, auto-merge goes on only at Status `done`; any other merge into `main` needs the separate yes of step 12, never a plan approval. With no such policy, the user chooses at step 12. Fixes to a merged change whose task is still `validating` go to a new branch and PR, never straight to `main`, even where the policy allows pushing to `main`. Push follows the project's policy file when it allows pushing (for example a `workflow.md` that says push without asking). With no such policy, the user chooses at step 12
 - Never mark `done` until the Goal is confirmed achieved (step 11) — verified + reviewed is not done
 - Never create a worktree without confirming with the user, unless the project's rules define a worktree convention (step 6)
 - Keep the task file as the single source of truth — each stage reads it, each stage writes to it
