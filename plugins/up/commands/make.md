@@ -22,7 +22,7 @@ Before creating a new task file, check if the slug already exists — scan `docs
 
 Status format: new files write `<enum> (<optional annotation>)` or `<enum>: <annotation>`. When reading, the enum is the first word of the Status value, so older files written as `<enum> — <annotation>` still parse. The annotation is free text (dates, PR links, ship notes). Enum values: `design`, `planning`, `executing`, `verifying`, `reviewing`, `validating`, `done`, `shipped`, plus `reference` for epic overview files. Reopening a task = setting Status back to an earlier enum value with a dated annotation (e.g. `executing (reopened 2026-08-01, edge case PROJ-1204)`). Ignore header fields you don't recognize — older files may carry retired ones.
 
-- Exists: read `**Status:**` from the header. If the file ends with one or more Handoff blocks (`### Handoff: <date>`, or `### Handoff — <date>` in older files), read the latest one first — it holds what the previous session left uncommitted or undecided, and its first action. If it has an `Owner has not seen` line that is not "none", the first chat message of the session tells the owner those results in plain words, before any question and before any work step. Resume from the next stage:
+- Exists: read `**Status:**` from the header. If the file ends with one or more Handoff blocks (`### Handoff: <date>`, or `### Handoff — <date>` in older files), read the latest one first — it holds what the previous session left uncommitted or undecided, and its first action. If it has an `Owner has not seen` line that is not "none", the first chat message of the session tells the owner those results in plain words, before any question and before any work step. If the header has a `**Worktree:**` line, settle the checkout before the stage: the folder is in `git worktree list` and its PR is not merged → `EnterWorktree` with that `path`, then resume; the PR is merged → stay in the main checkout and run step 12's "Leaving a worktree" step 5 without asking. Resume from the next stage:
   - `design` → continue design
   - `planning` → run `up:uplan`
   - `executing` → run `up:uexecute`
@@ -115,6 +115,8 @@ If the project's rules define a branch or worktree convention (for example a `wo
 
 A new worktree has none of the main checkout's git-ignored env files, and the first check run fails without them. Before the first command in it, symlink each one from the main checkout: use the list in the project's rules, or else `git -C <main checkout> ls-files --others --ignored --exclude-standard | grep -E '(^|/)\.env'`, then `ln -s <main checkout>/<f> <worktree>/<f>` per file. Symlinks, not copies: an env change in the main checkout reaches every worktree.
 
+Order of entry: commit the new task file in the main checkout first (by path), then `git worktree add`, the env links, then the `EnterWorktree` tool with `path: <worktree folder>`. Once inside, Claude Code refuses any git command that targets the main checkout (`cd <main checkout> && git ...` included), so every commit goes to the branch. Never build a temporary extra worktree to commit to the main branch from inside one. When something must reach the main branch mid-work: `ExitWorktree` with `action: keep`, commit in the main checkout, `EnterWorktree` with the same `path` again.
+
 Otherwise always confirm with the user. When the work additionally needs filesystem isolation (a second live checkout), the user runs `/up:git-worktrees` (manual-only skill); suggest it, never invoke it.
 
 Either way, if a branch is created, update the task file's `**Branch:**` header.
@@ -168,6 +170,15 @@ If Jira is configured, present the `up:ujira` terminal draft alongside these opt
 
 Execute only after the user chooses.
 
+**Leaving a worktree.** When the task file has a `**Worktree:**` line, the finish ends with this sequence. It asks no questions: the project's rule that put the work in a worktree already covers removing it. The merge question above stays.
+
+1. Stop the processes this session started in the worktree (dev servers, containers), by the ids it got when it started them. No `lsof` / `ps` hunt.
+2. Still inside the worktree, read `gh pr view <n> --json state`. Not `MERGED` (auto-merge pending, or Status `validating`): write the Handoff line "worktree <path> stays until PR #<n> merges" in the task file on the branch, commit, push. Every task-file edit happens here, before the copy, so the main branch and the feature branch end up with identical files and the PR merges without a conflict.
+3. `ExitWorktree` with `action: keep`. A worktree entered by `path` cannot be removed by the tool; `remove` fails with "not the owner", so never try it.
+4. In the main checkout: `git pull --ff-only`, then `git checkout <branch> -- <task file path on the branch>`; when the branch moved the file to `archive/`, also `git rm <old path>`. Commit those paths only, and only if `git diff --cached --quiet` fails (a merged PR already brought them). Push per the project's policy. The pull fails (another session's local commits or edits in a shared checkout): commit anyway, push only when `git log origin/main..HEAD` shows this session's commits alone, otherwise name the foreign commit in the report and do not push.
+5. PR `MERGED`: `git worktree remove <path>`, `git branch -D <branch>` (`-d` refuses after a squash merge; the merge is already confirmed), `git push origin --delete <branch>` unless GitHub already deleted it. Not merged: keep the worktree; the session that later finds the PR merged runs this step (step 2, resume).
+6. Report in one line. No checks after removal (`ls` of the deleted folder, `git branch -a`, `merge-base`): `git worktree remove` either succeeded or printed an error. It refuses on a leftover untracked file: delete that file (a `__probe*` or scratch output) and rerun, without asking.
+
 ## After task is done — docs refresh
 
 Run this once, after the Goal is confirmed and Status is `done` (step 11) — not after every stage. Scan the project docs and update them if the work surfaced something they should reflect. Cheap, light-touch; not a full doc pass.
@@ -193,7 +204,7 @@ Rules:
 
 Runs right before invoking the stage skill at steps 8, 9, and 10 — one check per transition, covering everything since the previous checkpoint (step 8's check covers steps 5–7). Count subagents dispatched and tool outputs long enough to fill roughly a screen. Either count at 3+ subagents or 2+ large outputs → print one line: "This session has grown large — consider `/up:summary` before continuing." Then proceed to the stage regardless; advisory only, never a pause.
 
-At each phase commit of a Medium or Large task, and at every Status transition, append the Handoff block by `/up:summary` steps 1-3 without asking. Print no prompt at these points. This is never a pause either.
+At each phase commit of a Medium or Large task, and at every Status transition, append the Handoff block by `/up:summary` steps 1-3 without asking. Print no prompt at these points. This is never a pause either. Inside a worktree these commits go to the branch only; the main branch gets the task file at entry and at exit (step 6, step 12).
 
 ## Stop conditions
 
