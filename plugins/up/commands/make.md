@@ -22,7 +22,9 @@ Before creating a new task file, check if the slug already exists — scan `docs
 
 Status format: new files write `<enum> (<optional annotation>)` or `<enum>: <annotation>`. When reading, the enum is the first word of the Status value, so older files written as `<enum> — <annotation>` still parse. The annotation is free text (dates, PR links, ship notes). Enum values: `design`, `planning`, `executing`, `verifying`, `reviewing`, `validating`, `done`, `shipped`, plus `reference` for epic overview files. Reopening a task = setting Status back to an earlier enum value with a dated annotation (e.g. `executing (reopened 2026-08-01, edge case PROJ-1204)`). Ignore header fields you don't recognize — older files may carry retired ones.
 
-- Exists: if the header has a `**Worktree:**` line, settle the checkout before reading anything else, because the main branch's copy is frozen at entry. The folder is in `git worktree list` and its PR is not merged (or no PR exists yet) → `EnterWorktree` with that `path` and read the task file there. The PR is merged → stay in the main checkout, run step 12's "Leaving a worktree" step 5 without asking (only when the folder is still listed), and read the copy on the main branch. Then read `**Status:**` from the header. If the file ends with one or more Handoff blocks (`### Handoff: <date>`, or `### Handoff — <date>` in older files), read the latest one first — it holds what the previous session left uncommitted or undecided, and its first action. If it has an `Owner has not seen` line that is not "none", the first chat message of the session tells the owner those results in plain words, before any question and before any work step. Resume from the next stage:
+Branch guard, for a resumed task and before step 3's first commit alike: when `git branch --show-current` is neither the default branch nor this task's `**Branch:**`, stop and ask before any commit. Another task's plain branch (step 6) is checked out in this folder.
+
+- Exists: if the header has a `**Worktree:**` line that names a path (`none` or an empty value is no worktree), settle the checkout before reading anything else, because the main branch's copy is frozen at entry. The folder is in `git worktree list` and its PR is not merged (or no PR exists yet) → `EnterWorktree` with that `path` and read the task file there. The PR is merged → stay in the main checkout, run step 12's "Leaving a worktree" step 5 without asking (only when the folder is still listed), and read the copy on the main branch. No worktree path, a `**Branch:**` that is not the default branch, and no merged PR for it (`gh pr list --head <branch> --state merged`) → a plain branch: read the task file from the local branch, `git show <branch>:<task file path>`, because the copy on the current branch stops at the switch (run `git fetch origin <branch>` first only when no local branch exists). That read decides how to continue, per the project's rules: `git switch <branch>`, or a worktree when they call for one; after a switch the working copy is the file. Then read `**Status:**` from the header. If the file ends with one or more Handoff blocks (`### Handoff: <date>`, or `### Handoff — <date>` in older files), read the latest one first — it holds what the previous session left uncommitted or undecided, and its first action. If it has an `Owner has not seen` line that is not "none", the first chat message of the session tells the owner those results in plain words, before any question and before any work step. Resume from the next stage:
   - `design` → continue design
   - `planning` → run `up:uplan`
   - `executing` → run `up:uexecute`
@@ -37,7 +39,7 @@ Status format: new files write `<enum> (<optional annotation>)` or `<enum>: <ann
 
 ### 3. Create task file
 
-Create `docs/tasks/<slug>.md` from the template. Status = `design`. Branch = `main` (placeholder until step 5). Goal = a first draft of the observable success condition from the description; `up:udesign` finalizes it, or `up:make` sets it directly when Design is skipped (trivial/small). If the project's `CLAUDE.md` has a `## Jira adapter` section and the task has no `**Jira:**` header, prompt once for a ticket id or skip (`up:ujira`).
+Create `docs/tasks/<slug>.md` from the template. Status = `design`. Branch = `main` (placeholder until step 6). Goal = a first draft of the observable success condition from the description; `up:udesign` finalizes it, or `up:make` sets it directly when Design is skipped (trivial/small). If the project's `CLAUDE.md` has a `## Jira adapter` section and the task has no `**Jira:**` header, prompt once for a ticket id or skip (`up:ujira`).
 
 Template:
 
@@ -106,20 +108,25 @@ Before approval the Design goes through the design point of `${CLAUDE_PLUGIN_ROO
 
 ### 6. Branch decision
 
-After Design (or immediately for trivial/small tasks), decide:
+Runs at the end of step 7, once the Plan is approved; Trivial (no Plan) runs it right after step 4. Both answers can depend on the plan (what each phase pushes, whether the work outlives the session), so Design and Plan commits before this step go to the current branch.
 
-- Complex / long-running / touches many files → suggest a dedicated branch.
-- Easy fix / small scope → suggest working on the current branch (usually `main`).
+**Branch?** Stay on the current branch (usually `main`) unless:
 
-If the project's rules define a branch or worktree convention (for example a `workflow.md` that puts branch work in a git worktree), follow it without asking. Record the folder as `**Worktree:** <path>` in the task file header.
+- the project's rules list reasons for a branch and one applies;
+- the user asks for a branch;
+- the task fixes a merged change whose task is still `validating` (Rules).
+
+With no such list in the project's rules, propose a branch only by naming a concrete reason, and ask. Task size alone is not a reason.
+
+**Worktree?** A branch is a plain branch in the current checkout unless the project's rules say when a branch needs a worktree and that applies, or the user asks. Then the project's worktree convention decides how the worktree is made, without asking; record the folder as `**Worktree:** <path>` in the task file header. A user who asks for a worktree in a project with no convention runs `/up:git-worktrees` (manual-only skill); suggest it, never invoke it.
+
+A task that branches records why in `## Design` (after the `Skipped` line when Design was skipped): `Branch reason: <the reason, by name>`, plus `Worktree reason: <the reason>` when it gets a worktree. Nothing is written for a default. The `**Branch:**` header stays a bare branch name, because `up:uexecute` compares it to `git branch --show-current`.
+
+A plain branch: write the `**Branch:**` header line, commit the task file on the current branch (by path), then `git switch -c <branch>`. A resume reads the task from the branch (step 2). The project's rules say how the checkout returns to its default branch.
 
 A new worktree has none of the main checkout's git-ignored env files, and the first check run fails without them. Before the first command in it, symlink each one from the main checkout: use the list in the project's rules, or else `git -C <main checkout> ls-files --others --ignored --exclude-standard | grep -E '(^|/)\.env'`, then `ln -s <main checkout>/<f> <worktree>/<f>` per file. Symlinks, not copies: an env change in the main checkout reaches every worktree.
 
 Order of entry: first sweep stale worktrees: for each entry of `git worktree list` other than the main checkout whose PR is `MERGED`, run step 12's "Leaving a worktree" step 5 without asking. Then write the `**Branch:**` and `**Worktree:**` header lines, commit the new task file in the main checkout (by path), then `git worktree add`, the env links, then the `EnterWorktree` tool with `path: <worktree folder>`. Once inside, Claude Code refuses any git command that targets the main checkout (`cd <main checkout> && git ...` included), so every commit goes to the branch. Never build a temporary extra worktree to commit to the main branch from inside one. When something must reach the main branch mid-work: `ExitWorktree` with `action: keep`, commit in the main checkout, `EnterWorktree` with the same `path` again.
-
-Otherwise always confirm with the user. When the work additionally needs filesystem isolation (a second live checkout), the user runs `/up:git-worktrees` (manual-only skill); suggest it, never invoke it.
-
-Either way, if a branch is created, update the task file's `**Branch:**` header.
 
 ### 7. Plan stage (unless skipped)
 
@@ -128,6 +135,8 @@ Invoke `up:uplan`. It populates `## Plan`. Before the approval pause the plan go
 Plan-approval gate (single home; `up:uplan` defers to it): `up:uplan` waits for the user's approval unless you tell it, in the invocation, that the task is Small and the plan touches fewer than 3 files, no DB migration, and no new API surface; then it presents the highlights and proceeds. Medium / Large always pause. Trivial skips Plan entirely (step 4). A manual or resumed `up:uplan` has no size and always waits.
 
 If the gate does not pause and Jira is configured, `up:ujira` still runs at this transition: auto items post as usual, and anything needing approval is carried to the terminal draft (step 12) instead of a pause the flow no longer has.
+
+Once the plan is approved (or the gate lets it proceed), run step 6, then step 8.
 
 ### 8. Execute stage
 
@@ -219,7 +228,7 @@ Stop and ask the user when:
 - Never skip Review (the final `up:ureview`; the pre-code skip phrase covers only the review before code)
 - Never merge on your own initiative. Under a project auto-merge policy, auto-merge goes on only at Status `done`; any other merge into `main` needs the separate yes of step 12, never a plan approval. With no such policy, the user chooses at step 12. Fixes to a merged change whose task is still `validating` go to a new branch and PR, never straight to `main`, even where the policy allows pushing to `main`. Push follows the project's policy file when it allows pushing (for example a `workflow.md` that says push without asking). With no such policy, the user chooses at step 12
 - Never mark `done` until the Goal is confirmed achieved (step 11) — verified + reviewed is not done
-- Never create a worktree without confirming with the user, unless the project's rules define a worktree convention (step 6)
+- Never create a branch or a worktree without a reason step 6 accepts: a project rule that applies, the user's request, or the `validating` rule above
 - Keep the task file as the single source of truth — each stage reads it, each stage writes to it
 - External spec / design docs (e.g. anything under `docs/specs/`) are read-only during execute. If a stage finds the spec is wrong, surface it to the user — don't mutate it silently
 - Don't assume prior session memory — the next agent may be a fresh context reading only the task file

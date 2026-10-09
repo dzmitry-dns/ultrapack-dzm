@@ -38,7 +38,7 @@ The Exception clause still holds: deviations, deferrals, and known risks always 
 <red-flags>
 Editing the wrong repository is one of the most common bugs. Before any write, confirm:
 
-- `pwd` is inside the intended checkout: the main repo, or the worktree named in the task file's `**Worktree:**` header. If the project's rules define a branch or worktree convention, follow it without asking and record `**Worktree:** <path>` in the header. Otherwise confirm with the user, and suggest `/up:git-worktrees` when the work needs a second live checkout
+- `pwd` is inside the intended checkout: the main repo, or the worktree whose path the task file's `**Worktree:**` header names. Branch and worktree are decided by `/up:make` step 6, never here
 - `git branch --show-current` matches `**Branch:**`
 
 When you dispatch a subagent (`up:explorer`, `up:researcher`), pass the intended working directory explicitly in the prompt. Subagents do not inherit your `cwd` reliably across harnesses.

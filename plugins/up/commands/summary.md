@@ -55,7 +55,7 @@ A fenced block so it copies whole:
 Продолжи docs/tasks/<slug>.md
 ```
 
-Use the file's real path: an epic child lives at `docs/tasks/<epic>/<slug>.md`. When the branch is not the default branch, the prompt names the checkout path: `Продолжи <worktree>/docs/tasks/<slug>.md`. `/up:make` reads the latest Handoff block on resume, so the one line is enough.
+Use the file's real path: an epic child lives at `docs/tasks/<epic>/<slug>.md`. When the task file's `**Worktree:**` line names a path, the prompt names that checkout path (a plain branch resumes from the main checkout through `/up:make` step 2): `Продолжи <worktree>/docs/tasks/<slug>.md`. `/up:make` reads the latest Handoff block on resume, so the one line is enough.
 
 Below the fence, outside the prompt, the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closing line). At a handoff the task is normally not closable; `Left` names the first action.
 
@@ -78,6 +78,6 @@ Same Closing line below the fence.
 ## Rules
 
 - Main session only: no subagent, no transcript lookup, no JSONL.
-- One append, no other side effects: the append and its commit (and push, when policy allows). No new file, no other edit.
+- One append, no other side effects: the append and its commit (and push, when policy allows), plus the checkout step the project's rules require after a handoff (for example returning a shared checkout to its default branch). No new file, no other edit.
 - At most one question, and only to pick between several in-flight task files edited this session.
 - Concrete: exact paths, exact commands, exact error text. Bullets, no prose.
