@@ -78,6 +78,6 @@ Same Closing line below the fence.
 ## Rules
 
 - Main session only: no subagent, no transcript lookup, no JSONL.
-- One append, no other side effects: the append and its commit (and push, when policy allows), plus the checkout step the project's rules require after a handoff (for example returning a shared checkout to its default branch). No new file, no other edit.
+- One append, no other side effects: the append and its commit (and push, when policy allows), plus, when this command ends a session, the checkout step the project's rules require (for example returning a shared checkout to its default branch). The automatic appends of `/up:make` (steps 1-3 only) never run it. No new file, no other edit.
 - At most one question, and only to pick between several in-flight task files edited this session.
 - Concrete: exact paths, exact commands, exact error text. Bullets, no prose.
