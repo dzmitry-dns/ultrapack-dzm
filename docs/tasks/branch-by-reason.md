@@ -1,6 +1,6 @@
 # Branch only for a listed reason, worktree only for a long-lived branch
 
-**Status:** planning
+**Status:** executing
 **Branch:** main
 **Goal:** A task started with `/up:make` runs on the current branch (main) unless a listed reason for a branch applies or the owner asks for one; a task that branches uses a plain branch in the current checkout, and a worktree only when the project's rules call for one. In cccc that gives three observable outcomes: a task with no listed reason commits to `main`; a short branched task uses a plain branch in `cccc-monorepo` and returns the checkout to `main` before the session ends; a long-lived branch (or a crowded checkout) gets the worktree flow unchanged. Confirming it needs live cccc `/up:make` runs of each kind (owner's environment).
 
@@ -140,3 +140,7 @@ Revert the PH2 commit in cccc and the PH1 commit in ultrapack; no data touched.
 - Decided: this task itself runs on `main`, because the pack repo has no branch reasons and it is doc-only
 - Owner has not seen: none
 - First action: run up:uplan
+
+### Handoff: 2026-10-09
+- Position: executing, plan approved 2026-10-09, PH1 next; branch: main; uncommitted: none
+- First action: run up:uexecute from PH1
