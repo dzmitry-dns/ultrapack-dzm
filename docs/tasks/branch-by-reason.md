@@ -117,7 +117,29 @@ PH1 push, owner installs 0.3.52 the usual way (sessions keep the version loaded 
 Revert the PH2 commit in cccc and the PH1 commit in ultrapack; no data touched.
 
 ## Verify
-<empty: filled by up:uverify>
+
+**Result:** passed
+
+Happy-path:
+- CK1: walk a no-reason task through make.md steps 4-8 (step 6 now sits before step 7 in the file): held, step 6 opens with "Runs at the end of step 7" and step 7 ends with "run step 6, then step 8"
+- CK2: walk a cccc plain branch entry → `/up:summary` → resume from `main` → finish: held, header committed on `main` before the switch, summary may switch back, step 2 reads `git show <branch>:<path>`
+
+Negative:
+- CK3: a task file with `**Worktree:** none` (cccc template, `task-files.md:20`) on a plain branch: broke on the first run, fixed, held on re-run (see Notes)
+
+Invariants / assumptions:
+- CK4 (IV1): env-link and "Order of entry" paragraphs byte-identical before/after (`shasum`), step 12 sequence untouched: held
+- CK5 (IV2): `validating` rule present in make.md Rules and cccc "Commit and push": held
+- CK6 (PC1): grep for cccc terms (`Dockerfile`, `24 hours`, `cccc`) in the 3 pack files: held, none
+
+Interfaces:
+- CK7: `uexecute` header check vs D3 (header stays a bare branch name): held
+
+Smoke: `jq -r .version plugin.json` → `0.3.52`; make.md keeps 12 numbered steps; cccc checkout on `main`, in sync with `origin/main`
+
+Goal: proxy only; text walk-throughs of the three outcomes; the live cccc `/up:make` runs (UK1, AS2, AS3) need pack 0.3.52 installed.
+
+Notes: CK3 first run: `make.md` "Leaving a worktree" and cccc `workflow.md` resume bullet fired on any `**Worktree:**` line, so a plain-branch task carrying `none` would run the worktree exit; both now require a path (`95ba478`, cccc `d34f26c80`).
 
 ## Code smells
 - cccc `.github/workflows/ci-np-cron-api-next-dev.yml:15-19`: the PR path filter does not list its own workflow file, so a PR changing only that file runs no cron build (AS1).
