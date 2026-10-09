@@ -179,7 +179,7 @@ If Jira is configured, present the `up:ujira` terminal draft alongside these opt
 
 Execute only after the user chooses.
 
-**Leaving a worktree.** When the task file has a `**Worktree:**` line, the finish ends with this sequence. It asks no questions: the project's rule that put the work in a worktree already covers removing it. The merge question above stays.
+**Leaving a worktree.** When the task file has a `**Worktree:**` line that names a path (not `none`), the finish ends with this sequence. It asks no questions: the project's rule that put the work in a worktree already covers removing it. The merge question above stays.
 
 1. Stop the processes this session started in the worktree (dev servers, containers), by the ids it got when it started them. No `lsof` / `ps` hunt.
 2. Still inside the worktree, read `gh pr view <n> --json state`. Not `MERGED` (auto-merge pending, or Status `validating`): write the Handoff line "worktree <path> stays until PR #<n> merges" in the task file on the branch, commit, push. Every task-file edit happens here, before the copy, so the main branch and the feature branch end up with identical files and the PR merges without a conflict.
