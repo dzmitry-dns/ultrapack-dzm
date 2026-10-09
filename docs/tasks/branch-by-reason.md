@@ -1,6 +1,6 @@
 # Branch only for a listed reason, worktree only for a long-lived branch
 
-**Status:** reviewing
+**Status:** validating (0.3.53 pushed 2026-10-09; awaiting live cccc runs)
 **Branch:** main
 **Goal:** A task started with `/up:make` runs on the current branch (main) unless a listed reason for a branch applies or the owner asks for one; a task that branches uses a plain branch in the current checkout, and a worktree only when the project's rules call for one. In cccc that gives three observable outcomes: a task with no listed reason commits to `main`; a short branched task uses a plain branch in `cccc-monorepo` and returns the checkout to `main` before the session ends; a long-lived branch (or a crowded checkout) gets the worktree flow unchanged. Confirming it needs live cccc `/up:make` runs of each kind (owner's environment).
 
@@ -145,10 +145,35 @@ Notes: CK3 first run: `make.md` "Leaving a worktree" and cccc `workflow.md` resu
 - cccc `.github/workflows/ci-np-cron-api-next-dev.yml:15-19`: the PR path filter does not list its own workflow file, so a PR changing only that file runs no cron build (AS1).
 
 ## Conclusion
-<empty: filled by up:ureview; after done/shipped grows dated ### Follow-up: <date> / ### Scope change: <date> entries and ### Deferred scope-parking>
+
+Outcome: pack 0.3.53 (`31e0eec`) and cccc `f6f08e27e` carry the rules; the Goal's three live outcomes in cccc are not yet observed (UK1).
+
+Invariants:
+- IV1: env-link and "Order of entry" paragraphs byte-identical (CK4); "Leaving a worktree" changed only to skip `none`.
+- IV2: `validating` rule intact in make.md Rules and cccc "Commit and push" (CK5).
+- IV3: step 6 runs the project's worktree convention "without asking".
+- IV4: plain-branch exit at make.md step 12 and a session-ending `/up:summary`; cccc commit-time branch check catches a missed switch.
+
+### Assumptions check
+- AS1: held; checked against `.github/workflows/ci-np-*-dev.yml` in Design; one path-filter gap recorded in Code smells.
+- AS2: unverifiable until live cccc tasks run.
+- AS3: unverifiable until live cccc tasks run.
+
+### Unknowns outcome
+- UK1: still-open; needs the owner's next cccc `/up:make` runs on 0.3.53.
+- UK2: resolved; cccc "Commit and push" checks `git branch --show-current` before every commit in the shared checkout.
 
 ### Deviations from plan
 - PH2 commit scope `docs(agents)` instead of `docs(rules)`: cccc commitlint allows only `main-app, job-api, cron-api, db, utils, email, scripts, env, ci, deps, agents`.
+- make.md step 12 gained a "Leaving a plain branch" line and the version went to 0.3.53: review round 2 found cccc citing step 12 as a switch-back place the pack step did not know, and fix commits had landed without a bump.
+
+Review findings:
+- Important (round 1): step 2 read a free-text `**Branch:** none yet` (3 live cccc files) as a branch; fixed, the read needs an existing branch (`96a289e`). Step 2 read a stale local `main` after an auto-merged plain branch; fixed, pull first (`96a289e`).
+- Important (round 2): the switch-back fired on make's automatic phase-commit Handoff appends, moving the checkout to `main` mid-execute; fixed, only a session-ending `/up:summary` (`31e0eec`, cccc `f6f08e27e`). Step 12 had no plain-branch exit; fixed (`31e0eec`). Fix commits without a version bump; fixed, 0.3.53 (`31e0eec`).
+- Text fixes: cccc reason records by name, reasons named, `none` wording (cccc `8901e23bc`, `f6f08e27e`).
+
+Scope flag:
+- Worktree reason "Crowded checkout" sees another session only by edits or commits it already made; a parallel session that has not edited anything yet is invisible, so `git switch -c` moves it, and the commit-time check catches it only at commit, not at type-check or test runs that then execute against branch code.
 
 ### Handoff: 2026-10-09
 - Position: design, round 3 review done and applied (1 Critical, 1 Important fixed); awaiting owner approval; branch: main; uncommitted: none
@@ -177,3 +202,10 @@ Notes: CK3 first run: `make.md` "Leaving a worktree" and cccc `workflow.md` resu
 ### Handoff: 2026-10-09
 - Position: reviewing, verify passed (`17c4cd8`); fixes `95ba478` (pack), `d34f26c80` (cccc); branch: main; uncommitted: none
 - First action: run up:ureview (invoked by /up:make), reviewer on Fable
+
+### Handoff: 2026-10-09
+- Position: validating; pack `31e0eec` (0.3.53), cccc `f6f08e27e`; branch: main; uncommitted: none
+- Decided: no third review round, because ureview allows one re-dispatch and further rounds only on the owner's request
+- Open: the Scope flag (parallel session that has not edited yet is invisible to "Crowded checkout")
+- Owner has not seen: none
+- First action: ask the owner how the next cccc `/up:make` runs went (main / plain branch / worktree), then step 11
