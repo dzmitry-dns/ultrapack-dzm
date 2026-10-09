@@ -1,12 +1,12 @@
 # Branch only for a listed reason, worktree only for a long-lived branch
 
-**Status:** design
+**Status:** planning
 **Branch:** main
 **Goal:** A task started with `/up:make` runs on the current branch (main) unless a listed reason for a branch applies or the owner asks for one; a task that branches uses a plain branch in the current checkout, and a worktree only when the project's rules call for one. In cccc that gives three observable outcomes: a task with no listed reason commits to `main`; a short branched task uses a plain branch in `cccc-monorepo` and returns the checkout to `main` before the session ends; a long-lived branch (or a crowded checkout) gets the worktree flow unchanged. Confirming it needs live cccc `/up:make` runs of each kind (owner's environment).
 
 ## Design
 
-Owner's ask (2026-10-08): starting sessions in a worktree is slow and awkward; find the rule that maps task size to worktree use and improve it. Scope approved 2026-10-09. Owner's direction in review (2026-10-09): "workflow [worktree] нужны только для долгоиграющих веток. Все остальное можно пилить просто на бренчах."
+Owner's ask (2026-10-08): starting sessions in a worktree is slow and awkward; find the rule that maps task size to worktree use and improve it. Scope approved 2026-10-09. Owner's direction in review (2026-10-09): "workflow [worktree] нужны только для долгоиграющих веток. Все остальное можно пилить просто на бренчах." Owner's answer 2026-10-09: a task with no listed reason goes to `main` (not a plain branch); Design approved the same day.
 
 Why it happens today: the pack has no size rule for branches. Size (`make.md` step 4) only decides which stages are skipped, and every task defaults to Medium. Step 6 suggests a branch for "complex / long-running / touches many files", which fits most Medium tasks. In cccc, `workflow.md` then puts every branch in a worktree, with a 6-step entry and a 6-step exit. Result in cccc: of the 7 tasks added 2026-10-05..08, 4 ran in a worktree; across all task files about half record `main` and the rest used feature branches in the shared checkout. The worktree rule itself (cccc `25a00b66a`, 2026-10-06) was written for concurrency, not size: "several sessions and the owner work there at once" (`workflow.md:42`). The worktree flow took 3 pack versions (0.3.49-0.3.51) of fixes in 3 days.
 
@@ -86,3 +86,10 @@ Reviewed before code: 3 rounds (round 3 at owner request), 6 Critical/Important 
 - Open: default for a task with no listed reason: `main` (current Design) or a plain branch (one reading of the owner's "все остальное можно пилить просто на бренчах")
 - Owner has not seen: none (round 3 results reported in chat 2026-10-09)
 - First action: get the owner's answer to Open and his Design approval, then run up:uplan
+
+### Handoff: 2026-10-09
+- Position: planning, Design approved; branch: main; uncommitted: none
+- Decided: a task with no listed reason goes to `main`, not a plain branch, because the owner chose it on 2026-10-09 (recorded in Design)
+- Decided: this task itself runs on `main`, because the pack repo has no branch reasons and it is doc-only
+- Owner has not seen: none
+- First action: run up:uplan
