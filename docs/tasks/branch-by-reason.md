@@ -8,7 +8,7 @@
 
 Owner's ask (2026-10-08): starting sessions in a worktree is slow and awkward; find the rule that maps task size to worktree use and improve it. Scope approved 2026-10-09. Owner's direction in review (2026-10-09): "workflow [worktree] нужны только для долгоиграющих веток. Все остальное можно пилить просто на бренчах."
 
-Why it happens today: the pack has no size rule for branches. Size (`make.md` step 4) only decides which stages are skipped, and every task defaults to Medium. Step 6 suggests a branch for "complex / long-running / touches many files", which fits most Medium tasks. In cccc, `workflow.md` then puts every branch in a worktree, with a 6-step entry and a 6-step exit. Result in cccc: since 2026-10-05, 4 of 7 new tasks ran in a worktree; across all task files about half record `main` (151 of 292 on 2026-10-09) and the rest used feature branches in the shared checkout. The worktree rule itself (cccc `25a00b66a`, 2026-10-06) was written for concurrency, not size: "several sessions and the owner work there at once" (`workflow.md:42`). The worktree flow took 3 pack versions (0.3.49-0.3.51) of fixes in 3 days.
+Why it happens today: the pack has no size rule for branches. Size (`make.md` step 4) only decides which stages are skipped, and every task defaults to Medium. Step 6 suggests a branch for "complex / long-running / touches many files", which fits most Medium tasks. In cccc, `workflow.md` then puts every branch in a worktree, with a 6-step entry and a 6-step exit. Result in cccc: of the 7 tasks added 2026-10-05..08, 4 ran in a worktree; across all task files about half record `main` and the rest used feature branches in the shared checkout. The worktree rule itself (cccc `25a00b66a`, 2026-10-06) was written for concurrency, not size: "several sessions and the owner work there at once" (`workflow.md:42`). The worktree flow took 3 pack versions (0.3.49-0.3.51) of fixes in 3 days.
 
 The ideal: two separate questions, each answered by a reason someone can name. First, does the task need a branch at all? The default is no; the reasons live in the project's rules, because only the project knows what its `main` triggers (in cccc a push to `main` deploys dev). Second, does the branch need its own folder? The default is no; a worktree is for a branch that outlives the session, or for a checkout other sessions are using right now. The worktree machinery of 0.3.51 stays as it is; it runs far less often.
 
@@ -18,7 +18,7 @@ Decisions:
   - *Worktree?* A branch is a plain branch in the current checkout, unless the project's rules say when a branch needs a worktree and that applies, or the owner asks. A project's worktree convention then decides *how* the worktree is made (0.3.51 entry order, unchanged); it no longer decides *whether*.
   - Timing: step 6 runs once the Plan is approved (Trivial has no Plan: right after step 4), because both answers can depend on the plan (cccc branch reason 3; the number of phases decides whether the branch outlives the session). The step keeps its number 6, since other files cite step numbers; step 6 opens with "runs after step 7's approval" and step 7 ends by pointing to it. Design and Plan commits before the decision go to the current branch.
   - `uexecute`'s "Branch / worktree correctness" and make.md's Rules line ("Never create a worktree without confirming...") say the same in one clause each.
-- **D2, step 2 resume for a plain branch:** a task whose `**Branch:**` names a branch that is not merged and whose header has no `**Worktree:**` path is read from the branch first (`git show origin/<branch>:<task file path>`), because the copy on the current branch stops at the switch. Same wording pass: step 2 settles a worktree only for a `**Worktree:**` line that names a path (cccc's template writes `**Worktree:** none`, 200 files today, `task-files.md:20`); step 3's "placeholder until step 5" points at step 6.
+- **D2, step 2 resume for a plain branch:** a task whose `**Branch:**` names a branch that is not merged and whose header has no `**Worktree:**` path is read from the branch first (`git fetch origin <branch>`, then `git show origin/<branch>:<task file path>`), because the copy on the current branch stops at the switch. Step 2 also guards a shared checkout: when `git branch --show-current` is neither the default branch nor this task's branch, stop and ask before any commit (another task's plain branch was left checked out). Same wording pass: step 2 settles a worktree only for a `**Worktree:**` line that names a path (cccc's template writes `**Worktree:** none`, 200 files today, `task-files.md:20`); step 3's "placeholder until step 5" points at step 6.
 - **D3, record the reasons:** a task that branches carries one line `Branch reason: <listed reason, by name>` in `## Design` (after a `Skipped` line when Design is skipped), plus `Worktree reason: <listed reason>` when it gets a worktree. Nothing is written for a default. The header stays a bare branch name, because `uexecute` compares it to `git branch --show-current`.
 - **D4, cccc `.claude/rules/workflow.md`, new subsection "When to branch"** before the worktree subsection. Everything goes to `main` in the shared checkout except:
   1. A change to a Dockerfile, a build arg, or a CI workflow file. The CI build on a GitHub runner (no layer cache, the runner's own packages) must pass before `main` deploys it; pull-request CI runs that build without deploying, a push to `main` builds and deploys dev (example: CATS-1776). A local build ("Local Docker builds") is not that check. Type-check and tests do not count: they run locally before every push to `main`.
@@ -30,7 +30,7 @@ Decisions:
   1. It is long-lived: the work or its unmerged pull request is expected to outlive this session (the plan has more phases than one session finishes, or the PR waits for the owner: Status stops at `validating`, branch reason 2 or 5).
   2. The shared checkout shows another session's work at the decision: uncommitted changes to files this session did not edit, or commits in `git log origin/main..HEAD` this session did not make. `git switch` moves every session working in that folder, so a crowded checkout never switches.
   3. The owner asks for a worktree.
-  A plain branch: `git switch -c <branch>` from an up-to-date `main`, phase commits and pushes to the branch, the PR per "Commit and push" (auto-merge rules unchanged), then `git switch main` and `git pull --ff-only` before the session ends. The local branch is deleted (`git branch -D`) once the PR is merged, by this session or the next one that sees it merged. A plain branch whose work turns out to outlive the session: commit, push, switch back to `main`; the next session continues it in a worktree made from the existing branch (`git worktree add <path> <branch>`) and records `Worktree reason: 1`.
+  A plain branch, entry: write `**Branch:** <branch>` in the task file header, commit and push it on `main` (so a resume from `main` knows the branch, D2), then `git switch -c <branch>` from the up-to-date `main`. Work: phase commits and pushes to the branch, the PR per "Commit and push" (auto-merge rules unchanged). Exit: two places end with `git switch main && git pull --ff-only`: make.md step 12 (Finish) and every `/up:summary` Handoff append, so a session that hands off leaves the shared checkout on `main`. A session stopped without either leaves the branch checked out; the next `/up:make` catches it by D2's guard. When `git switch main` refuses (someone's uncommitted edits conflict with `main`), never stash or discard them: leave the checkout as it is and name the files in the report. The local branch is deleted (`git branch -D`) once the PR is merged, by this session or the next one that sees it merged. A plain branch whose work turns out to outlive the session: commit, push, switch back to `main`; the next session continues it in a worktree made from the existing branch (`git worktree add <path> <branch>`) and records `Worktree reason: 1`.
   The worktree subsection's first sentence changes from "Branch work goes into a git worktree" to point at this list.
 
 Approaches considered:
@@ -42,7 +42,7 @@ Out of scope (deferred after the 2026-10-09 self-review): task file kept only on
 
 Backwards compatibility: no break for running tasks: a task whose header names a worktree path resumes and exits as in 0.3.51. Behavior change for new tasks in any project without a reasons list: the agent no longer suggests a branch from size alone, and a branch no longer implies a worktree. Fork-only change (opinionated workflow policy), not sent upstream.
 TDD: no (doc-only plugin; verification is install-and-invoke)
-Reviewed before code: 2 rounds, 4 Critical/Important fixed, 0 rejected, 2026-10-09
+Reviewed before code: 3 rounds (round 3 at owner request), 6 Critical/Important fixed, 0 rejected, 2026-10-09
 
 ### Prior art
 - `docs/tasks/t2-template-realignment.md:65`: step 6 became a branch-only decision and worktree handling was dropped from the pack; 0.3.47-0.3.51 brought worktree rules back for cccc's convention. This task keeps that convention and narrows when it fires.
@@ -58,13 +58,13 @@ Reviewed before code: 2 rounds, 4 Critical/Important fixed, 0 rejected, 2026-10-
 - PC1: One home per rule: the reason lists live in the project's rules file; the pack only says "follow the project's list" and never copies cccc's lists.
 
 ### Assumptions
-- AS1: In cccc, every pull-request run builds the Docker images without deploying, and a push to `main` builds and deploys dev (`.github/workflows/ci-np-*-dev.yml` triggers on both; checked 2026-10-09).
+- AS1: In cccc, every pull-request run builds the Docker images without deploying, and a push to `main` builds and deploys dev (`.github/workflows/ci-np-*-dev.yml` triggers on both; checked 2026-10-09). Known gap: the cron-api PR path filter (`ci-np-cron-api-next-dev.yml:15-19`) does not list its own workflow file, so a PR changing only that file runs no cron build.
 - AS2: Most cccc tasks can order their phases so each phase commit leaves dev usable, so branch reason 3 stays rare.
 - AS3: Most branched cccc tasks finish within one session, with the PR merged by auto-merge, so worktree reason 1 stays rare.
 
 ### Unknowns
 - UK1: Whether live cccc sessions pick `main`, a plain branch and a worktree in the cases above (the Goal's real check; needs the owner's next tasks).
-- UK2: Whether a session that starts on `main` in the shared checkout while another session is on a plain branch notices it before its first commit (uexecute checks `git branch --show-current` against the header before every write; the plan confirms this covers it).
+- UK2: Whether a session already running on `main` in the shared checkout notices a branch switch made by another session after it started. D2's guard runs only at `/up:make` start and `uexecute` checks only before code writes; task-file commits in make.md and `/up:summary` have no branch check. The plan decides whether one more check is worth it.
 
 ## Plan
 <empty: filled by up:uplan; gains ### Rollout / ### Rollback when the change ships to a live system>
@@ -79,10 +79,10 @@ Reviewed before code: 2 rounds, 4 Critical/Important fixed, 0 rejected, 2026-10-
 <empty: filled by up:ureview; after done/shipped grows dated ### Follow-up: <date> / ### Scope change: <date> entries and ### Deferred scope-parking>
 
 ### Handoff: 2026-10-09
-- Position: design, awaiting round 3 of the design review (owner-requested, up:plan-reviewer on Fable) and then owner approval; branch: main; committed: b8ccf22 docs(tasks): branch-by-reason design, worktree only for long-lived branches; uncommitted: none
+- Position: design, round 3 review done and applied (1 Critical, 1 Important fixed); awaiting owner approval; branch: main; uncommitted: none
 - Decided: Medium size, not Small, because with Design skipped the plan point of review-before-code does not run
 - Decided: worktree only for a long-lived branch or a crowded shared checkout, short branches as plain branches in cccc-monorepo, because the owner said so in review on 2026-10-09 (Design quotes it)
 - Decided: plain-branch guard (crowded checkout → worktree) added on my judgment; the owner was told he can drop it
-- Open: owner approval of the rewritten Design
-- Owner has not seen: round 3 review findings (if the agent finished before the session closed)
-- First action: if round 3 findings are missing, re-dispatch up:plan-reviewer (model fable, design point, round 3 at owner request); process findings per review-before-code.md, update the Reviewed line, then ask the owner to approve the Design
+- Open: default for a task with no listed reason: `main` (current Design) or a plain branch (one reading of the owner's "все остальное можно пилить просто на бренчах")
+- Owner has not seen: none (round 3 results reported in chat 2026-10-09)
+- First action: get the owner's answer to Open and his Design approval, then run up:uplan
