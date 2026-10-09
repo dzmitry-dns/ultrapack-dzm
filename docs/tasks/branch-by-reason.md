@@ -1,6 +1,6 @@
 # Branch only for a listed reason, worktree only for a long-lived branch
 
-**Status:** verifying
+**Status:** reviewing
 **Branch:** main
 **Goal:** A task started with `/up:make` runs on the current branch (main) unless a listed reason for a branch applies or the owner asks for one; a task that branches uses a plain branch in the current checkout, and a worktree only when the project's rules call for one. In cccc that gives three observable outcomes: a task with no listed reason commits to `main`; a short branched task uses a plain branch in `cccc-monorepo` and returns the checkout to `main` before the session ends; a long-lived branch (or a crowded checkout) gets the worktree flow unchanged. Confirming it needs live cccc `/up:make` runs of each kind (owner's environment).
 
@@ -173,3 +173,7 @@ Notes: CK3 first run: `make.md` "Leaving a worktree" and cccc `workflow.md` resu
 ### Handoff: 2026-10-09
 - Position: verifying; PH1 ultrapack `0f5ad58` (0.3.52, pushed), PH2 cccc `55267b4e8` (pushed); branch: main; uncommitted: none
 - First action: run up:uverify
+
+### Handoff: 2026-10-09
+- Position: reviewing, verify passed (`17c4cd8`); fixes `95ba478` (pack), `d34f26c80` (cccc); branch: main; uncommitted: none
+- First action: run up:ureview (invoked by /up:make), reviewer on Fable
