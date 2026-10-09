@@ -174,6 +174,7 @@ Review findings:
 
 Scope flag:
 - Worktree reason "Crowded checkout" sees another session only by edits or commits it already made; a parallel session that has not edited anything yet is invisible, so `git switch -c` moves it, and the commit-time check catches it only at commit, not at type-check or test runs that then execute against branch code.
+- Requirements review (`up:requirements-reviewer`, owner's words only, 2026-10-09): default `main` and size-independence met; "worktree only for long-lived" widened by "Crowded checkout", and a concurrent session switched by a plain branch can only stop and ask the owner. Owner kept "Crowded checkout" as is on 2026-10-09; the stop-and-ask path stays the accepted cost of plain branches in a shared checkout.
 
 ### Handoff: 2026-10-09
 - Position: design, round 3 review done and applied (1 Critical, 1 Important fixed); awaiting owner approval; branch: main; uncommitted: none
@@ -206,6 +207,6 @@ Scope flag:
 ### Handoff: 2026-10-09
 - Position: validating; pack `31e0eec` (0.3.53), cccc `f6f08e27e`; branch: main; uncommitted: none
 - Decided: no third review round, because ureview allows one re-dispatch and further rounds only on the owner's request
-- Open: the Scope flag (parallel session that has not edited yet is invisible to "Crowded checkout")
+- Decided: keep "Crowded checkout" as a worktree reason, because the owner chose it after the requirements review on 2026-10-09
 - Owner has not seen: none
 - First action: ask the owner how the next cccc `/up:make` runs went (main / plain branch / worktree), then step 11
