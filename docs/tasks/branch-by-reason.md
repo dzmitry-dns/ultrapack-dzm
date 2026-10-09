@@ -1,0 +1,64 @@
+# Branch only for a listed reason
+
+**Status:** design
+**Branch:** main
+**Goal:** A task started with `/up:make` runs on the current branch (main) unless one of the project's listed reasons for a branch applies or the owner asks for one. In cccc a task with no listed reason gets no worktree and no branch; a task with a reason gets the worktree flow unchanged. Confirming it needs one live cccc `/up:make` run of each kind (owner's environment).
+
+## Design
+
+Owner's ask (2026-10-08): starting sessions in a worktree is slow and awkward; find the rule that maps task size to worktree use and improve it. Scope approved 2026-10-09 after a self-review that deferred the other options (Out of scope below).
+
+Why it happens today: the pack has no size rule for branches. Size (`make.md` step 4) only decides which stages are skipped, and every task defaults to Medium. Step 6 suggests a branch for "complex / long-running / touches many files", which fits most Medium tasks. In cccc, `workflow.md` then puts every branch in a worktree, with a 6-step entry and a 6-step exit. Result in cccc: since 2026-10-05, 4 of 5 new tasks ran in a worktree; the 137 earlier tasks ran on `main`. The worktree flow took 3 pack versions (0.3.49-0.3.51) of fixes in 3 days.
+
+The ideal: the current branch is the default for every size. A branch is created only for a reason someone can name, and the reasons live in the project's rules, because only the project knows what its `main` triggers (in cccc a push to `main` deploys dev). The worktree machinery stays as it is; it simply runs far less often.
+
+Decisions:
+- **D1, pack `make.md` step 6:** replace the size-based suggestion. New rule: stay on the current branch unless (a) the project's rules list reasons for a branch and one applies, (b) the owner asks for a branch, or (c) the pack's own rule fires: a fix to a merged change whose task is still `validating` (already in make.md Rules). With no project list, the agent may still propose a branch, but only by naming a concrete reason, and asks. The project's worktree convention keeps deciding *how* a branch is made; it no longer decides *whether*. `uexecute`'s "Branch / worktree correctness" and make.md's Rules line say the same in one clause each.
+- **D2, record the reason:** a task that gets a branch carries one line `Branch reason: <the listed reason, by name>` in `## Design` (after a `Skipped` line when Design is skipped). Nothing is written for the default. The reviewer and the owner see why a worktree exists; the header stays a bare branch name, because `uexecute` compares it to `git branch --show-current`.
+- **D3, cccc `.claude/rules/workflow.md`:** a new subsection "When to branch" before "Feature branches: git worktree". Everything goes to `main` in the shared checkout except:
+  1. The change needs a check that runs only in pull-request CI and cannot run locally before the push: the Docker image builds. Pull-request CI builds the images without deploying; a push to `main` builds and deploys dev (example: CATS-1776). Type-check and tests do not count: they run locally before every push to `main`.
+  2. A fix to a merged feature whose task is still `validating` (the existing rule in "Commit and push", referenced, not copied).
+  3. Phases that cannot each leave dev working. The plan orders phases so every phase commit leaves dev usable; only when that is impossible (example: a page that needs an API a later phase adds, with no way to hide it) does the task branch.
+  4. The owner asks for a branch or a pull request.
+  The worktree subsection's first sentence changes from "Branch work goes into a git worktree" to say it applies to the cases above.
+
+Approaches considered:
+- A (chosen): default current branch, project-listed reasons. Cheap (prose in 3 pack files, 1 cccc file), keeps every worktree rule untouched. Risk: reason 3 is a judgment call and could be stretched to cover any Medium task; the "every phase leaves dev usable" test narrows it.
+- B: map size to branch (Large → branch). Rejected: size does not predict the need; CATS-1776 was a modest change that needed the pull-request Docker check, while a Large docs task needs no branch.
+- C: tighten the "complex" wording only. Rejected: still agent judgment with no named reason, which is how 4 of 5 tasks got a worktree.
+
+Out of scope (deferred after the 2026-10-09 self-review): task file kept only on the branch (a session started in `main` would not find it and would create a duplicate task file); Claude Code's built-in worktrees with `.worktreeinclude` (copies `.env` instead of linking; needs a probe run); deleting the disabled `git-worktrees` skill (owner's 2026-09 decision: disable, not delete). The 0.3.51 worktree entry/exit flow is not touched.
+
+Backwards compatibility: no break for running tasks: the resume check (step 2) and the worktree entry/exit stay as they are, so a task that already has a `**Worktree:**` line resumes and exits unchanged. Behavior change for new tasks in any project without a reasons list: the agent no longer suggests a branch from size alone; it names a reason and asks. Fork-only change (opinionated workflow policy), not sent upstream.
+TDD: no (doc-only plugin; verification is install-and-invoke)
+
+### Prior art
+- `docs/tasks/t2-template-realignment.md:65`: step 6 became a branch-only decision and worktree handling was dropped from the pack; 0.3.47-0.3.51 brought worktree rules back for cccc's convention. This task keeps that convention and narrows when it fires.
+- `docs/tasks/parallel-phase-exec.md:183`, `docs/tasks/interface-first-parallel.md:249`: earlier make runs chose "dedicated branch + worktree" as the safest default for hands-off work; the default this task replaces.
+
+### Invariants
+- IV1: A task file with a `**Worktree:**` line resumes and exits exactly as in 0.3.51 (make.md step 2, step 6 entry order, step 12 "Leaving a worktree" unchanged).
+- IV2: The pack's `validating` rule (a fix to a merged change whose task is still `validating` goes to a new branch and pull request) still forces a branch, in both pack and cccc wording.
+- IV3: When a project's rules define a worktree convention, a task that branches still follows it without asking (no new question added to the flow).
+
+### Principles
+- PC1: One home per rule: the list of reasons lives in the project's rules file; the pack only says "follow the project's list" and never copies cccc's list.
+
+### Assumptions
+- AS1: In cccc, every pull-request run builds the Docker images without deploying, and a push to `main` builds and deploys dev (`.github/workflows/ci-np-*-dev.yml` triggers on both; checked 2026-10-09).
+- AS2: Most cccc tasks can order their phases so each phase commit leaves dev usable, so reason 3 stays rare.
+
+### Unknowns
+- UK1: Whether a live cccc session picks `main` for a task with no listed reason (the Goal's real check; needs the owner's next task).
+
+## Plan
+<empty: filled by up:uplan; gains ### Rollout / ### Rollback when the change ships to a live system>
+
+## Verify
+<empty: filled by up:uverify>
+
+## Code smells
+<empty: `- <file:line>: <one-line smell>` lines passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
+
+## Conclusion
+<empty: filled by up:ureview; after done/shipped grows dated ### Follow-up: <date> / ### Scope change: <date> entries and ### Deferred scope-parking>
