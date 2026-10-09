@@ -67,13 +67,59 @@ Reviewed before code: 3 rounds (round 3 at owner request), 6 Critical/Important 
 - UK2: Whether a session already running on `main` in the shared checkout notices a branch switch made by another session after it started. D2's guard runs only at `/up:make` start and `uexecute` checks only before code writes; task-file commits in make.md and `/up:summary` have no branch check. The plan decides whether one more check is worth it.
 
 ## Plan
-<empty: filled by up:uplan; gains ### Rollout / ### Rollback when the change ships to a live system>
+
+Approach: rewrite pack `make.md` step 6 as the two questions and move it after plan approval, teach step 2 to resume a plain branch, align `uexecute`, `summary.md` and the Rules line in one clause each (PH1, pack 0.3.52); then give cccc `workflow.md` the reason lists, the plain-branch flow and a commit-time branch check (PH2). PH2 resolves UK2: a session on `main` in the shared checkout re-checks the branch before every commit, which covers task-file commits that step 2's guard and `uexecute` never see.
+
+### PH1: pack 0.3.52
+
+- **1.1** `plugins/up/commands/make.md:107-122` (modify), step 6 "Branch decision", D1 + D3
+  - Opening line: runs at the end of step 7, once the Plan is approved; Trivial (no Plan) runs it right after step 4; Design and Plan commits before it go to the current branch. Heading and number stay 6.
+  - Replace the two size bullets (`:111-112`) and "Otherwise always confirm with the user" (`:120`) with **Branch?**: stay on the current branch unless (a) the project's rules list reasons for a branch and one applies, (b) the user asks, (c) a fix to a merged change whose task is still `validating` (Rules). No project list: propose a branch only by naming a concrete reason, and ask.
+  - **Worktree?**: a branch is a plain branch in the current checkout (`git switch -c <branch>`) unless the project's rules say when a branch needs a worktree and that applies, or the user asks. Then the project's worktree convention runs without asking (IV3) and decides how; `**Worktree:** <path>` goes in the header. A worktree the user asks for in a project with no convention: suggest `/up:git-worktrees` (kept from `:120`).
+  - D3 record: `Branch reason: <reason, by name>` in `## Design` (after a `Skipped` line), plus `Worktree reason: <reason>`; nothing for a default.
+  - Plain-branch entry (generic, D2 needs it): write `**Branch:**`, commit the task file on the current branch, then switch. Replaces "Either way..." (`:122`).
+  - The env-link paragraph (`:116`) and "Order of entry" (`:118`) stay word for word under the worktree case (IV1).
+- **1.2** `plugins/up/commands/make.md:126` (modify), step 7: after "Status → `executing`." add "Then run step 6, before step 8."
+- **1.3** `plugins/up/commands/make.md:25` (modify), step 2, D2
+  - The worktree branch of the resume fires only for a `**Worktree:**` line that names a path (`none` is no worktree).
+  - New sentence: no worktree path, `**Branch:**` is not the default branch, and no merged PR for it (`gh pr list --head <branch> --state merged`) → `git fetch origin <branch>`, read `git show origin/<branch>:<task file path>`, then continue on that branch per the project's rules (switch, or a worktree when they call for one).
+  - Guard: `git branch --show-current` is neither the default branch nor this task's `**Branch:**` → stop and ask before any commit.
+- **1.4** `plugins/up/commands/make.md:40` (modify), step 3: "placeholder until step 5" → "placeholder until step 6".
+- **1.5** `plugins/up/commands/make.md:222` (modify), Rules: "Never create a branch or a worktree without a reason step 6 accepts (a project rule that applies, the user's request, or the `validating` rule above)." The `validating` sentence at `:220` stays (IV2).
+- **1.6** `plugins/up/skills/uexecute/SKILL.md:41` (modify), "Branch / worktree correctness": the checkout is the main repo or the worktree named by a `**Worktree:**` path; branch and worktree are decided by `/up:make` step 6, never here. Drops the convention/confirm sentence.
+- **1.7** `plugins/up/commands/summary.md:58` (modify): the prompt names the checkout path only when the task file has a `**Worktree:**` path (a plain branch resumes from the shared checkout through step 2).
+- **1.8** `plugins/up/.claude-plugin/plugin.json:3`: 0.3.51 → 0.3.52.
+- Respects: IV1, IV2, IV3, PC1 (no cccc reason list in the pack).
+- Commit: `feat(make): branch only for a listed reason, plain branch before worktree` (ultrapack `main`, push).
+
+### PH2: cccc `.claude/rules/workflow.md`
+
+- **2.1** `.claude/rules/workflow.md:34` (modify), "Commit and push": the shared-checkout bullet gains "Before every commit there, `git branch --show-current` must be `main` or this task's `**Branch:**`; anything else stops the commit and goes to the owner (another session switched the folder)." Resolves UK2.
+- **2.2** `.claude/rules/workflow.md:36-39` (insert before `:40`): new section `## When to branch`, D4's five reasons, item 2 pointing at `:31`, plus the D3 record lines.
+- **2.3** `.claude/rules/workflow.md:40-42` (modify): heading → `## Feature branches: plain branch or worktree`; `:42` becomes the D5 lead: the three worktree reasons, then the plain-branch entry/work/exit paragraph (switch back at make step 12 and every `/up:summary`, never stash on a refused switch, `git branch -D` after merge, continue in a worktree from the existing branch with `Worktree reason: 1`). The existing worktree bullets `:44-57` stay unchanged, introduced by "A worktree branch:" (IV1, IV4).
+- Respects: IV2, IV4, AS1.
+- Commit: `docs(rules): branch only for a listed reason, worktree only for long-lived branches` (cccc `main`, by path, after the `git log origin/main..HEAD` check; push).
+
+### Test strategy
+none (doc-only; Verify reads the edited steps end to end for each of the Goal's three outcomes; the live cccc runs check UK1, AS2 and AS3 at `validating`).
+
+### Order & dependencies
+PH1 before PH2: cccc text cites the pack's step 6 order. A cccc session still on 0.3.51 already follows a project branch convention without asking (`make.md:114`), so the window between the two pushes and the owner's plugin update breaks nothing.
+
+### Risks
+- RK1: a session on `main` in `cccc-monorepo` that commits right after another session's `git switch -c` lands its commit on that branch; 2.1's check catches it at commit time, and D5's crowded-checkout reason lowers how often the switch happens at all.
+
+### Rollout
+PH1 push, owner installs 0.3.52 the usual way (sessions keep the version loaded at start); PH2 push goes live for every new cccc session at once.
+
+### Rollback
+Revert the PH2 commit in cccc and the PH1 commit in ultrapack; no data touched.
 
 ## Verify
 <empty: filled by up:uverify>
 
 ## Code smells
-<empty: `- <file:line>: <one-line smell>` lines passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
+- cccc `.github/workflows/ci-np-cron-api-next-dev.yml:15-19`: the PR path filter does not list its own workflow file, so a PR changing only that file runs no cron build (AS1).
 
 ## Conclusion
 <empty: filled by up:ureview; after done/shipped grows dated ### Follow-up: <date> / ### Scope change: <date> entries and ### Deferred scope-parking>
