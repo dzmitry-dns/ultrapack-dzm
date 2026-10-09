@@ -77,3 +77,12 @@ Reviewed before code: 2 rounds, 4 Critical/Important fixed, 0 rejected, 2026-10-
 
 ## Conclusion
 <empty: filled by up:ureview; after done/shipped grows dated ### Follow-up: <date> / ### Scope change: <date> entries and ### Deferred scope-parking>
+
+### Handoff: 2026-10-09
+- Position: design, awaiting round 3 of the design review (owner-requested, up:plan-reviewer on Fable) and then owner approval; branch: main; committed: b8ccf22 docs(tasks): branch-by-reason design, worktree only for long-lived branches; uncommitted: none
+- Decided: Medium size, not Small, because with Design skipped the plan point of review-before-code does not run
+- Decided: worktree only for a long-lived branch or a crowded shared checkout, short branches as plain branches in cccc-monorepo, because the owner said so in review on 2026-10-09 (Design quotes it)
+- Decided: plain-branch guard (crowded checkout → worktree) added on my judgment; the owner was told he can drop it
+- Open: owner approval of the rewritten Design
+- Owner has not seen: round 3 review findings (if the agent finished before the session closed)
+- First action: if round 3 findings are missing, re-dispatch up:plan-reviewer (model fable, design point, round 3 at owner request); process findings per review-before-code.md, update the Reviewed line, then ask the owner to approve the Design
