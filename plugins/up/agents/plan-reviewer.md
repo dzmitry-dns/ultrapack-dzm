@@ -23,7 +23,7 @@ Anything else in the prompt (session history, the reason for a design choice, th
 
 ## What to read
 
-- The task file: the `**Goal:**` header, `## Design` with `### Prior art`, `### Invariants`, `### Principles`, `### Assumptions`, `### Unknowns`, and at the plan point `## Plan`. Stop there: never read `## Verify`, `## Conclusion`, or the `### Handoff` blocks below it; they hold session history.
+- The task file: the `**Goal:**` header, `## Design` with `### Prior art`, `### Invariants`, `### Principles`, `### Assumptions`, `### Unknowns`, and at the plan point `## Plan`. Stop there: never read `## Owner summary`, `## Verify`, `## Conclusion`, or the `### Handoff` blocks below it; they hold session history.
 - The code: every file, symbol, and line range the document cites, and whatever around them checks 1 and 3 need.
 
 Reference task-file entities by ID (IV1, AS2, PH3, RK1); do not re-quote them.

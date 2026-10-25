@@ -8,23 +8,23 @@ Drives a task through the full ultrapack workflow: one task file at `docs/tasks/
 
 ## Arguments
 
-The user's description of the task follows the command. May be a one-liner ("fix the flaky login test") or a paragraph. Use it as the seed for the slug and the initial framing for `up:udesign`.
+The user's description of the task follows the command. May be a one-liner ("fix the flaky login test") or a paragraph. Use it as the seed for the slug and the initial framing for `up:udesign`. An argument that is the path of an existing task file (the resume prompt of `/up:summary` step 4) names that task instead.
 
 ## Flow
 
 ### 1. Slug
 
-Derive a kebab-case slug from the description, 3 words max (e.g. "flaky-login-test"), and proceed. If the work belongs to a named epic (the user says so, or a matching `docs/tasks/<epic>/` folder exists), place the file at `docs/tasks/<epic>/<slug>.md` — see "Epics" below.
+Derive a kebab-case slug from the description, 3 words max (e.g. "flaky-login-test"), and proceed. An argument that is an existing task-file path is that task: its file name is the slug, and step 2 settles as Exists for that file. If the work belongs to a named epic (the user says so, or a matching `docs/tasks/<epic>/` folder exists), place the file at `docs/tasks/<epic>/<slug>.md` — see "Epics" below.
 
 ### 2. Resume check
 
 Before creating a new task file, check if the slug already exists — scan `docs/tasks/**/*.md` (tasks may live in epic folders).
 
-Status format: new files write `<enum> (<optional annotation>)` or `<enum>: <annotation>`. When reading, the enum is the first word of the Status value, so older files written as `<enum> — <annotation>` still parse. The annotation is free text (dates, PR links, ship notes). Enum values: `design`, `planning`, `executing`, `verifying`, `reviewing`, `validating`, `done`, `shipped`, plus `reference` for epic overview files. Reopening a task = setting Status back to an earlier enum value with a dated annotation (e.g. `executing (reopened 2026-08-01, edge case PROJ-1204)`). Ignore header fields you don't recognize — older files may carry retired ones.
+Status format: new files write `<enum> (<optional annotation>)` or `<enum>: <annotation>`. When reading, the enum is the first word of the Status value, so older files written as `<enum> — <annotation>` still parse. The annotation is free text (dates, PR links, ship notes). Enum values and their plain meaning: `design` (the design is written or waits for approval), `planning` (the plan is written or waits for approval), `executing` (the change is being made), `verifying` (the change is being tested), `reviewing` (independent review), `validating` (merged or finished, waiting for a real-world check), `done` (the Goal is confirmed), `shipped` (merged and live), plus `reference` for epic overview files (not a task). A Status shown in chat always carries its plain meaning. Reopening a task = setting Status back to an earlier enum value with a dated annotation (e.g. `executing (reopened 2026-08-01, edge case PROJ-1204)`). Ignore header fields you don't recognize — older files may carry retired ones.
 
 Branch guard, for a resumed task and before step 3's first commit alike: when `git branch --show-current` is neither the default branch nor this task's `**Branch:**`, stop and ask before any commit. Another task's plain branch (step 6) is checked out in this folder.
 
-- Exists: if the header has a `**Worktree:**` line that names a path (`none` or an empty value is no worktree), settle the checkout before reading anything else, because the main branch's copy is frozen at entry. The folder is in `git worktree list` and its PR is not merged (or no PR exists yet) → `EnterWorktree` with that `path` and read the task file there. The PR is merged → stay in the main checkout, run step 12's "Leaving a worktree" step 5 without asking (only when the folder is still listed), and read the copy on the main branch. No worktree path and a `**Branch:**` that is not the default branch and exists (`git branch --list <branch>`, else `git ls-remote --heads origin <branch>`; free text such as `none yet` or a deleted branch is not one) → a plain branch. Its PR merged (`gh pr list --head <branch> --state merged`) → `git switch` to the default branch when the checkout is still on this branch, `git pull --ff-only`, then read the working copy. Not merged → read the task file from the branch, `git show <branch>:<task file path>` (`git fetch origin <branch>` and `origin/<branch>` when only the remote has it), because the copy on the current branch stops at the switch. That read decides how to continue, per the project's rules: `git switch <branch>`, or a worktree when they call for one; after a switch the working copy is the file. Then read `**Status:**` from the header. If the file ends with one or more Handoff blocks (`### Handoff: <date>`, or `### Handoff — <date>` in older files), read the latest one first — it holds what the previous session left uncommitted or undecided, and its first action. If it has an `Owner has not seen` line that is not "none", the first chat message of the session tells the owner those results in plain words, before any question and before any work step. Resume from the next stage:
+- Exists: if the header has a `**Worktree:**` line that names a path (`none` or an empty value is no worktree), settle the checkout before reading anything else, because the main branch's copy is frozen at entry. The folder is in `git worktree list` and its PR is not merged (or no PR exists yet) → `EnterWorktree` with that `path` and read the task file there. The PR is merged → stay in the main checkout, run step 12's "Leaving a worktree" step 5 without asking (only when the folder is still listed), and read the copy on the main branch. No worktree path and a `**Branch:**` that is not the default branch and exists (`git branch --list <branch>`, else `git ls-remote --heads origin <branch>`; free text such as `none yet` or a deleted branch is not one) → a plain branch. Its PR merged (`gh pr list --head <branch> --state merged`) → `git switch` to the default branch when the checkout is still on this branch, `git pull --ff-only`, then read the working copy. Not merged → read the task file from the branch, `git show <branch>:<task file path>` (`git fetch origin <branch>` and `origin/<branch>` when only the remote has it), because the copy on the current branch stops at the switch. That read decides how to continue, per the project's rules: `git switch <branch>`, or a worktree when they call for one; after a switch the working copy is the file. Then read `**Status:**` from the header. When the file has `## Owner summary`, the first chat message of the session opens with it, in the owner's chat language, before anything else below; a file without it resumes as before. If the file ends with one or more Handoff blocks (`### Handoff: <date>`, or `### Handoff — <date>` in older files), read the latest one first — it holds what the previous session left uncommitted or undecided, and its first action. If it has an `Owner has not seen` line that is not "none", the first chat message of the session tells the owner those results in plain words, before any question and before any work step. Resume from the next stage:
   - `design` → continue design
   - `planning` → run `up:uplan`
   - `executing` → run `up:uexecute`
@@ -35,7 +35,7 @@ Branch guard, for a resumed task and before step 3's first commit alike: when `g
   - `reference` → not a task — an epic overview; ask which child task the user means
   - anything else → ask the user how to proceed
 - Doesn't exist: proceed to step 3.
-- Multiple in-flight tasks: if more than one task file has Status ≠ `done` / `shipped` / `reference`, list them and ask which one the user means (or whether this is a new task).
+- Multiple in-flight tasks: if more than one task file has Status ≠ `done` / `shipped` / `reference`, list them and ask which one the user means (or whether this is a new task). Not when the argument named a task file (step 1).
 
 ### 3. Create task file
 
@@ -52,6 +52,11 @@ Template:
 **Jira:** <ticket id/link (omit the line if none)>
 **Depends on:** <task file or ticket (omit the line if none)>
 **Goal:** <observable success condition that defines done (note if confirming it needs a real-world run or user sign-off beyond the diff)>
+
+## Owner summary
+- Done: <empty: rewritten by /up:summary step 3 in plain English, no IDs>
+- Left: <empty>
+- Owner decides: <empty>
 
 ## Design
 <empty: filled by up:udesign>
