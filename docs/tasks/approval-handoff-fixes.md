@@ -44,7 +44,84 @@ Reviewed before code: 2 rounds, 8 Critical/Important fixed, 0 rejected, 2026-10-
 - UK2: Whether `/up:summary`'s "one append, no other side effects" rule (`plugins/up/commands/summary.md:81`) needs only a one-clause change for the in-place Owner summary rewrite; the plan decides.
 
 ## Plan
-<empty: filled by up:uplan>
+
+Approach: one phase per fix, each adding the rule to its one home and pointers elsewhere (IV3). Line numbers are as of 017f71a; `make.md` shifts as phases add text, so later phases anchor on the quoted text.
+Reviewed before code: 1 rounds, 1 Critical/Important fixed, 0 rejected, 2026-10-25, round 2: not needed
+
+### PH1: Approval definition (fix 1)
+
+- **1.1** `plugins/up/skills/uplan/review-before-code.md:84-96` (modify), `## Approval line`
+  - New paragraph after item 3, before the "single home" line: what counts as approval of `## Design` / `## Plan`, what never counts, the riders that still count (`up:ujira` draft, Scope flag), one clarifying question naming the section, what is blocked until approval, the two exceptions (Small gate of `make.md` step 7, a stage skipped at step 4).
+  - "single home" line now covers both the request format and the approval definition.
+- **1.2** `plugins/up/commands/make.md:135` (modify), Plan-approval gate: one clause, "approval is defined in `review-before-code.md` → Approval line".
+- Respects: IV1, IV3, IV4
+- Commit: `feat(up): define what counts as design and plan approval`
+
+### PH2: Costly runs and the Cyrillic check (fixes 5, 6)
+
+- **2.1** `plugins/up/skills/_principles.md:18-20` (modify), `## Commits`: before a commit that includes a task file, run the check below on it; translate every hit on an added line to English; old lines stay; exception: a backticked literal a code or pack file contains verbatim.
+- **2.2** `plugins/up/skills/_principles.md` (modify), new `## Costly runs` section after `## Questions to the owner`: definition (money, or over 10 minutes; push-triggered CI excluded), the plan names each run and its count, each extra run needs a yes to a question naming the run, its cost, and why one more run changes the result.
+- **2.3** `plugins/up/skills/_principles.md:49-57` (modify), `## How to use`: Commits bullet adds `/up:summary`; new Costly runs bullet naming `up:uplan`, `up:uexecute`, `up:uverify`, `/up:make`.
+- **2.4** Pointers, one line each:
+  - `plugins/up/skills/uplan/SKILL.md:77`: Test strategy bullet adds "and each costly run with its count".
+  - `plugins/up/skills/uexecute/SKILL.md:193-199`: new "When to stop and ask" bullet.
+  - `plugins/up/skills/uverify/SKILL.md:182-187`: new Phase 5 bullet before the loop-back bullets.
+  - `plugins/up/commands/make.md:228-238`: new Rules bullet.
+  - `plugins/up/commands/summary.md:48`: the commit runs the `_principles.md` → Commits check first.
+- Respects: IV3, IV5
+- Commit: `feat(up): cap costly runs and check task-file commits for Cyrillic`
+
+Check command, written with byte escapes so the pack and task files stay ASCII (IV5). Probed 2026-10-25 on the owner's Mac: it hits Cyrillic, not Latin accents, and dippy allows it:
+
+```bash
+git diff --cached -U0 -- <task file> | grep -n $'^+.*[\xd0\x80-\xd3\xbf]'
+```
+
+### PH3: Handoff at every wait (fix 2)
+
+- **3.1** `plugins/up/skills/_principles.md` (modify), new `## Handoff at a wait` section after `## Closing line`: the four waits; at the two approval requests and `/up:make` step 12, `/up:summary` steps 1-3 run first when decisions were taken since the latest Handoff block; the message ends with the `/up:summary` step 4 prompt and the line `Session: can close` / `Session: wait for <job>`; at other questions only prompt plus Session line, and `Session: run /up:summary before closing` when chat decisions are unrecorded. Relies on AS1.
+- **3.2** `_principles.md` → `## Questions to the owner` (line 36) gets one pointer clause; `## How to use` gets a bullet.
+- **3.3** `plugins/up/skills/udesign/SKILL.md:42` and `plugins/up/skills/uplan/SKILL.md:55`: step 12 adds "end with `_principles.md` → Handoff at a wait".
+- **3.4** `plugins/up/commands/make.md` step 12 (line 170): same pointer after the Closing line sentence.
+- **3.5** `plugins/up/commands/make.md:218`: "Print no prompt at these points" gains "except at the waits of `_principles.md` → Handoff at a wait"; the Status-transition append is skipped when the latest Handoff block was written in the same turn.
+- **3.6** `plugins/up/commands/summary.md:2` description adds the trigger words (handoff, hands-off, the voice spelling in Russian, closing the session; the Russian word is the IV5 exception); step 4 (line 60) and the "No active task file" path (line 76) end with the Session line after the Closing line.
+- Respects: IV3, IV4 (no new pause, no counting)
+- Commit: `feat(up): end every owner wait with the resume prompt and a Session line`
+
+### PH4: Owner summary and the /up:make resume prompt (fixes 3, 3a)
+
+- **4.1** `plugins/up/commands/make.md:42-85` template (modify): `## Owner summary` right after the header, three bullets `Done:`, `Left:`, `Owner decides:`, plain English, no IDs. `plugins/up/agents/plan-reviewer.md:26` adds it to the sections the reviewer never reads (session state).
+- **4.2** `make.md:23`: each Status enum value gets a plain meaning (`validating`: merged or finished, waiting for a real-world check); a Status shown in chat carries its meaning.
+- **4.3** `make.md:27` Exists branch: when the file has `## Owner summary`, the first chat message opens with it in the owner's chat language, before the `Owner has not seen` results; a file without it resumes as before (IV2).
+- **4.4** `make.md:9-11` Arguments and `make.md:17` step 1: an argument that is an existing task-file path is that task; step 2 settles as Exists. `make.md:38` Multiple in-flight: does not fire when the argument named a file.
+- **4.5** `plugins/up/commands/summary.md:30-48` step 3: rewrite `## Owner summary` in place at each append, insert it under the header when absent. `summary.md:7` and `summary.md:81` Rules: "one append" / "one side effect" become "one append plus the Owner summary rewrite" (resolves UK2: one clause each).
+- **4.6** `summary.md:50-58` step 4: prompt becomes `/up:make docs/tasks/<slug>.md` (worktree form `/up:make <worktree>/docs/tasks/<slug>.md`); `summary.md:2` description and `README.md:102` follow.
+- Respects: IV1, IV2, IV5
+- Commit: `feat(up): owner summary at the top of the task file, resume prompt loads /up:make`
+
+### PH5: Value check before the task file (fix 4)
+
+- **5.1** `plugins/up/commands/make.md:37` "Doesn't exist" (modify): an ask that names work without telling the agent to build it gets a chat answer first (what it is, what it gives, rough cost, recommendation), no task file, branch or Jira write; step 3 runs on the owner's go; a build verb is the go.
+- Respects: IV1 (step numbers unchanged); relies on AS2 only for motivation, the rule holds without the counts
+- Commit: `feat(up): assess value before creating a task file`
+
+### PH6: Version
+
+- **6.1** `plugins/up/.claude-plugin/plugin.json:3`: 0.3.53 → 0.3.54.
+- Commit: `chore(up): 0.3.54`
+
+### Test strategy
+none: doc-only pack (repo `CLAUDE.md`). `up:uverify` checks by grep: each new rule has one home and its pointers resolve (IV3), the PH2 check command finds no Cyrillic in this task file and none in changed pack files outside the PH3.6 trigger word (IV5), and an old task file without `## Owner summary` reads unchanged under the new step 2 (IV2).
+
+### Risks
+- RK1: `make.md` grows by about ten lines and every stage reads it; each addition is one clause or a pointer, and verify measures the line count against 242.
+- RK2: Owner summary and Closing line may repeat each other (UK1); left to live cccc runs, Status stays `validating`.
+
+### Rollout
+Push to `main`, then `claude plugin update up@ultrapack`; a running session keeps the version it loaded at start, so the first live check is a new cccc session.
+
+### Rollback
+`git revert` the phase commits and bump the patch again; no data or state outside the repo.
 
 ## Verify
 <empty: filled by up:uverify>
