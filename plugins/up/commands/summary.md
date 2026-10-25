@@ -43,9 +43,9 @@ Append at the end of the task file, after `## Conclusion`, with the Edit tool (a
 
 `Decided` and `Dead end` repeat as needed and are omitted when empty; `Open` is at most one line. When step 2 shows uncommitted changes, `First action` starts with committing them. When `Owner has not seen` is not "none", `First action` is "tell the owner those results in plain words": the work step comes after.
 
-Then rewrite `## Owner summary` in place: three bullets, `Done:`, `Left:`, `Owner decides:`, plain English for the owner, no IDs or file paths. A file without the section gets it inserted right under the header lines.
-
 Only what the file and git do not already say: decisions taken in chat and their reasons, dead ends, the open question, the next step. Do not restate Design, Plan, or the diff.
+
+Then rewrite `## Owner summary` in place: three bullets, `Done:`, `Left:`, `Owner decides:`, plain English for the owner, no IDs or file paths. Unlike the Handoff block, it restates progress on purpose. A file without the section gets it inserted right under the header lines.
 
 After the append, commit only the task file, by path: `git add <task file>`, run the Cyrillic check of `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Commits (this block carries the owner's chat decisions), then commit `docs(agents): <slug> handoff`. Push when the project's policy allows it. Other uncommitted work stays as it is.
 

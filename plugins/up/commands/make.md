@@ -8,7 +8,7 @@ Drives a task through the full ultrapack workflow: one task file at `docs/tasks/
 
 ## Arguments
 
-The user's description of the task follows the command. May be a one-liner ("fix the flaky login test") or a paragraph. Use it as the seed for the slug and the initial framing for `up:udesign`. An argument that is the path of an existing task file (the resume prompt of `/up:summary` step 4) names that task instead.
+The user's description of the task follows the command. May be a one-liner ("fix the flaky login test") or a paragraph. Use it as the seed for the slug and the initial framing for `up:udesign`. An existing task-file path (the resume prompt of `/up:summary` step 4) is handled by step 1.
 
 ## Flow
 

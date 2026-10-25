@@ -19,7 +19,7 @@ A skill with `disable-model-invocation: true` (since 0.3.34: e, try, reflect, st
 
 Every commit made by any stage, or by `/up:make` at a Status transition, is English, `<type>: <concise>`, and carries no `Co-authored-by` or any other trailer.
 
-Before a commit that includes a task file, check the lines it adds to that file for Cyrillic:
+Before a commit that includes a task file, check the lines it adds to that file for Cyrillic (the byte range needs a UTF-8 locale; under `LC_ALL=C` it also hits accents and dashes):
 
 ```bash
 git diff --cached -U0 -- <task file> | grep -n $'^+.*[\xd0\x80-\xd3\xbf]'
