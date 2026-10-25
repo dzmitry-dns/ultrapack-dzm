@@ -1,6 +1,6 @@
 # Approval and handoff fixes
 
-**Status:** executing
+**Status:** verifying
 **Branch:** main
 **Goal:** The six owner-facing failures found in the 2026-10-24 audit of cccc sessions are closed by pack text the agent cannot misread: (1) only a yes to a question naming the plan counts as plan approval; (2) the pack offers the handoff itself and ends with whether the session can be closed; (3) the task file opens with a short owner summary that resume prints first, and (3a) the resume prompt loads `/up:make`; (4) `/up:make` assesses value before it creates a task file or branch; (5) a task-file commit is preceded by a mechanical Cyrillic check; (6) `up:uverify` asks before running more than the plan states. `/up:make` resume and existing commands keep working. Confirming it needs live cccc runs (validating).
 
@@ -152,3 +152,10 @@ Push to `main`, then `claude plugin update up@ultrapack`; a running session keep
 - Open: none
 - Owner has not seen: none
 - First action: run `up:uexecute` from PH1
+
+### Handoff: 2026-10-25 (executed)
+- Position: PH1-PH6 committed (543e761, 92b76b0, a01f407, 2541018, 0d74b6d, 38b7a8d); Status verifying; branch: main; not pushed; uncommitted: none
+- Decided: the Cyrillic check uses byte escapes, because the first plan draft wrote literal characters and the plan reviewer caught it
+- Open: none
+- Owner has not seen: none
+- First action: run `up:uverify`
