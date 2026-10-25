@@ -54,3 +54,11 @@ Reviewed before code: 2 rounds, 8 Critical/Important fixed, 0 rejected, 2026-10-
 
 ## Conclusion
 <empty: filled by up:ureview>
+
+### Handoff: 2026-10-25
+- Position: design written, two Fable design reviews applied, waiting for the owner's design approval; branch: main; committed: b9f8b92; uncommitted: none
+- Decided: handoff rides only existing waits (option A), because the owner chose A over a size-triggered pause on 2026-10-25
+- Decided: added 3a (resume prompt invokes `/up:make`), because a 2026-10-25 probe found 15 of 39 resumed cccc sessions loaded `/up:make`; owner has not approved 3a yet
+- Open: owner approval of the Design, including 3a
+- Owner has not seen: none
+- First action: on approval, Status to planning and run `up:uplan`
