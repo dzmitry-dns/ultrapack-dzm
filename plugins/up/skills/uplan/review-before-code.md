@@ -93,4 +93,6 @@ The design and plan approval requests (`up:udesign` and `up:uplan` step 12) open
 
    Reasons come from this file: design point without a Large signal, Design skipped, skipped by owner, round 1 changed no decision or phase order, 2-round cap.
 
-This is the single home of the rule; callers only point here.
+What counts as approval: approval of the `## Design` or the `## Plan` is a yes in reply to that approval request. It never comes from a choice between options, from "continue" or "do the rest", from a yes that answers another question in the same message (an option pick, a Jira draft, a Scope flag), from an approval of the other section, or from a yes given before the request was shown. The request's own yes still counts when the `up:ujira` draft (`/up:make` step 7) or a Scope flag (Findings above) rides the same message. An unclear reply gets one question that names `## Design` or `## Plan`. Until approval: no Status move past the stage, no branch, no worktree, no code commit. Two cases have no request and need no yes: the plan-approval gate of `/up:make` step 7 lets a Small plan proceed, and a stage skipped at `/up:make` step 4 is never presented. A manual or resumed `up:uplan` always waits.
+
+This is the single home of the request format and of what counts as approval; callers only point here.
