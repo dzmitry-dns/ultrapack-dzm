@@ -181,6 +181,7 @@ Notes: validation layer doesn't reject `null` before the handler; should reject 
 
 ## Phase 5 — Consolidate: held loops to review, broke loops to execute
 
+- A rerun that is a costly run beyond the plan's count asks first (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Costly runs).
 - Every attack held (or justifiably deferred) → declare verify passed. Invoke `up:ureview`.
 - Any attack broke → for each, describe how it *should have* worked conceptually (not "add the missing line" — the behavior it was supposed to exhibit under the attack). Loop back to `up:uexecute` with these notes. Do not move forward.
 - Each loop-back reports in one line what changed since the last run and what the owner would see differently.

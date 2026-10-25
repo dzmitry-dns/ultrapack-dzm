@@ -197,6 +197,7 @@ Agent edits `## Plan` inline with `<!-- deviation: ... -->` comments. Reviewer n
 - A test fails in a way that suggests the plan is wrong (not just the implementation)
 - Verify would obviously fail even after you finish
 - You're about to invent a fallback / default / catch-all
+- You're about to start a costly run beyond the plan's count (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Costly runs)
 
 Don't force through. Ask.
 

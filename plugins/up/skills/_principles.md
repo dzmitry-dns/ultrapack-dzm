@@ -17,7 +17,17 @@ A skill with `disable-model-invocation: true` (since 0.3.34: e, try, reflect, st
 
 ## Commits
 
-Every commit made by any stage, or by `/up:make` at a Status transition, is English, `<type>: <concise>`, and carries no `Co-authored-by` or any other trailer. This is the single home of the rule; callers only point here.
+Every commit made by any stage, or by `/up:make` at a Status transition, is English, `<type>: <concise>`, and carries no `Co-authored-by` or any other trailer.
+
+Before a commit that includes a task file, check the lines it adds to that file for Cyrillic:
+
+```bash
+git diff --cached -U0 -- <task file> | grep -n $'^+.*[\xd0\x80-\xd3\xbf]'
+```
+
+Translate every hit to English, stage again, then commit. Lines the commit does not add stay as they are. The one exception: a backticked literal that a code or pack file contains verbatim.
+
+This is the single home of the rule; callers only point here.
 
 ## Dispatch narration
 
@@ -35,6 +45,10 @@ When a review ran in the same turn, append `Another review: <no | yes> (<why>).`
 
 Before each question to the owner (plain text or AskUserQuestion), write 2-4 plain sentences in the owner's chat language: what the situation is, why the answer is needed now, what each option changes. Option labels name the consequence, never an internal ID (`IV2`, `PH3`, `UK1`). Task-file and pack text stays English. This is the single home of the rule; callers only point here.
 
+## Costly runs
+
+A costly run is one the agent starts by command that costs money (paid API or model calls, cloud jobs) or takes over 10 minutes. CI that a push triggers is not one. The plan's `### Test strategy` names each costly run and how many times it runs. Every run beyond that count, or not in the plan, needs a yes to a question that names the run, its cost, and why one more run should change the result. A "fix and rerun" loop is no exception: each rerun asks. This is the single home of the rule; callers only point here.
+
 ## Incidental code smells
 
 While exploring code for a task you'll pass smells unrelated to the change — a 200-line function, a duplicated helper, a leaked layer boundary. Two outcomes, no third:
@@ -50,7 +64,8 @@ A pointer plus a sentence; the next reader opens the line. Recorded smells are `
 
 - `up:udesign` — surface GPC tradeoffs (layering, SSOT, fail-fast, debuggability) as Design decisions; reference by ID. Task-specific PCs only when deviating from a GPC or adding a rule the GPCs don't cover.
 - `up:uplan` — every phase consistent with GPCs; deviating bullets cite the GPC and why.
-- Commits — `/up:make`, `up:uexecute`, `up:ureview` point here for every commit they make.
+- Commits — `/up:make`, `up:uexecute`, `up:ureview`, `/up:summary` point here for every commit they make.
+- Costly runs — `up:uplan` (Test strategy), `up:uexecute` (When to stop and ask), `up:uverify` (Phase 5), and `/up:make` (Rules) point here.
 - Closing line — `/up:make` step 12, a manual `up:ureview`, and `/up:summary` print it.
 - Questions to the owner — `up:udesign` (step 3, Rules) and `up:uplan` (step 12) follow it for every question they ask.
 - `up:udebug` — anti-whack-a-mole: name the pattern behind a bug and grep for the same shape before closing (not a GPC, same family).

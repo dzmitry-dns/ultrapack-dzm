@@ -235,7 +235,8 @@ Stop and ask the user when:
 - External spec / design docs (e.g. anything under `docs/specs/`) are read-only during execute. If a stage finds the spec is wrong, surface it to the user — don't mutate it silently
 - Don't assume prior session memory — the next agent may be a fresh context reading only the task file
 - Scope move at any stage (part of the work goes to another ticket, or comes in from one): if Jira is configured, invoke `up:ujira` in the same step, before reporting; its "Scope move" paragraph drafts the source ticket's description item. The Status-transition triggers never see a scope move
-- Every commit this flow makes (task file, Status transitions) follows `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Commits: no trailer of any kind
+- Every commit this flow makes (task file, Status transitions) follows `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Commits: no trailer of any kind, and a task file is checked for Cyrillic first
+- A costly run beyond the plan's count needs its own yes, in every stage and in a resumed session (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Costly runs)
 
 ## Terminal state
 

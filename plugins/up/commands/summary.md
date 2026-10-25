@@ -45,7 +45,7 @@ Append at the end of the task file, after `## Conclusion`, with the Edit tool (a
 
 Only what the file and git do not already say: decisions taken in chat and their reasons, dead ends, the open question, the next step. Do not restate Design, Plan, or the diff.
 
-After the append, commit only the task file, by path: `git add <task file>`, then commit `docs(agents): <slug> handoff`. Push when the project's policy allows it. Other uncommitted work stays as it is.
+After the append, commit only the task file, by path: `git add <task file>`, run the Cyrillic check of `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Commits (this block carries the owner's chat decisions), then commit `docs(agents): <slug> handoff`. Push when the project's policy allows it. Other uncommitted work stays as it is.
 
 ### 4. Print the prompt
 
