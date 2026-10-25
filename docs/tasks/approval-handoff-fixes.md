@@ -124,7 +124,31 @@ Push to `main`, then `claude plugin update up@ultrapack`; a running session keep
 `git revert` the phase commits and bump the patch again; no data or state outside the repo.
 
 ## Verify
-<empty: filled by up:uverify>
+
+**Result:** passed
+
+Happy-path:
+- CK1 (3a): `/up:make <worktree>/docs/tasks/<slug>.md` and an epic-child path reach step 2 Exists without the Multiple in-flight question: held (step 1, Arguments, `make.md:38` read together)
+- CK2 (fix 2): an approval request followed by the Status-transition append, and step 12 right after the `validating` append, write no duplicate Handoff block: held (same-turn skip at `make.md:223`, "decisions since the latest block" in `_principles.md` → Handoff at a wait)
+
+Negative:
+- CK3 (fix 1): "do the rest" after an option pick, or a yes to a Jira draft alone, reads as approval: held, both named as never counting
+- CK4 (fix 4): an existing task-file path as the argument falls into the value check: held, it settles as Exists before "Doesn't exist" is reached
+- CK10 (fix 5): the check command misses added Cyrillic or hits old lines or Latin accents: held, scratch repo with an old Cyrillic line, a staged `cafe` with accent, and a staged Cyrillic line hit only the last
+
+Invariants / assumptions:
+- CK5 (IV1): step headings 1-12 in `make.md` keep numbers and names: held
+- CK6 (IV2): a file without `## Owner summary` resumes as before: held, `make.md:27` reads it only when present
+- CK7 (IV3): one home each for Approval, Handoff at a wait, Costly runs; rule text not restated elsewhere: held
+- CK8 (IV4): new text adds a pause: held, the only new "pause" word is "This adds no pause"
+- CK9 (IV5): Cyrillic on added lines outside the trigger word: held, one hit (`summary.md:2` trigger word), task file 0
+- CK11: old prompt text or old "one side effect" wording left in pack or README: held, none
+- CK12: `## Owner summary` read as Design by a reviewer: held, `plan-reviewer.md:26` excludes it; `up:requirements-reviewer` never sees the task file
+- CK13 (AS1): the agent knows its running background jobs: deferred, needs live cccc runs
+
+Smoke: `claude plugin validate plugins/up` and `claude plugin validate .` → passed (two marketplace warnings predate this task)
+
+Goal: proxy only; the smoke checks the plugin loads, not agent behavior. Live cccc sessions on 0.3.54 must show each of the seven fixes.
 
 ## Code smells
 <empty>
