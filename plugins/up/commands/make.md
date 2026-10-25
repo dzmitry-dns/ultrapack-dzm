@@ -34,7 +34,7 @@ Branch guard, for a resumed task and before step 3's first commit alike: when `g
   - `done` / `shipped` → ask the user what they want to do (start a follow-up, re-open, view conclusion)
   - `reference` → not a task — an epic overview; ask which child task the user means
   - anything else → ask the user how to proceed
-- Doesn't exist: proceed to step 3.
+- Doesn't exist: when the ask names work without telling you to build it (a bare ticket id or link, "look at", "is it worth", "explain"), answer in chat first: what it is, what it gives, rough cost, your recommendation. Create no task file, branch, or Jira write; step 3 runs on the owner's go. An ask that tells you to build ("fix", "do", "implement") is the go: proceed to step 3.
 - Multiple in-flight tasks: if more than one task file has Status ≠ `done` / `shipped` / `reference`, list them and ask which one the user means (or whether this is a new task). Not when the argument named a task file (step 1).
 
 ### 3. Create task file
