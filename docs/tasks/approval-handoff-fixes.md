@@ -1,8 +1,13 @@
 # Approval and handoff fixes
 
-**Status:** reviewing
+**Status:** validating (0.3.54 on main 2026-10-25, waiting for live cccc runs)
 **Branch:** main
 **Goal:** The six owner-facing failures found in the 2026-10-24 audit of cccc sessions are closed by pack text the agent cannot misread: (1) only a yes to a question naming the plan counts as plan approval; (2) the pack offers the handoff itself and ends with whether the session can be closed; (3) the task file opens with a short owner summary that resume prints first, and (3a) the resume prompt loads `/up:make`; (4) `/up:make` assesses value before it creates a task file or branch; (5) a task-file commit is preceded by a mechanical Cyrillic check; (6) `up:uverify` asks before running more than the plan states. `/up:make` resume and existing commands keep working. Confirming it needs live cccc runs (validating).
+
+## Owner summary
+- Done: all seven fixes are written into the pack and released as version 0.3.54 on main.
+- Left: watch a few real cccc sessions on 0.3.54 and check that each fix shows up there.
+- Owner decides: whether a live cccc session confirms the fixes, after which the task closes.
 
 ## Design
 
@@ -154,7 +159,28 @@ Goal: proxy only; the smoke checks the plugin loads, not agent behavior. Live cc
 <empty>
 
 ## Conclusion
-<empty: filled by up:ureview>
+
+Outcome: all seven fixes are in pack text as 0.3.54 (38b7a8d, review text fixes 73beb1d); the Goal still needs live cccc sessions to show the agent follows them.
+
+Invariants:
+- IV1: step headings 1-12 unchanged (Verify CK5)
+- IV2: Owner summary read only when present (CK6)
+- IV3: one home each for approval, Handoff at a wait, Costly runs; the task-file-path rule moved to step 1 only at review (CK7, 73beb1d)
+- IV4: no new pause wording (CK8)
+- IV5: Cyrillic only in the `summary.md:2` trigger word; this task file has none (CK9)
+
+### Assumptions check
+- AS1: unverifiable here; needs a live session with a background job at a wait
+- AS2: held; no rule depends on the audit counts
+
+### Unknowns outcome
+- UK1: still-open; needs live cccc runs
+- UK2: resolved; one clause each at `summary.md:7` and the Rules line
+
+Review findings:
+- Text fixes: 4 applied (73beb1d): `reviewer.md` also skips `## Owner summary`, the Cyrillic check names its UTF-8 locale need, the Owner summary paragraph moved below the no-restate rule, the task-file-path rule kept in step 1 only
+
+Verified by: the smoke is `claude plugin validate` only; agent behavior is unchecked until a live run on 0.3.54.
 
 ### Handoff: 2026-10-25
 - Position: design written, two Fable design reviews applied, waiting for the owner's design approval; branch: main; committed: b9f8b92; uncommitted: none
@@ -183,3 +209,9 @@ Goal: proxy only; the smoke checks the plugin loads, not agent behavior. Live cc
 - Open: none
 - Owner has not seen: none
 - First action: run `up:uverify`
+
+### Handoff: 2026-10-25 (validating)
+- Position: verify passed, final review clean (4 text fixes, 73beb1d); Status validating; branch: main; uncommitted: none
+- Open: live cccc runs on 0.3.54 must show the seven fixes (Goal)
+- Owner has not seen: none
+- First action: after a live cccc run on 0.3.54, check each fix there, then `/up:make` step 11
