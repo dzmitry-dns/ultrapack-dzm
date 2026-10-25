@@ -1,5 +1,5 @@
 ---
-description: End a session so the next one can continue — in one main-session turn, append a dated Handoff block to the active task file and print the one-line prompt for the next session.
+description: End a session so the next one can continue — in one main-session turn, append a dated Handoff block to the active task file and print the one-line prompt for the next session. Use when the owner asks for a handoff (hands-off, хендзов) or whether the session can be closed.
 ---
 
 # /up:summary
@@ -57,7 +57,7 @@ A fenced block so it copies whole:
 
 Use the file's real path: an epic child lives at `docs/tasks/<epic>/<slug>.md`. When the task file's `**Worktree:**` line names a path, the prompt names that checkout path (a plain branch resumes from the main checkout through `/up:make` step 2): `Продолжи <worktree>/docs/tasks/<slug>.md`. `/up:make` reads the latest Handoff block on resume, so the one line is enough.
 
-Below the fence, outside the prompt, the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closing line). At a handoff the task is normally not closable; `Left` names the first action.
+Below the fence, outside the prompt, the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closing line). At a handoff the task is normally not closable; `Left` names the first action. Below it, the Session line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Handoff at a wait).
 
 ## No active task file
 
@@ -73,7 +73,7 @@ Goal: <one sentence>
 - First action: ...
 ```
 
-Same Closing line below the fence.
+Same Closing line and Session line below the fence.
 
 ## Rules
 

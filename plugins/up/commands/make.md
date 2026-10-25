@@ -167,7 +167,7 @@ Once `done`, run the docs-refresh check (see below).
 
 ### 12. Finish
 
-Print the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closing line), then present options to the user:
+Print the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closing line), then present options to the user, and end the message per `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Handoff at a wait:
 - Merge / open PR (if on a branch)
 - Move on
 
@@ -215,7 +215,7 @@ Rules:
 
 Runs right before invoking the stage skill at steps 8, 9, and 10 — one check per transition, covering everything since the previous checkpoint (step 8's check covers steps 5–7). Count subagents dispatched and tool outputs long enough to fill roughly a screen. Either count at 3+ subagents or 2+ large outputs → print one line: "This session has grown large — consider `/up:summary` before continuing." Then proceed to the stage regardless; advisory only, never a pause.
 
-At each phase commit of a Medium or Large task, and at every Status transition, append the Handoff block by `/up:summary` steps 1-3 without asking. Print no prompt at these points. This is never a pause either. Inside a worktree these commits go to the branch only; the main branch gets the task file at entry and at exit (step 6, step 12).
+At each phase commit of a Medium or Large task, and at every Status transition, append the Handoff block by `/up:summary` steps 1-3 without asking; skip the Status-transition append when the latest Handoff block was written in the same turn. Print no prompt at these points, except at the waits of `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Handoff at a wait. This is never a pause either. Inside a worktree these commits go to the branch only; the main branch gets the task file at entry and at exit (step 6, step 12).
 
 ## Stop conditions
 

@@ -41,9 +41,18 @@ Whoever ends the workflow turn prints one line, once, in the owner's chat langua
 
 When a review ran in the same turn, append `Another review: <no | yes> (<why>).` The line is never a recap of the message above it. This is the single home of the rule; callers only point here.
 
+## Handoff at a wait
+
+When the flow waits for the owner and a task file exists, the message ends, after any Closing line, with:
+
+1. The resume prompt of `/up:summary` step 4.
+2. One line: `Session: can close`, or `Session: wait for <job still running in the background>`. A job counts while this session started it and has not seen it finish.
+
+The waits: the design approval request, the plan approval request, `/up:make` step 12, and any other question that stops the flow. At the two approval requests and at step 12, run `/up:summary` steps 1-3 first when decisions were taken since the latest Handoff block, so the prompt points at a current file. At any other question print only the prompt and the Session line, with no append and no commit; when decisions were taken in chat since the latest Handoff block, the line reads `Session: run /up:summary before closing`, never `can close`. This adds no pause: it rides only waits that already exist. This is the single home of the rule; callers only point here.
+
 ## Questions to the owner
 
-Before each question to the owner (plain text or AskUserQuestion), write 2-4 plain sentences in the owner's chat language: what the situation is, why the answer is needed now, what each option changes. Option labels name the consequence, never an internal ID (`IV2`, `PH3`, `UK1`). Task-file and pack text stays English. This is the single home of the rule; callers only point here.
+Before each question to the owner (plain text or AskUserQuestion), write 2-4 plain sentences in the owner's chat language: what the situation is, why the answer is needed now, what each option changes. Option labels name the consequence, never an internal ID (`IV2`, `PH3`, `UK1`). A question that stops the flow ends per Handoff at a wait. Task-file and pack text stays English. This is the single home of the rule; callers only point here.
 
 ## Costly runs
 
@@ -67,6 +76,7 @@ A pointer plus a sentence; the next reader opens the line. Recorded smells are `
 - Commits — `/up:make`, `up:uexecute`, `up:ureview`, `/up:summary` point here for every commit they make.
 - Costly runs — `up:uplan` (Test strategy), `up:uexecute` (When to stop and ask), `up:uverify` (Phase 5), and `/up:make` (Rules) point here.
 - Closing line — `/up:make` step 12, a manual `up:ureview`, and `/up:summary` print it.
+- Handoff at a wait — `up:udesign` and `up:uplan` (step 12), `/up:make` (step 12, Context checkpoint), and `/up:summary` (step 4) point here.
 - Questions to the owner — `up:udesign` (step 3, Rules) and `up:uplan` (step 12) follow it for every question they ask.
 - `up:udebug` — anti-whack-a-mole: name the pattern behind a bug and grep for the same shape before closing (not a GPC, same family).
 - Incidental code smells — `up:udesign` / `up:uplan` fold an in-scope or easy fix into the design/plan, else record to `## Code smells`; `up:uexecute` fixes in-scope/easy ones, records the rest; `up:explorer` / `up:implementer` report passed smells in their output for the dispatcher to act on.
