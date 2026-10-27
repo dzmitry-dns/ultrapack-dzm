@@ -40,7 +40,7 @@ Reviewed before code: 2 rounds, 2 Critical/Important fixed, 0 rejected, 2026-10-
 ### Invariants
 - IV1: Without a `## Reminders` section in the loaded instructions, `/up:make` makes no reminder proposal and no calendar tool call.
 - IV2: No calendar event is created before the owner's yes to the reminder list itself.
-- IV3: Every created event is recorded in the task file with date, time, title and event id (`event id: none (Chrome)` on the fallback path), and the record is committed in the same step.
+- IV3: Every created event is recorded in the task file with date, time, title and event id (`event chrome (no id, cancel by hand)` on the fallback path), and the record is committed in the same step.
 - IV4: Owner-specific values (account id, calendar id, time zone, defaults) appear only in `~/.claude/CLAUDE.md`, never under `plugins/up/`.
 - IV5: Existing `/up:make` steps and resume of older task files keep working unchanged.
 
