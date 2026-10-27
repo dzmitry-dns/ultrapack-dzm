@@ -98,7 +98,11 @@ none (doc-only change). Verify runs one live check: create one test event in "Wo
 Push to `main`, then `claude plugin update up@ultrapack`; sessions started before the update keep 0.3.55. The global section takes effect in every new session at once.
 
 ## Verify
-<empty: filled by up:uverify>
+
+Partial, 2026-10-27. PH1 and PH2 written; the live check stopped at its first call.
+- AS1 failed: `notion-calendar-create-events` on "Work" answered 403 `restricted_resource` ("This token does not have the required capabilities to use the calendar_create_events tool"). `notion-get-tool-access` lists only `calendar_list_calendars` and `calendar_list_events` as available; create, update and cancel are not exposed to this connection. `list-calendars` still reports `writeEvents: true` for the Google account, so the limit is the Notion MCP token, not Google.
+- Until the owner picks another create path, the global section's fallback (any tool error → Chrome) carries every reminder.
+- UK1, UK2: open (no event was created).
 
 ## Conclusion
 <empty: filled by up:ureview>
