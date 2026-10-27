@@ -1,6 +1,6 @@
 # Post-check reminders
 
-**Status:** reviewing
+**Status:** validating (0.3.56 on main 2026-10-27, waiting for one live cccc run with a dated check)
 **Branch:** main
 **Goal:** When a `/up:make` task ends with a check that needs a later date, the agent proposes the calendar reminders itself and, after the owner's yes to that list, creates them in the owner's Google Calendar "Work" through the Notion calendar tools and records them in the task file; a project or user with no reminders config sees no change. Confirming it needs one live run in a real project (cccc) where a task reaches `validating` with a dated check.
 
@@ -108,4 +108,27 @@ Passed, 2026-10-27, one live event.
 - IV1, IV2, IV3, IV5 are text rules in `make.md`; their live check is the Goal's cccc run. IV4: `grep` for the account id and calendar id under `plugins/up/` is part of review.
 
 ## Conclusion
-<empty: filled by up:ureview>
+
+Outcome: pack trigger shipped as 0.3.56 (d903f40, ded9302) and the owner's `## Reminders` config is live with one real create/read/cancel check; the Goal still needs one live `/up:make` run in cccc that reaches `validating` with a dated check.
+
+Invariants:
+- IV1: `make.md` Reminders paragraph opens with the opt-in clause; no project `CLAUDE.md` under `~/dev/current` has a `## Reminders` heading (find + grep, 2026-10-27).
+- IV2: text rule in `make.md` step 11 and the step 12 merge paragraph; live check is the Goal's cccc run.
+- IV3: text rule (record format, committed and pushed before the merge runs); live check is the Goal's cccc run.
+- IV4: grep for the account id, calendar id and account email under `plugins/` and `README.md`: 0 hits.
+- IV5: additive text only; the `validating` resume entry keeps its old sentence and gains one.
+
+### Assumptions check
+- AS1: held after the owner reconnected the Notion connector; before that, create answered 403 `restricted_resource` (see Verify).
+- AS2: unverifiable over one session; the fallback bullet names the 403 and its fix.
+
+### Unknowns outcome
+- UK1: resolved; events created through the Notion tool carry no notification (Google Calendar event page).
+- UK2: resolved; `create-events` and `list-events` both return the event id.
+
+Review findings:
+- Important: a plain-branch merge run before the `Reminders:` lines were committed would leave them off the default branch, so a resume would ask again and duplicate events; fixed in ded9302 (lines committed and pushed before the merge runs).
+- Text fixes: 2 applied (ded9302): the section contract named in `make.md`, IV3 fallback wording aligned; 2 more after the re-review (next commit): the merge-waits rule repeated in step 12, the `Reminders:` lines placed right after the review lines.
+- Rejected: generic `## Reminders` heading collision (no project has one); re-validation after a new release not re-asking (rare, a reopened task can ask by hand).
+
+Verified by: `up:requirements-reviewer` (owner opted in): all eight clauses of the ask met, no gaps.
