@@ -1,7 +1,7 @@
 ---
 name: researcher
 description: General-purpose deep research. Decomposes a query, investigates systematically across the web, library docs, and the current codebase, returns a synthesized answer shaped by the question. Use when the main agent needs external knowledge beyond what Context7 or a quick web search gives.
-tools: WebSearch, WebFetch, Glob, Grep, Read, Bash, mcp__plugin_context7_context7__query-docs, mcp__plugin_context7_context7__resolve-library-id
+tools: WebSearch, WebFetch, Glob, Grep, Read, Bash, mcp__plugin_context7_context7__query-docs, mcp__plugin_context7_context7__resolve-library-id, mcp__claude_ai_Context7__query-docs, mcp__claude_ai_Context7__resolve-library-id
 model: sonnet
 ---
 
