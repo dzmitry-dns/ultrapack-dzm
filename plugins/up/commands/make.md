@@ -30,7 +30,7 @@ Branch guard, for a resumed task and before step 3's first commit alike: when `g
   - `executing` → run `up:uexecute`
   - `verifying` → run `up:uverify` (step 9); the plan is already implemented, do not re-run execute
   - `reviewing` → run `up:ureview` and tell it `/up:make` invoked it (step 10)
-  - `validating` → re-check the Goal with the user (step 11); on confirmation, step 11's `done` path (docs refresh included), then step 12, so the Closing line prints in the session that closes the task
+  - `validating` → re-check the Goal with the user (step 11); on confirmation, step 11's `done` path (docs refresh included), then step 12, so the Closing line prints in the session that closes the task. `Reminders:` lines already in `## Conclusion` (events or `declined`) mean step 11's reminder question was answered: do not ask it again
   - `done` / `shipped` → ask the user what they want to do (start a follow-up, re-open, view conclusion)
   - `reference` → not a task — an epic overview; ask which child task the user means
   - anything else → ask the user how to proceed
@@ -166,6 +166,8 @@ Set Status → `done` only once the Goal is confirmed: by the agent's own end-to
 
 If the Goal is still pending, proceed to step 12 to offer finish actions — the verified code can still merge — but keep Status `validating` and state that the task is not done until the Goal is confirmed; a later session resumes from `validating` to re-check it.
 
+**Reminders.** Opt-in: only when the loaded instructions (global or project `CLAUDE.md`) have a `## Reminders` section; without one, no reminder question and no calendar tool call. When a remaining step is tied to a date or a period (after a release, after N days, daily for a week), step 12 asks for a reminder list after the merge answer, as its own question: date, time, title, what to check, one line per event, dates counted from the release that answer names (from today when nothing merges). Create the events per that section only after a yes that answers this question. Record one line per event in `## Conclusion`: `Reminders: <date> <time>, <title>, event <id>` (`event chrome (no id, cancel by hand)` when the section's fallback made it); a declined list gets `Reminders: declined <date>`. The question, the events and these lines come before step 12's "Leaving a plain branch" / "Leaving a worktree", and the lines are committed with the task file, so the branch copy carries them. When the Goal is confirmed while recorded events are still ahead, offer to cancel them.
+
 Once `done`, run the docs-refresh check (see below).
 
 `shipped` comes after `done`: set it when the merge/deploy is confirmed real, with the evidence in the annotation (e.g. `shipped (merged PR #294, prod 2026-08-03)`). If the finish action chosen at step 12 completes the merge and nothing else gates the ship, set it there; otherwise a later session (or the owner) flips it when reality catches up.
@@ -178,7 +180,7 @@ Print the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closin
 
 When the project's policy file says to open PRs with auto-merge (`gh pr merge --auto`, which merges once the required checks pass), turn it on only once Status is `done`; a PR already opened that way is reported, not offered for merge. While Status is `validating` the user is still checking the result: open the PR without auto-merge and offer the merge here as its own question. With no such policy, the merge waits for the user's choice here.
 
-A merge into `main` needs a yes to a question that names only the merge: the PR, the target branch, and the release that will ship it when one is known ("this goes into tomorrow's release"). A plan approval, a yes to a list, or a merge line inside a longer message never counts. Turning auto-merge back on after it was turned off (the user found a problem, a fix followed) needs that same separate yes.
+A merge into `main` needs a yes to a question that names only the merge: the PR, the target branch, and the release that will ship it when one is known ("this goes into tomorrow's release"). A plan approval, a yes to a list, or a merge line inside a longer message never counts. Turning auto-merge back on after it was turned off (the user found a problem, a fix followed) needs that same separate yes. Step 11's reminder question comes after the merge answer, never inside the merge question.
 
 If Jira is configured, present the `up:ujira` terminal draft alongside these options. Items `up:ujira` auto-applied appear there as receipts, not as choices.
 

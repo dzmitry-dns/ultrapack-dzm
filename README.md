@@ -55,7 +55,7 @@ A `**Status:**` header tracks where the task is, and any agent resumes from it. 
 
 ### Goal-gated done
 
-Every task carries a `**Goal:**` header — the observable end state that means the work is finished, stated as an outcome, not an activity ("login test passes 100 runs in CI", not "fix the test"). `validating` sits between review and done: verified-and-reviewed code is *not* done until the Goal is confirmed achieved. If confirming it needs a full-scale run or an outcome only visible in your environment, the agent does what's safely in reach and hands you the rest.
+Every task carries a `**Goal:**` header — the observable end state that means the work is finished, stated as an outcome, not an activity ("login test passes 100 runs in CI", not "fix the test"). `validating` sits between review and done: verified-and-reviewed code is *not* done until the Goal is confirmed achieved. If confirming it needs a full-scale run or an outcome only visible in your environment, the agent does what's safely in reach and hands you the rest. With a `## Reminders` section in your `CLAUDE.md`, it also proposes calendar reminders for those later checks and creates them after your yes.
 
 ### ID system
 

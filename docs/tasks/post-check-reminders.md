@@ -1,6 +1,6 @@
 # Post-check reminders
 
-**Status:** planning
+**Status:** executing
 **Branch:** main
 **Goal:** When a `/up:make` task ends with a check that needs a later date, the agent proposes the calendar reminders itself and, after the owner's yes to that list, creates them in the owner's Google Calendar "Work" through the Notion calendar tools and records them in the task file; a project or user with no reminders config sees no change. Confirming it needs one live run in a real project (cccc) where a task reaches `validating` with a dated check.
 
