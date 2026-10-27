@@ -50,3 +50,50 @@ TDD: no (reason: doc-only pack, no runtime code; verification is a live tool cal
 ### Unknowns
 - UK1: The create tool has no notification field; whether an event created through it carries the Work calendar's default notification, against the owner's "no notification" default. Resolve in verify with one test event.
 - UK2: Whether `list-events` returns the event id needed for a later cancel, or only `create-events` does.
+
+## Plan
+
+Approach: one opt-in paragraph in `/up:make` step 11 plus a resume guard, and the owner-specific config as a `## Reminders` section in the global instructions; the two halves meet only by that section name, like `up:ujira` and `## Jira adapter`.
+
+### PH1: Pack trigger
+
+- **1.1** `plugins/up/commands/make.md:167-169` (modify), step 11
+  - New paragraph `**Reminders.**` after the "If the Goal is still pending" paragraph (line 167), before "Once `done`" (line 169). Content: when the loaded instructions have a `## Reminders` section and a remaining step of the `validating` bullet (line 163) is tied to a date or a period, the step 12 message carries a reminder list (date, time, title, what to check) as its own question; events are created per that section only after a yes that answers this list; each created event gets one `Reminders: <date> <time>, <title>, event <id>` line in `## Conclusion`; when the Goal is confirmed while recorded events are still ahead, offer to cancel them. No such section → no list, no calendar tool call.
+  - Respects: IV1, IV2, IV3, IV4 (no ids, calendar or tool names beyond the section name), IV5
+- **1.2** `plugins/up/commands/make.md:33` (modify), step 2 resume list, `validating` entry
+  - Append: `Reminders:` lines already in `## Conclusion` mean the events exist; do not propose them again.
+  - Respects: IV3, IV5
+- **1.3** `README.md:58` (modify)
+  - One sentence after "hands you the rest": with a `## Reminders` section in your `CLAUDE.md`, the agent also proposes calendar reminders for those checks and creates them after your yes.
+- **1.4** `plugins/up/.claude-plugin/plugin.json:3` (modify): `0.3.55` → `0.3.56`.
+- Commit: `feat(up): step 11 proposes post-check calendar reminders` (version bump as its own `chore(up): 0.3.56` commit, per repo history)
+
+### PH2: Owner config and memory (outside the repo, no commit)
+
+- **2.1** `~/.claude/CLAUDE.md`, new `## Reminders` section after `## External Services` (ends line 16) (modify)
+  - When: `/up:make` step 11 proposes, and any session that hands the owner a check needing a later date offers the same list; created only after the owner's yes to the list.
+  - How: `notion-calendar-create-events` (load via ToolSearch), calendar `{accountId: 1c6bea2d-5fa2-4c77-921d-1a8824686056, calendarId: dqmoat8bptqgq731nuhsqft42k@group.calendar.google.com}` ("Work", account svirins@gmail.com), `timeZone: Europe/Minsk`, default 11:00, 15 minutes, no attendees.
+  - Text: title `<ticket or slug>: <what to check>`; description = what to look at and where, last line the resume prompt `/up:make docs/tasks/<slug>.md` and the repo folder.
+  - Series: same check → one event with `recurrenceRules`; different checks per day → separate events.
+  - After create: report each event's date and title in one line; record per `/up:make` step 11.
+  - Fallback when the Notion tool errors: the Chrome prefilled link `calendar.google.com/calendar/r/eventedit?text=…&dates=YYYYMMDDTHHMMSS/YYYYMMDDTHHMMSS&details=…` (URL-encoded, no `Z`), remove the default notification, pick "Work", Save.
+  - Notification line: written from the UK1 result in verify.
+  - Respects: IV4, AS1, AS2
+- **2.2** `~/.claude/projects/-Users-svirins-dev-current-cccc-monorepo/memory/feedback_calendar-via-api.md` (modify) and its line in that folder's `MEMORY.md`
+  - Rewrite: the global `## Reminders` section is the one home; Notion tool works since 2026-10-27; keep only the dated history lines that explain why Chrome is the fallback.
+
+### Test strategy
+none (doc-only change). Verify runs one live check: create one test event in "Work" through the tool with the config's values, read it back with `notion-calendar-list-events` (AS1, UK2), check its notification in Google Calendar (UK1), then cancel it with `notion-calendar-cancel-events`. One event, created once.
+
+### Risks
+- RK1: The agent proposes reminders for every `validating` task, including ones with nothing dated; the paragraph limits the trigger to a remaining step tied to a date or a period.
+- RK2: The Notion connection drops (AS2); the Chrome fallback in 2.1 covers it.
+
+### Rollout
+Push to `main`, then `claude plugin update up@ultrapack`; sessions started before the update keep 0.3.55. The global section takes effect in every new session at once.
+
+## Verify
+<empty: filled by up:uverify>
+
+## Conclusion
+<empty: filled by up:ureview>
