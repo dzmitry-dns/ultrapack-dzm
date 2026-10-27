@@ -1,6 +1,6 @@
 # Post-check reminders
 
-**Status:** executing
+**Status:** reviewing
 **Branch:** main
 **Goal:** When a `/up:make` task ends with a check that needs a later date, the agent proposes the calendar reminders itself and, after the owner's yes to that list, creates them in the owner's Google Calendar "Work" through the Notion calendar tools and records them in the task file; a project or user with no reminders config sees no change. Confirming it needs one live run in a real project (cccc) where a task reaches `validating` with a dated check.
 
@@ -99,10 +99,13 @@ Push to `main`, then `claude plugin update up@ultrapack`; sessions started befor
 
 ## Verify
 
-Partial, 2026-10-27. PH1 and PH2 written; the live check stopped at its first call.
-- AS1 failed: `notion-calendar-create-events` on "Work" answered 403 `restricted_resource` ("This token does not have the required capabilities to use the calendar_create_events tool"). `notion-get-tool-access` lists only `calendar_list_calendars` and `calendar_list_events` as available; create, update and cancel are not exposed to this connection. `list-calendars` still reports `writeEvents: true` for the Google account, so the limit is the Notion MCP token, not Google.
-- Until the owner picks another create path, the global section's fallback (any tool error → Chrome) carries every reminder.
-- UK1, UK2: open (no event was created).
+Passed, 2026-10-27, one live event.
+- First try: `notion-calendar-create-events` answered 403 `restricted_resource`; `notion-get-tool-access` exposed only list tools. The owner reconnected the Notion connector in claude.ai; tool access then listed create, update and cancel as available. The 403 and its fix went into the global section's fallback bullet.
+- AS1 held: test event `9c5337c5956949d2ace7ba1f19190e68` created in "Work", 2026-10-28 11:00-11:15 +03:00 (Europe/Minsk). Google Calendar's event page showed calendar Work, the time, the two-line description with the `/up:make` line on its own line.
+- UK1 resolved: the event page showed no notification (only "Add notification"); the global section now states it.
+- UK2 resolved: both `create-events` and `list-events` return the event id.
+- Cancel: `notion-calendar-cancel-events` removed it; a re-read of 10:59-11:01 shows only the owner's two real Work events.
+- IV1, IV2, IV3, IV5 are text rules in `make.md`; their live check is the Goal's cccc run. IV4: `grep` for the account id and calendar id under `plugins/up/` is part of review.
 
 ## Conclusion
 <empty: filled by up:ureview>
