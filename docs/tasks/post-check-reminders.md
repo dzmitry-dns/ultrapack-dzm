@@ -5,9 +5,9 @@
 **Goal:** When a `/up:make` task ends with a check that needs a later date, the agent proposes the calendar reminders itself and, after the owner's yes to that list, creates them in the owner's Google Calendar "Work" through the Notion calendar tools and records them in the task file; a project or user with no reminders config sees no change. Confirming it needs one live run in a real project (cccc) where a task reaches `validating` with a dated check.
 
 ## Owner summary
-- Done: <empty: rewritten by /up:summary step 3 in plain English, no IDs>
-- Left: <empty>
-- Owner decides: <empty>
+- Done: when a task ends with a check that needs a later date, the workflow now offers calendar reminders after the merge question and creates them in the Work calendar after your yes; a test event worked and was removed.
+- Left: one real task in the 4C project has to reach the waiting-for-check stage with a dated check, to see the question fire.
+- Owner decides: nothing now.
 
 ## Design
 
@@ -132,3 +132,11 @@ Review findings:
 - Rejected: generic `## Reminders` heading collision (no project has one); re-validation after a new release not re-asking (rare, a reopened task can ask by hand).
 
 Verified by: `up:requirements-reviewer` (owner opted in): all eight clauses of the ask met, no gaps.
+
+### Handoff: 2026-10-27
+- Position: validating; branch: main; committed: 9be58c5 fix: review text fixes; uncommitted: none
+- Decided: trigger in the pack plus one global rule, events through the Notion calendar tools, because the owner picked option A for both
+- Decided: 0.3.56 installed on this machine with `claude plugin update up@ultrapack`; sessions started earlier keep 0.3.55
+- Dead end: first create call answered 403 `restricted_resource`; the owner reconnected the Notion connector in claude.ai and write tools appeared
+- Owner has not seen: none
+- First action: in cccc, on the first `/up:make` task that reaches `validating` with a dated check, confirm step 12 asks the reminder question after the merge answer and the `Reminders:` lines are committed before the merge; then set this task `done`
