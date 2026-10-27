@@ -18,6 +18,8 @@ find docs/tasks -maxdepth 2 -name '*.md' -exec ls -t {} + | head
 
 The active task file is the most recently modified entry whose `**Status:**` enum (the first word of the Status value) is not `done`, `shipped`, or `reference`. If more than one qualifies, take the one this session edited. Ask only if that still leaves more than one. None → see "No active task file" below.
 
+When `/up:make` or a skill runs steps 1-3 for the task it is working on (a phase commit, a Status transition, a wait), that task file is the active one, whatever its Status: skip the detection above. Otherwise the append at the `done` transition lands in another in-flight task file.
+
 ### 2. Ground the state in git
 
 ```bash
