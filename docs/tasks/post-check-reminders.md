@@ -18,8 +18,8 @@ Owner decisions, 2026-10-27: the trigger goes into the pack (step 11) plus one g
 Chosen shape, mirroring `up:ujira`'s opt-in config:
 
 1. **Config lives with the owner, not the pack.** A `## Reminders` section in `~/.claude/CLAUDE.md` holds: the tool (`notion-calendar-create-events`), the target calendar (account id + calendar id of "Work"), the time zone, defaults (11:00, 15 minutes, no guests), the event text shape, and the Chrome fallback (prefilled `calendar.google.com/calendar/r/eventedit` link) for when the Notion tool errors. The section also states the rule outside `/up:make`: whenever I hand the owner a check that needs a later date, I offer reminders the same way.
-2. **Trigger lives in the pack.** `/up:make` step 11, the `validating` branch: when a remaining step is tied to a date or a period (after a release, after N days, daily for a week) and the loaded instructions have a `## Reminders` section, propose a reminder list: date, time, title, what to check. No section → no proposal, no tool call.
-3. **Owner approves the list itself.** Events are created only after a yes to the reminder list; a yes to the merge, the plan, or a longer list does not count. The owner may edit dates in the reply.
+2. **Trigger lives in the pack.** `/up:make` step 11, the `validating` branch, notes that a remaining step is tied to a date or a period (after a release, after N days, daily for a week). When the loaded instructions have a `## Reminders` section, step 12 asks for the reminder list (date, time, title, what to check) as its own question after the merge answer, with dates counted from the release that answer names (or from today when nothing merges). The merge question stays merge-only (`make.md:181`). No section → no proposal, no tool call.
+3. **Owner approves the list itself.** Events are created only after a yes that answers the reminder question; a yes to the merge, the plan, or a longer list does not count. The owner may edit dates in the reply.
 4. **Record in the task file.** After creation, one `Reminders:` line per event goes into `## Conclusion` (date, time, title, event id). A resumed `validating` task reads it and does not propose again; when the Goal is confirmed early, the agent offers to cancel the remaining events.
 5. **Event text.** Title `<ticket or slug>: <what to check>`; description says what to look at and where, and ends with the resume prompt `/up:make docs/tasks/<slug>.md` and the repo name, so the event alone is enough to start the check.
 6. **Periodic checks.** Same check repeated → one event with an RRULE (`recurrenceRules`, e.g. `FREQ=DAILY;COUNT=7`); different checks per day → separate events.
@@ -29,6 +29,7 @@ Rejected: a new pack skill for reminders (one paragraph in step 11 plus the glob
 
 Backwards compatibility: no break. Additive text; a user or project without `## Reminders` gets a byte-identical flow (same rule as `up:ujira` → no config, silent no-op).
 TDD: no (reason: doc-only pack, no runtime code; verification is a live tool call and an install-and-invoke run)
+Reviewed before code: 1 rounds, 1 Critical/Important fixed, 0 rejected, 2026-10-27, round 2: needed
 
 ### Prior art
 - `plugins/up/skills/ujira/SKILL.md:15`, `:137`: opt-in config section in `CLAUDE.md`, silent no-op without it; the same shape is reused here.
@@ -39,7 +40,7 @@ TDD: no (reason: doc-only pack, no runtime code; verification is a live tool cal
 ### Invariants
 - IV1: Without a `## Reminders` section in the loaded instructions, `/up:make` makes no reminder proposal and no calendar tool call.
 - IV2: No calendar event is created before the owner's yes to the reminder list itself.
-- IV3: Every created event is recorded in the task file with date, title and event id before the turn ends.
+- IV3: Every created event is recorded in the task file with date, time, title and event id before the turn ends.
 - IV4: Owner-specific values (account id, calendar id, time zone, defaults) appear only in `~/.claude/CLAUDE.md`, never under `plugins/up/`.
 - IV5: Existing `/up:make` steps and resume of older task files keep working unchanged.
 
@@ -58,8 +59,11 @@ Approach: one opt-in paragraph in `/up:make` step 11 plus a resume guard, and th
 ### PH1: Pack trigger
 
 - **1.1** `plugins/up/commands/make.md:167-169` (modify), step 11
-  - New paragraph `**Reminders.**` after the "If the Goal is still pending" paragraph (line 167), before "Once `done`" (line 169). Content: when the loaded instructions have a `## Reminders` section and a remaining step of the `validating` bullet (line 163) is tied to a date or a period, the step 12 message carries a reminder list (date, time, title, what to check) as its own question; events are created per that section only after a yes that answers this list; each created event gets one `Reminders: <date> <time>, <title>, event <id>` line in `## Conclusion`; when the Goal is confirmed while recorded events are still ahead, offer to cancel them. No such section → no list, no calendar tool call.
+  - New paragraph `**Reminders.**` after the "If the Goal is still pending" paragraph (line 167), before "Once `done`" (line 169). Content: when the loaded instructions have a `## Reminders` section and a remaining step of the `validating` bullet (line 163) is tied to a date or a period, step 12 asks for a reminder list (date, time, title, what to check) after the merge answer, as its own question, with dates counted from the release that answer names (from today when nothing merges); events are created per that section only after a yes that answers this question; each created event gets one `Reminders: <date> <time>, <title>, event <id>` line in `## Conclusion`; when the Goal is confirmed while recorded events are still ahead, offer to cancel them. No such section → no list, no calendar tool call.
   - Respects: IV1, IV2, IV3, IV4 (no ids, calendar or tool names beyond the section name), IV5
+- **1.2a** `plugins/up/commands/make.md:181` (modify), step 12, after the merge-question paragraph
+  - One sentence: the reminder question of step 11 comes after the merge answer, never inside the merge question.
+  - Respects: IV2
 - **1.2** `plugins/up/commands/make.md:33` (modify), step 2 resume list, `validating` entry
   - Append: `Reminders:` lines already in `## Conclusion` mean the events exist; do not propose them again.
   - Respects: IV3, IV5
@@ -76,7 +80,7 @@ Approach: one opt-in paragraph in `/up:make` step 11 plus a resume guard, and th
   - Text: title `<ticket or slug>: <what to check>`; description = what to look at and where, last line the resume prompt `/up:make docs/tasks/<slug>.md` and the repo folder.
   - Series: same check → one event with `recurrenceRules`; different checks per day → separate events.
   - After create: report each event's date and title in one line; record per `/up:make` step 11.
-  - Fallback when the Notion tool errors: the Chrome prefilled link `calendar.google.com/calendar/r/eventedit?text=…&dates=YYYYMMDDTHHMMSS/YYYYMMDDTHHMMSS&details=…` (URL-encoded, no `Z`), remove the default notification, pick "Work", Save.
+  - Fallback when the Notion tool errors (`calendar_connection_required`, `calendar_request_rejected`, or any other error): one line naming the error, then the Chrome prefilled link `calendar.google.com/calendar/r/eventedit?text=…&dates=YYYYMMDDTHHMMSS/YYYYMMDDTHHMMSS&details=…` (URL-encoded, no `Z`), remove the default notification, pick "Work", Save.
   - Notification line: written from the UK1 result in verify.
   - Respects: IV4, AS1, AS2
 - **2.2** `~/.claude/projects/-Users-svirins-dev-current-cccc-monorepo/memory/feedback_calendar-via-api.md` (modify) and its line in that folder's `MEMORY.md`
