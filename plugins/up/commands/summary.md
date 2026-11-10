@@ -53,6 +53,8 @@ After the append, commit only the task file, by path: `git add <task file>`, run
 
 ### 4. Print the prompt
 
+The prompt goes in the same message that reports the handoff, even when the owner already ordered other work next (a build, a merge): that work follows, the prompt is never skipped.
+
 A fenced block so it copies whole:
 
 ```
