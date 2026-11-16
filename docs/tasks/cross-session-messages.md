@@ -1,6 +1,6 @@
 # Cross-session messages
 
-**Status:** verifying
+**Status:** reviewing
 **Branch:** main
 **Session:** ultrapack-dzm-ce
 **Goal:** When a /up:make session changes something another running session depends on (that session's task file, a merge into main under it, a worktree exit that copies a task file into main), it sends that session a SendMessage naming what changed and what to re-read; when no such session is running it writes the task file as today. Confirming it needs one live run with two sessions open.
@@ -98,7 +98,22 @@ none: doc-only pack. Verify = install the pack and a live run with two sessions 
 Backwards compatibility: no break (Design); 2.2 inserts the header into older files at their next resume.
 
 ## Verify
-<empty: filled by up:uverify>
+
+**Result:** passed (run 2; run 1 failed on CK3)
+
+Happy-path:
+- CK1: a fresh install of the pack misses the new text (cache keeps the old version): held: `claude plugin update up@ultrapack` → 0.3.59 in cache, `Notify a running session` found 2/4/1 times in `_principles.md` / `make.md` / `summary.md`, implementer `model: sonnet`
+
+Negative:
+- CK2 (IV1): a task file without `**Session:**`, or a session with no `ListAgents` name, gets a new question or a broken header: held: step 2 only notifies when the header names a listed session; `_principles.md` item 1 writes no header without a name
+
+Invariants / assumptions:
+- CK3 (AS1, IV3): the own-name line does not give a clean name to store: broke in run 1: the real line is `This session is ultrapack-dzm-ce [876c18] — ...`, and item 1 did not say to drop the `[876c18]` ref, so a header could hold `name [ref]` and miss the bare-name match; fixed in item 1, held in run 2. Name stable across two calls an hour apart in this session.
+- CK4 (IV4): the procedure is restated outside `_principles.md`: held: `ListAgents`/`SendMessage` appear elsewhere only in the template placeholder and the step 2 pointer
+
+Smoke: `claude plugin update up@ultrapack` → 0.3.59 installed with the new text.
+
+Goal: proxy only; the send points ran in no live `/up:make` flow. A live run with two sessions open (one resumes or finishes a task while the other runs) remains.
 
 ## Code smells
 <empty: `- <file:line>: <one-line smell>` lines passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
