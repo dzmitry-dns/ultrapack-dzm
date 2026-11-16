@@ -55,11 +55,11 @@ The waits: the design approval request, the plan approval request, `/up:make` st
 A send point (a step that changes what another running session depends on) tells that session with a message. The message is an addition: the change itself is already in a file or in git.
 
 1. **Own name.** Read once per session, at `/up:make` step 2 or 3 or at the first send, then reused: the `ListAgents` line "This session is <name> [<ref>]", taken without the `[<ref>]` part. Load `ListAgents` and `SendMessage` with `ToolSearch` when they are deferred. No such line (tool missing, no name printed) → write no `**Session:**` header and send nothing; the flow goes on as before.
-2. **Peer.** A name from a task file's `**Session:**` header, matched as a bare name against the `ListAgents` peer rows. Never the own name. Not listed → send nothing; the file or git change carries the news. **Repo peers**: the listed sessions named in the `**Session:**` header of every other in-flight task file of this repo (`docs/tasks/**/*.md`, Status enum not `done`, `shipped`, or `reference`).
+2. **Peer.** A name from a task file's `**Session:**` header, matched as a bare name against the `ListAgents` peer rows. Never the own name. Not listed → send nothing; the file or git change carries the news. **Repo peers**: the listed sessions named in the `**Session:**` header of every other in-flight task file of this repo (`docs/tasks/**/*.md`; in-flight as `/up:make` step 2 defines it).
 3. **Message.** English. The first line stands alone: `<task file, main, or checkout path>: <what changed>`. Then what to do: "pull before your next commit; in the same checkout, re-read the files", or the files to re-read. Commits by short sha and subject. One message per peer per send point.
 4. **No wait.** No reply is awaited and no question goes to the owner. A delivery notice saying the peer holds or refused the message is reported in one line.
 5. **No laundering.** Never ask a peer to do what this session's permissions blocked.
-6. **Receiving an ownership notice** (`/up:make` step 2: another session took the task): stop work on that task, tell the owner in one line, make no further commit to its task file.
+6. **Receiving an ownership notice** (`/up:make` step 2: another session took the task): when this session works on that task, stop work on it, tell the owner in one line, and make no further commit to its task file, the automatic `/up:summary` appends included. A notice for a task this session is not working on is reported in one line and otherwise ignored.
 
 This is the single home of the rule; callers only point here.
 

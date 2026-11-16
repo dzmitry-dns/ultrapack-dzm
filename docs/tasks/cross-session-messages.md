@@ -1,14 +1,14 @@
 # Cross-session messages
 
-**Status:** reviewing
+**Status:** validating (0.3.61 on main 2026-11-16, waiting for one live run with two sessions open)
 **Branch:** main
 **Session:** ultrapack-dzm-ce
 **Goal:** When a /up:make session changes something another running session depends on (that session's task file, a merge into main under it, a worktree exit that copies a task file into main), it sends that session a SendMessage naming what changed and what to re-read; when no such session is running it writes the task file as today. Confirming it needs one live run with two sessions open.
 
 ## Owner summary
 - Done: the pack now records which session works on each task and sends running sessions a message when another session changes their task file, switches the shared branch, or moves main.
-- Left: the check of the edits, review, and a live run with two sessions open.
-- Owner decides: nothing yet.
+- Left: one live run with two sessions open to confirm a message arrives.
+- Owner decides: nothing.
 
 ## Design
 
@@ -116,10 +116,31 @@ Smoke: `claude plugin update up@ultrapack` → 0.3.59 installed with the new tex
 Goal: proxy only; the send points ran in no live `/up:make` flow. A live run with two sessions open (one resumes or finishes a task while the other runs) remains.
 
 ## Code smells
-<empty: `- <file:line>: <one-line smell>` lines passed while exploring and left unfixed (out of scope, non-trivial); deleted if none>
+- `plugins/up/commands/summary.md:54`: the `**Session:**` header and the "Session line" (`Session: can close`) share one word a few lines apart; a reader can confuse them.
 
 ## Conclusion
-<empty: filled by up:ureview; after done/shipped grows dated ### Follow-up: <date> / ### Scope change: <date> entries and ### Deferred scope-parking>
+
+Outcome: the pack sends cross-session notices at resume, `/up:summary`, `git switch` and when `main` moves (0.3.61, caf5542 plus the text-fix commit); the Goal waits for one live run with two sessions open.
+
+Invariants:
+- IV1: CK2, step 2 notifies only when the header names a listed session; no new question.
+- IV2: every send point follows a file edit or a commit already in the flow (reviewer: no break).
+- IV3: `_principles.md` item 2 "Never the own name"; the own-name line is excluded from the `ListAgents` peer rows.
+- IV4: CK4, the procedure lives only in `_principles.md`.
+- IV5: item 4 "No wait"; no send point adds a question.
+
+### Assumptions check
+- AS1: held in part; the own name stayed the same across this session; a resume getting a new name is unverified until the live run.
+- AS2: unverifiable here; no message to a busy peer was observed this session.
+
+### Unknowns outcome
+- UK1: still-open; both 2026-11-16 notices reported delivery to the inbox, and whether a peer holds them for the owner shows in the live run.
+- UK2: still-open; needs a worktree or branch task resumed in a second session.
+
+Review findings:
+- Text fixes: 3 applied (receiver ignores a notice for a task it is not working on, the receiver's automatic summary appends included, in-flight set points to `/up:make` step 2); 1 recorded in `## Code smells`.
+
+Verified by: owner offered the optional requirements review (`up:requirements-reviewer`) at step 12.
 
 ### Deviations from plan
 - PH2 2.3/2.6: the set of sessions to notify ("repo peers") is defined once in `_principles.md` → Notify a running session, item 2, not in `make.md` step 12: step 6's `git switch` notice needs it too, and step 6 comes before step 12 (GPC8).
@@ -146,3 +167,10 @@ Goal: proxy only; the send points ran in no live `/up:make` flow. A live run wit
 - Decided: owner approved ## Plan ("yes, do it")
 - Owner has not seen: none
 - First action: run up:uverify on this file
+
+### Handoff: 2026-11-16 (validating)
+- Position: verified, reviewed, Status validating; branch: main; committed: review text fixes (0.3.61); uncommitted: none after this commit
+- Decided: verify run 1 broke on the `[ref]` suffix of the own name, fixed in caf5542; final review 0 Critical/Important, 3 text fixes applied
+- Open: none
+- Owner has not seen: none
+- First action: in a live run with two sessions open, resume or finish a task in one and check the other receives the notice; then set Status done
