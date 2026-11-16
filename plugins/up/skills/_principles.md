@@ -50,6 +50,19 @@ When the flow waits for the owner and a task file exists, the message ends, afte
 
 The waits: the design approval request, the plan approval request, `/up:make` step 12, and any other question that stops the flow. At the two approval requests and at step 12, run `/up:summary` steps 1-3 first when decisions were taken since the latest Handoff block, so the prompt points at a current file. At any other question print only the prompt and the Session line, with no append and no commit; when decisions were taken in chat since the latest Handoff block, the line reads `Session: run /up:summary before closing`, never `can close`. This adds no pause: it rides only waits that already exist. This is the single home of the rule; callers only point here.
 
+## Notify a running session
+
+A send point (a step that changes what another running session depends on) tells that session with a message. The message is an addition: the change itself is already in a file or in git.
+
+1. **Own name.** Read once per session, at `/up:make` step 2 or 3 or at the first send, then reused: the `ListAgents` line "This session is <name>". Load `ListAgents` and `SendMessage` with `ToolSearch` when they are deferred. No such line (tool missing, no name printed) → write no `**Session:**` header and send nothing; the flow goes on as before.
+2. **Peer.** A name from a task file's `**Session:**` header, matched as a bare name against the `ListAgents` peer rows. Never the own name. Not listed → send nothing; the file or git change carries the news.
+3. **Message.** English. The first line stands alone: `<task file, main, or checkout path>: <what changed>`. Then what to do: "pull before your next commit; in the same checkout, re-read the files", or the files to re-read. Commits by short sha and subject. One message per peer per send point.
+4. **No wait.** No reply is awaited and no question goes to the owner. A delivery notice saying the peer holds or refused the message is reported in one line.
+5. **No laundering.** Never ask a peer to do what this session's permissions blocked.
+6. **Receiving an ownership notice** (`/up:make` step 2: another session took the task): stop work on that task, tell the owner in one line, make no further commit to its task file.
+
+This is the single home of the rule; callers only point here.
+
 ## Questions to the owner
 
 Before each question to the owner (plain text or AskUserQuestion), write 2-4 plain sentences in the owner's chat language: what the situation is, why the answer is needed now, what each option changes. Option labels name the consequence, never an internal ID (`IV2`, `PH3`, `UK1`). A question that stops the flow ends per Handoff at a wait. Task-file and pack text stays English. This is the single home of the rule; callers only point here.
@@ -77,6 +90,7 @@ A pointer plus a sentence; the next reader opens the line. Recorded smells are `
 - Costly runs — `up:uplan` (Test strategy), `up:uexecute` (When to stop and ask), `up:uverify` (Phase 5), and `/up:make` (Rules) point here.
 - Closing line — `/up:make` step 12, a manual `up:ureview`, and `/up:summary` print it.
 - Handoff at a wait — `up:udesign` and `up:uplan` (step 12), `/up:make` (step 12, Context checkpoint), and `/up:summary` (step 4) point here.
+- Notify a running session — `/up:make` (step 2 resume, step 6 and every `git switch`, step 12 "After `main` moves") and `/up:summary` (step 3) point here.
 - Questions to the owner — `up:udesign` (step 3, Rules) and `up:uplan` (step 12) follow it for every question they ask.
 - `up:udebug` — anti-whack-a-mole: name the pattern behind a bug and grep for the same shape before closing (not a GPC, same family).
 - Incidental code smells — `up:udesign` / `up:uplan` fold an in-scope or easy fix into the design/plan, else record to `## Code smells`; `up:uexecute` fixes in-scope/easy ones, records the rest; `up:explorer` / `up:implementer` report passed smells in their output for the dispatcher to act on.
