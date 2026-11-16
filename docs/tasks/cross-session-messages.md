@@ -1,6 +1,6 @@
 # Cross-session messages
 
-**Status:** planning
+**Status:** executing
 **Branch:** main
 **Session:** ultrapack-dzm-ce
 **Goal:** When a /up:make session changes something another running session depends on (that session's task file, a merge into main under it, a worktree exit that copies a task file into main), it sends that session a SendMessage naming what changed and what to re-read; when no such session is running it writes the task file as today. Confirming it needs one live run with two sessions open.
@@ -105,6 +105,10 @@ Backwards compatibility: no break (Design); 2.2 inserts the header into older fi
 
 ## Conclusion
 <empty: filled by up:ureview; after done/shipped grows dated ### Follow-up: <date> / ### Scope change: <date> entries and ### Deferred scope-parking>
+
+### Deviations from plan
+- PH2 2.3/2.6: the set of sessions to notify ("repo peers") is defined once in `_principles.md` → Notify a running session, item 2, not in `make.md` step 12: step 6's `git switch` notice needs it too, and step 6 comes before step 12 (GPC8).
+- PH2 2.6: the `git switch` notice text lives once in `make.md` step 6 ("After a `git switch`"); step 2 and "Leaving a plain branch" point to it.
 
 ### Handoff: 2026-11-16
 - Position: design written, waiting for the owner's design approval; branch: main; committed: 7217239 (implementer on sonnet, 0.3.58); uncommitted: none after this commit

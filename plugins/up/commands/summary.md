@@ -4,7 +4,7 @@ description: End a session so the next one can continue — in one main-session 
 
 # /up:summary
 
-Write the handoff from what this session already knows. The task file carries the state; the prompt is a pointer to it. One turn, one side effect (the append plus the Owner summary rewrite, committed by path), no questions unless the active task file is genuinely ambiguous.
+Write the handoff from what this session already knows. The task file carries the state; the prompt is a pointer to it. One turn, one side effect (the append plus the Owner summary rewrite, committed by path, and the notice of step 3 when another session owns the file), no questions unless the active task file is genuinely ambiguous.
 
 ## Process
 
@@ -51,6 +51,8 @@ Then rewrite `## Owner summary` in place: three bullets, `Done:`, `Left:`, `Owne
 
 After the append, commit only the task file, by path: `git add <task file>`, run the Cyrillic check of `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Commits (this block carries the owner's chat decisions), then commit `docs(agents): <slug> handoff`. Push when the project's policy allows it. Other uncommitted work stays as it is.
 
+When the task file's `**Session:**` names another session, notify it that its task file got a Handoff block (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Notify a running session). This command never rewrites the header.
+
 ### 4. Print the prompt
 
 The prompt goes in the same message that reports the handoff, even when the owner already ordered other work next (a build, a merge): that work follows, the prompt is never skipped.
@@ -84,6 +86,6 @@ Same Closing line and Session line below the fence.
 ## Rules
 
 - Main session only: no subagent, no transcript lookup, no JSONL.
-- One append plus the Owner summary rewrite, no other side effects: the append and its commit (and push, when policy allows), plus, when this command ends a session, the checkout step the project's rules require (for example returning a shared checkout to its default branch). The automatic appends of `/up:make` (steps 1-3 only) never run it. No new file, no other edit.
+- One append plus the Owner summary rewrite, no other side effects: the append and its commit (and push, when policy allows), the step 3 notice to the session that owns the file, plus, when this command ends a session, the checkout step the project's rules require (for example returning a shared checkout to its default branch). The automatic appends of `/up:make` (steps 1-3 only) never run it. No new file, no other edit.
 - At most one question, and only to pick between several in-flight task files edited this session.
 - Concrete: exact paths, exact commands, exact error text. Bullets, no prose.
