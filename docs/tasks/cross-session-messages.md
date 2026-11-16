@@ -1,14 +1,14 @@
 # Cross-session messages
 
-**Status:** executing
+**Status:** verifying
 **Branch:** main
 **Session:** ultrapack-dzm-ce
 **Goal:** When a /up:make session changes something another running session depends on (that session's task file, a merge into main under it, a worktree exit that copies a task file into main), it sends that session a SendMessage naming what changed and what to re-read; when no such session is running it writes the task file as today. Confirming it needs one live run with two sessions open.
 
 ## Owner summary
-- Done: the design is approved and the plan is written: each task file records which session works on it, and the pack sends that session a message when another session changes its file or merges into main.
-- Left: the edits to three pack files, a live check with two sessions open.
-- Owner decides: approve the plan.
+- Done: the pack now records which session works on each task and sends running sessions a message when another session changes their task file, switches the shared branch, or moves main.
+- Left: the check of the edits, review, and a live run with two sessions open.
+- Owner decides: nothing yet.
 
 ## Design
 
@@ -125,3 +125,9 @@ Backwards compatibility: no break (Design); 2.2 inserts the header into older fi
 - Open: owner approval of ## Plan
 - Owner has not seen: none
 - First action: on approval, Status executing, run up:uexecute (PH1 then PH2)
+
+### Handoff: 2026-11-16 (execute)
+- Position: PH1 and PH2 committed, verify next; branch: main; committed: 4a381e3 (PH2, 0.3.59); uncommitted: none after this commit
+- Decided: owner approved ## Plan ("yes, do it")
+- Owner has not seen: none
+- First action: run up:uverify on this file
