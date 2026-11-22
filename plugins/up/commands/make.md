@@ -165,7 +165,7 @@ Status → `reviewing`. Run the context checkpoint (see below). Invoke `up:urevi
 - The verified diff already demonstrates the full Goal (verify's smoke exercised the real end state, nothing out-of-band remains) → state the evidence; the Goal is met.
 - The Goal needs steps the agent can't or shouldn't finish alone — a run at full scale, an expensive / remote / paid job, or an outcome only observable in the user's environment ("training works on the dataset") → do what's safely in reach (the small or local proxy, captured in `## Verify`), then list the remaining steps and hand them to the user. Status stays `validating`.
 
-Set Status → `done` only once the Goal is confirmed: by the agent's own end-to-end evidence when it could observe it, or by the user when it couldn't. Never declare `done` off "verified + reviewed" alone.
+Set Status → `done` only once the Goal is confirmed: by the agent's own end-to-end evidence when it could observe it, or by the user when it couldn't. The user's confirmation is his own words that the result is right or that the task closes ("done", "close the task"). An order to build, deploy, comment or "do everything" is not one (2026-11-11 and 11-12: two tasks archived as `done` on such orders while their builds still ran). Never declare `done` off "verified + reviewed" alone.
 
 If the Goal is still pending, proceed to step 12 to offer finish actions — the verified code can still merge — but keep Status `validating` and state that the task is not done until the Goal is confirmed; a later session resumes from `validating` to re-check it.
 
@@ -251,6 +251,7 @@ Stop and ask the user when:
 - Scope move at any stage (part of the work goes to another ticket, or comes in from one): if Jira is configured, invoke `up:ujira` in the same step, before reporting; its "Scope move" paragraph drafts the source ticket's description item. The Status-transition triggers never see a scope move
 - Every commit this flow makes (task file, Status transitions) follows `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Commits: no trailer of any kind, and a task file is checked for Cyrillic first
 - A costly run beyond the plan's count needs its own yes, in every stage and in a resumed session (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Costly runs)
+- A chain of slow steps over 10 minutes is announced with its total time first, and every wait is capped at 300 seconds (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Long waits)
 
 ## Terminal state
 

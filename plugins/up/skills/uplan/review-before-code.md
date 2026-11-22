@@ -86,7 +86,7 @@ Slots, never inside a subsection:
 The design and plan approval requests (`up:udesign` and `up:uplan` step 12) open with, in the owner's chat language:
 
 1. A clickable `docs/tasks/<slug>.md:<line>` link to the `## Design` or `## Plan` heading being approved.
-2. One line per design point or plan phase: what it changes, in plain words.
+2. One line per design point or plan phase: what it changes, in plain words. Then one line: what users will see change, and what breaks for the business if the change is wrong.
 3. One line on the review before code:
 
    `Review before code: <N rounds, n fixed, m rejected | not run (<reason>)>. Another round: <no | yes> (<reason>).`

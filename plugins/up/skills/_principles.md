@@ -71,6 +71,10 @@ Before each question to the owner (plain text or AskUserQuestion), write 2-4 pla
 
 A costly run is one the agent starts by command that costs money (paid API or model calls, cloud jobs) or takes over 10 minutes. CI that a push triggers is not one. The plan's `### Test strategy` names each costly run and how many times it runs. Every run beyond that count, or not in the plan, needs a yes to a question that names the run, its cost, and why one more run should change the result. A "fix and rerun" loop is no exception: each rerun asks. This is the single home of the rule; callers only point here.
 
+## Long waits
+
+Before a chain of slow steps (full test run, CI, staging deploy, load test, production build) that takes over 10 minutes in total, tell the owner in one line which steps run and how long they take together. Durations come from earlier runs in the task file, the project's rules or CI history; a duration nobody measured is said as unknown, never guessed (2026-11-11: "15 minutes" for a 4-5 minute preview build). Every single wait (a background command, `Monitor`, `gh run watch`) uses a timeout of at most 300 seconds; a longer job gets several waits with a status line between them (2026-11-01..22: 50 longer waits refused by the owner's hook, each one retried). This is the single home of the rule; callers only point here.
+
 ## Incidental code smells
 
 While exploring code for a task you'll pass smells unrelated to the change — a 200-line function, a duplicated helper, a leaked layer boundary. Two outcomes, no third:
@@ -88,6 +92,7 @@ A pointer plus a sentence; the next reader opens the line. Recorded smells are `
 - `up:uplan` — every phase consistent with GPCs; deviating bullets cite the GPC and why.
 - Commits — `/up:make`, `up:uexecute`, `up:ureview`, `/up:summary` point here for every commit they make.
 - Costly runs — `up:uplan` (Test strategy), `up:uexecute` (When to stop and ask), `up:uverify` (Phase 5), and `/up:make` (Rules) point here.
+- Long waits — `/up:make` (Rules) and `up:uverify` (Phase 2) point here.
 - Closing line — `/up:make` step 12, a manual `up:ureview`, and `/up:summary` print it.
 - Handoff at a wait — `up:udesign` and `up:uplan` (step 12), `/up:make` (step 12, Context checkpoint), and `/up:summary` (step 4) point here.
 - Notify a running session — `/up:make` (step 2 resume, step 6 and every `git switch`, step 12 "After `main` moves") and `/up:summary` (step 3) point here.

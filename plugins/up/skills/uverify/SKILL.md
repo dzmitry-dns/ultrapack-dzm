@@ -66,6 +66,8 @@ Interfaces:
 
 ## Phase 2 — Run each attack freshly, in this message
 
+Slow attacks (CI, deploys, load tests) follow `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Long waits.
+
 Evidence before claims. If you haven't run the attack in this message, you cannot claim "no break demonstrated."
 
 - Use `/up:try`-style minimal probes — the direct command, no harness
@@ -85,7 +87,7 @@ No recipe (or no `- smoke:` line) — infer the shortest full path:
 
 - CLI change → invoke the command with representative input
 - API change → `curl` against a running server
-- UI change → open in a browser, click through the feature
+- UI change → open the page in a browser as the user it is for, click through the feature, and capture what that user sees at the moment the change matters: a screenshot, or frames of the first second for a load, flash or layout-shift bug. A status code, a clean console or a DOM query is not a UI smoke (2026-11-11..12, CATS-1825: four days of "passed" checks while the owner saw a white sidebar after login). Ask the owner once, before the first browser step, for every test account the attacks need; never ask him to switch accounts mid-run.
 - ML change → run a tiny training step or inference call
 
 If smoke fails, that's a demonstrated break — record it. If smoke passes, the change clears the lowest bar; the per-attack hypotheses still need to land or fail to land on their own.
@@ -214,6 +216,7 @@ These phrases mean verify did not actually attack:
 - "Linter passed" (linter is not runtime)
 - "Unit tests pass" (unit tests are not adversarial)
 - "Agent said done" (you haven't tried to break it yourself)
+- "Page returns 200", "console is clean" for a UI change (not what the user sees)
 - "Should work", "probably works", "looks correct"
 - "Couldn't think of a way to break it" — without naming the angles you tried (input shapes, ordering, partial failure, stale state, hidden coupling)
 </red-flags>
