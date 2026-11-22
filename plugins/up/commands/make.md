@@ -181,9 +181,14 @@ Print the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closin
 - Merge / open PR (if on a branch)
 - Move on
 
-When the project's policy file says to open PRs with auto-merge (`gh pr merge --auto`, which merges once the required checks pass), turn it on only once Status is `done`; a PR already opened that way is reported, not offered for merge. While Status is `validating` the user is still checking the result: open the PR without auto-merge and offer the merge here as its own question. With no such policy, the merge waits for the user's choice here.
+When the project's policy file says to open PRs with auto-merge (`gh pr merge --auto`, which merges once the required checks pass), open them that way only once Status is `done`; a PR already opened that way is reported, not offered for merge. While Status is `validating` the user is still checking the result: open the PR without auto-merge and offer the merge here as its own question. With no such policy, the merge waits for the user's choice here. After a merge yes, auto-merge is allowed in any Status: it is only the way the approved merge waits for checks.
 
-A merge into `main` needs a yes to a question that names only the merge: the PR, the target branch, and the release that will ship it when one is known ("this goes into tomorrow's release"). A plan approval, a yes to a list, or a merge line inside a longer message never counts. Turning auto-merge back on after it was turned off (the user found a problem, a fix followed) needs that same separate yes. Step 11's reminder question comes after the merge answer, never inside the merge question, and the merge runs only once the reminder lines are committed.
+What counts as a merge yes (owner decision 2026-11-22, after an audit of 14 PRs):
+
+- a yes to a question that names the merge: the PR, the target branch, and the release that will ship it when one is known ("this goes into tomorrow's release");
+- the user's own order to merge, even inside a longer message ("merge", "merge, build and close the task"). Before acting on it, write one line, "Merging PR #<n> into main", and go on without waiting.
+
+Never a merge yes: a bare yes to a message that asked no merge question (PR #470, 2026-11-05: "waits for your confirmation", then "yes", then auto-merge in `validating`), a yes to another question or to a list, a plan approval. A PR this session did not open (a colleague's) merges only on the user's order naming it (PR #473, 2026-11-09: auto-merge turned on with no order, the day before a release). Turning auto-merge back on after it was turned off (the user found a problem, a fix followed) needs a new merge yes. Step 11's reminder question comes after the merge answer, never inside the merge question, and the merge runs only once the reminder lines are committed.
 
 If Jira is configured, present the `up:ujira` terminal draft alongside these options. Items `up:ujira` auto-applied appear there as receipts, not as choices.
 
@@ -242,7 +247,7 @@ Stop and ask the user when:
 ## Rules
 
 - Never skip Review (the final `up:ureview`; the pre-code skip phrase covers only the review before code)
-- Never merge on your own initiative. Under a project auto-merge policy, auto-merge goes on only at Status `done`; any other merge into `main` needs the separate yes of step 12, never a plan approval. With no such policy, the user chooses at step 12. Fixes to a merged change whose task is still `validating` go to a new branch and PR, never straight to `main`, even where the policy allows pushing to `main`. Push follows the project's policy file when it allows pushing (for example a `workflow.md` that says push without asking). With no such policy, the user chooses at step 12
+- Never merge on your own initiative. Under a project auto-merge policy, a PR opens with auto-merge only at Status `done`; any other merge into `main` needs a merge yes as step 12 defines it, never a plan approval. With no such policy, the user chooses at step 12. Fixes to a merged change whose task is still `validating` go to a new branch and PR, never straight to `main`, even where the policy allows pushing to `main`. Push follows the project's policy file when it allows pushing (for example a `workflow.md` that says push without asking). With no such policy, the user chooses at step 12
 - Never mark `done` until the Goal is confirmed achieved (step 11) — verified + reviewed is not done
 - Never create a branch or a worktree without a reason step 6 accepts: a project rule that applies, the user's request, or the `validating` rule above
 - Keep the task file as the single source of truth — each stage reads it, each stage writes to it
