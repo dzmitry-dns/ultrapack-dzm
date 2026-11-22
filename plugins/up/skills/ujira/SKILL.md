@@ -1,11 +1,11 @@
 ---
 name: ujira
-description: Sync thin-layer Jira updates at task Status transitions and when work moves between tickets (the source ticket's description is redrafted). Comments post automatically where the project opted in (`auto: comment`); description edits always wait for owner approval; ticket transitions are never drafted unless the project set `transitions: propose`. Entry paths — invoked by /up:make at its trigger points, or manually via /up:ujira. In a project with no Jira adapter config it is a silent no-op.
+description: Sync thin-layer Jira updates at task Status transitions and when work moves between tickets (the source ticket's description is redrafted). Comments post automatically where the project opted in (`auto: comment`); description edits wait for owner approval, except mechanical lines where the project opted in (`auto: mechanical-lines`); ticket transitions are never drafted unless the project set `transitions: propose`. Entry paths — invoked by /up:make at its trigger points, or manually via /up:ujira. In a project with no Jira adapter config it is a silent no-op.
 ---
 
 # Jira adapter
 
-Keeps Jira human-readable with near-zero owner effort: at meaningful Status transitions the workflow produces a thin Jira update. What reaches Jira on its own is bounded by config — by default nothing does, and the owner approves every item; a project can opt comments out of that gate with `auto: comment`. Description edits never leave the gate. Ticket state is not the workflow's to move: transitions are not even drafted unless the project set `transitions: propose`, because on most boards a human (QA, the lead) moves the ticket and a proposal from the agent reads as pressure to do it now. Jira is a thin layer for humans — never a mirror of the task file. The technical record stays in `docs/tasks/<slug>.md`; Jira gets what a teammate skimming the board needs.
+Keeps Jira human-readable with near-zero owner effort: at meaningful Status transitions the workflow produces a thin Jira update. What reaches Jira on its own is bounded by config — by default nothing does, and the owner approves every item; a project can opt comments out of that gate with `auto: comment`, and mechanical description lines with `auto: mechanical-lines`. Description prose (what+why, acceptance wording, a new description) never leaves the gate. Ticket state is not the workflow's to move: transitions are not even drafted unless the project set `transitions: propose`, because on most boards a human (QA, the lead) moves the ticket and a proposal from the agent reads as pressure to do it now. Jira is a thin layer for humans — never a mirror of the task file. The technical record stays in `docs/tasks/<slug>.md`; Jira gets what a teammate skimming the board needs.
 
 ## Gate — when to run at all
 
@@ -35,7 +35,7 @@ The section is docs and live config at once: only bare `- key: value` lines are 
 - `project` — required; Jira project key. Sanity-check ticket ids in `**Jira:**` headers against it.
 - `site` — optional; base URL for rendering ticket links and MCP site lookup.
 - `apply` — optional; `manual` (default) or `mcp`. Absent means `manual`.
-- `auto` — optional; which draft items are applied without asking the owner. `comment` is the only honored value and it requires `apply: mcp`. Absent means nothing is automatic, which is the historical behavior.
+- `auto` — optional; which draft items are applied without asking the owner, as a comma-separated list. Honored values: `comment` and `mechanical-lines` (below); both require `apply: mcp`. Absent means nothing is automatic, which is the historical behavior.
 - `transitions` — optional; `propose` is the only honored value and it puts a ticket transition proposal into the draft at the start and terminal triggers. Absent means transitions are never drafted, never applied, never mentioned.
 
 ## Draft contract — thin layer, never a mirror
@@ -69,7 +69,7 @@ Two drafting moments per `/up:make` session, plus the Scope move below whenever 
 1. Status → `executing` — rides the plan-approval pause; when `/up:make` skipped that pause (Small under the gate), auto items still post here and gated items move to the terminal draft. One start comment, a description item per the match verdict (skip / targeted update / replace), and, only under `transitions: propose`, a ticket transition proposal (e.g. To Do → In Progress).
 2. Terminal pause — `/up:make` step 12 finish menu, or session end. One comment line per phase crossed since the last sync (validating / done / shipped), plus, only under `transitions: propose`, a ticket transition proposal when done or shipped.
 
-Scope move — not a Status transition, so it is easy to miss. When part of this task's work moves to another ticket (a split, a follow-up ticket, "do X in a separate ticket"), draft a description item for THIS ticket in the same step that creates or links the other one; do not wait for the next trigger. Re-read the live description against the new scope: the what+why and the acceptance checklist must no longer promise the moved part, and one line points to the other ticket ("Moved to PROJ-456: ..."). The item follows the normal gate (owner approval, never `auto`). Same check in reverse when work moves in. Incident: a walk-in email moved to a new ticket, and the source ticket still said "decide whether walk-ins get an email and build it if yes" until the owner noticed.
+Scope move — not a Status transition, so it is easy to miss. When part of this task's work moves to another ticket (a split, a follow-up ticket, "do X in a separate ticket"), draft a description item for THIS ticket in the same step that creates or links the other one; do not wait for the next trigger. Re-read the live description against the new scope: the what+why and the acceptance checklist must no longer promise the moved part, and one line points to the other ticket ("Moved to PROJ-456: ..."). The item follows the normal gate (owner approval), with one exception: under `auto: mechanical-lines`, an item that only appends the "Moved to" line, because the live text never promised the moved part, posts unattended. Same check in reverse when work moves in. Incident: a walk-in email moved to a new ticket, and the source ticket still said "decide whether walk-ins get an email and build it if yes" until the owner noticed.
 
 Sync state lives in the `**Jira:**` header annotation: `**Jira:** PROJ-123 (synced executing 2026-07-21)`. Older files write `PROJ-123 — synced executing 2026-07-21`; read the enum after the word `synced` in both. Update it after the owner approves or skips a draft, and immediately after an auto comment lands — an applied comment the annotation does not know about is a duplicate on the next run. Everything after the recorded enum is not yet synced. Internal churn (design → planning) never drafts.
 
@@ -95,6 +95,8 @@ Jira draft: PROJ-123 (docs/tasks/<slug>.md)
 Under `transitions: propose` the block gains a `Transition: In Progress` item (or the terminal state) as its first line; without that key the block never mentions ticket state.
 
 A stale-field-only verdict renders the description item as `Description (update: <field>):` carrying only the replacement line(s) — everything else in the live description stays untouched.
+
+A description item applied under `auto: mechanical-lines` reads `Description (posted: <what changed>):`, a receipt like a posted comment.
 
 The comment item reads `Comment (posted):` only under `auto: comment`, where it is a receipt rather than a proposal — the text is already on the ticket and the owner is being shown what went out. Without `auto`, it stays `Comment:` and waits like every other item.
 
@@ -128,10 +130,23 @@ The other items still wait for the owner, so a comment can land while its descri
 
 A failed MCP write is reported, never swallowed: name the failure, render that comment as a paste-ready proposal, and leave the sync annotation alone — it must not claim a comment that never landed.
 
+## `auto: mechanical-lines` — description lines that carry no wording
+
+Why: in one consumer, about 30 description approvals in November 2026 drew zero rejections, and about a third changed only a pointer or a "Moved to" line. Each one still cost the owner a question. The gate exists so the agent does not write a ticket's prose; a pointer line has no prose to protect.
+
+A description item is mechanical only when every change in it is one of:
+- replacing the `Details:` pointer line (the stale-field verdict on that field);
+- appending one `Moved to PROJ-456: <short name>` line on a scope move, when the live what+why and acceptance never promised the moved part;
+- marking an existing acceptance line done, its words unchanged.
+
+Anything else in the same item gates the whole item: adding, removing or rewording an acceptance line, touching the what+why sentences, a full replace, a description for a new or empty ticket, a scope move that must also change what the ticket promises. Never split a mixed item into a posted part and a gated part.
+
+With `auto: mechanical-lines` and `apply: mcp`, per mechanical item: re-read the live description, splice the change in, write the field back whole (Apply modes), render the receipt (`Description (posted: Details pointer)`), and update the sync annotation the moment the write succeeds. A failed write is handled as a failed comment: report it, render the item as a normal proposal, leave the annotation alone. Under `apply: manual` the value is the same config error as `auto: comment` there.
+
 ## Rules
 
-- Never write to Jira without per-draft approval, with exactly one exception: comments in a project that opted in via `auto: comment`. In `manual` mode never write at all.
-- Descriptions always need approval. Transitions are not drafted at all unless `transitions: propose` is set, and even then they need approval. No config value applies either one unattended.
+- Never write to Jira without per-draft approval, with exactly two exceptions, each only where the project opted in: comments (`auto: comment`) and mechanical description lines (`auto: mechanical-lines`). In `manual` mode never write at all.
+- Description prose always needs approval: what+why, acceptance wording, a new description. Transitions are not drafted at all unless `transitions: propose` is set, and even then they need approval. No config value applies either one unattended.
 - Never draft outside the contract — when in doubt, it's technical detail: leave it out.
 - Config comes only from the consumer project's `CLAUDE.md` — never from the pack, never invented.
 - No config or no ticket → silent no-op; the flow must be byte-identical to a Jira-less project.

@@ -84,7 +84,7 @@ Process skills (`u`-prefixed to dodge Claude Code built-ins):
 - `up:ureview` — dispatch an independent reviewer (when Design was skipped, offered instead of dispatched), process its findings fairly, and fill the Conclusion.
 - `up:udebug` — four-phase root-cause investigation (reproduce → pattern-match → hypothesize → fix); no symptom patches.
 - `up:udocument` — discipline for writing docs: lead with why, kill stale content, lists over tables, no aspirational content. Manual-only.
-- `up:ujira` — thin-layer Jira sync at Status transitions. Draft-then-approve by default; a project can opt comments out of the gate with `auto: comment` so they post unattended; descriptions always wait for the owner, and ticket transitions are not drafted at all unless the project sets `transitions: propose`. Config lives in the consumer project's CLAUDE.md.
+- `up:ujira` — thin-layer Jira sync at Status transitions. Draft-then-approve by default; a project can opt comments out of the gate with `auto: comment` so they post unattended; description prose always waits for the owner (a project can let mechanical lines, such as the task-file pointer or a "Moved to" line, post unattended with `auto: mechanical-lines`), and ticket transitions are not drafted at all unless the project sets `transitions: propose`. Config lives in the consumer project's CLAUDE.md.
 
 Discipline skills (manual-only since 0.3.34: `disable-model-invocation: true`, so they cost no context until you type `/up:<name>`; the stage skills read the TDD file directly when Design says `TDD: yes`):
 
