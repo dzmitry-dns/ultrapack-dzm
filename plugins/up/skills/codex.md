@@ -12,6 +12,8 @@ Use these operations wherever the shared instructions refer to a Claude Code too
 - Use the available user input action or ask directly at approval pauses. Monitor one-off jobs through bounded background checks in the current chat.
 - Before Jira writes, read the user's Jira rules and follow the project authorization. Use the configured `atlassian` MCP server. Resolve the correct site and issue. If a required action is unavailable, preserve the pending draft and leave its sync state unchanged.
 
+For every independent reviewer, start a fresh helper with `fork_turns` set to `none`. Supply the role instructions and only the inputs listed for that review. If the client cannot isolate the helper, report the independent review as pending.
+
 ## Keep the make workflow running
 
 - After plan approval, finish step 6 and enter step 8 in the same turn. When the required preliminary checks pass and any temporary setup is cleaned up, record the transition to `executing` as the shared workflow requires, then start the first approved phase in the verified checkout. Give the check result as a progress update.

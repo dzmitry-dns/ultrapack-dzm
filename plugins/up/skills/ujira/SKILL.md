@@ -5,6 +5,8 @@ description: Sync thin-layer Jira updates at task Status transitions and when wo
 
 # Jira adapter
 
+In Codex, read [Codex operations](../codex.md) before starting this stage.
+
 Keeps Jira human-readable with near-zero owner effort: at meaningful Status transitions the workflow produces a thin Jira update. What reaches Jira on its own is bounded by config — by default nothing does, and the owner approves every item; a project can opt comments out of that gate with `auto: comment`, and mechanical description lines with `auto: mechanical-lines`. Description prose (what+why, acceptance wording, a new description) never leaves the gate. Ticket state is not the workflow's to move: transitions are not even drafted unless the project set `transitions: propose`, because on most boards a human (QA, the lead) moves the ticket and a proposal from the agent reads as pressure to do it now. Jira is a thin layer for humans — never a mirror of the task file. The technical record stays in `docs/tasks/<slug>.md`; Jira gets what a teammate skimming the board needs.
 
 ## Gate — when to run at all

@@ -5,6 +5,8 @@ description: Use before any creative work — features, components, behavior cha
 
 # Design
 
+In Codex, read [Codex operations](../codex.md) before starting this stage.
+
 Turn an idea into a validated spec through collaborative dialogue. Output lives in `docs/tasks/<slug>.md` — `## Design`, `### Invariants` (IV), `### Principles` (PC), `### Assumptions` (AS), `### Unknowns` (UK) — with a TDD decision recorded. Nothing is planned or written until the user approves.
 
 ## What design is

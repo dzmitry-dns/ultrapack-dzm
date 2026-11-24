@@ -35,19 +35,24 @@ def read_usage(transcript, session_id):
 
 def check(payload):
     event = payload.get("hook_event_name")
-    if event not in {"PostToolUse", "Stop"} or payload.get("agent_id"):
+    if event not in {"PostToolUse", "Stop", "PostCompact"} or payload.get("agent_id"):
         return
     if event == "Stop" and payload.get("stop_hook_active"):
         return
     session_id = UUID(payload["session_id"])
+    marker = Path(tempfile.gettempdir()) / f"ultrapack-handoff-{os.getuid()}-{session_id}"
+    if event == "PostCompact":
+        with suppress(FileNotFoundError):
+            marker.rmdir()
+        return
     usage = read_usage(Path(payload["transcript_path"]), session_id)
     if usage is None:
         return
     used, window = usage
     if not isinstance(used, int) or not isinstance(window, int) or window <= 0:
         return
-    limit = window * 3 // 4
-    marker = Path(tempfile.gettempdir()) / f"ultrapack-handoff-{os.getuid()}-{session_id}"
+    # Round up to the first whole token at or above 75%.
+    limit = (window * 3 + 3) // 4
     if used < limit:
         with suppress(FileNotFoundError):
             marker.rmdir()

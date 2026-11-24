@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 # Git Worktrees
 
+In Codex, read [Codex operations](../codex.md) before starting this stage.
+
 Worktrees let you work on multiple branches simultaneously without stashing or switching. Use one when:
 - The task is large enough to warrant isolation
 - You want to run different branches in parallel

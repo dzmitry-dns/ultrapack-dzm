@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 # Test-Driven Development
 
+In Codex, read [Codex operations](../codex.md) before starting this stage.
+
 Write the test first. Watch it fail. Write minimal code to pass. Refactor. Repeat.
 
 **Core principle:** if you didn't watch the test fail, you don't know whether it tests the right thing.

@@ -5,6 +5,8 @@ description: Use after design to turn a validated spec into a lean implementatio
 
 # Plan
 
+In Codex, read [Codex operations](../codex.md) before starting this stage.
+
 Convert the approved Design into a lean, concrete implementation plan. Output fills the `## Plan` section of `docs/tasks/<slug>.md`. The plan is the contract that `up:uexecute` will follow.
 
 ## What a plan is

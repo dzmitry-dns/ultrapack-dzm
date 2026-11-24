@@ -25,6 +25,8 @@ Discard:
 
 ### 2. Route each learning
 
+In Codex, use the applicable project or personal `AGENTS.md` wherever this command refers to `CLAUDE.md`. If both names point to the same file, edit it once.
+
 For each item worth keeping, decide where it belongs:
 
 - **CLAUDE.md (project or global)** — project-wide or user-wide conventions, preferences, things to always or never do

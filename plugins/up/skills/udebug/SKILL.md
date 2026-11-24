@@ -5,6 +5,8 @@ description: Use on any bug, test failure, or unexpected behavior before proposi
 
 # Debug
 
+In Codex, read [Codex operations](../codex.md) before starting this stage.
+
 **Iron law:** no fixes without root-cause investigation first. Symptom patches are failure.
 
 ## When to invoke

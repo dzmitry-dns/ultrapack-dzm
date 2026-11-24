@@ -5,6 +5,8 @@ description: Use after execute to attack the change and demonstrate how it's bro
 
 # Verify
 
+In Codex, read [Codex operations](../codex.md) before starting this stage.
+
 Verify is the adversary. Default stance: the change is broken — prove and demonstrate it with running evidence in this message. Each check is a hypothesis about how the change bites; verify tries to make the bite land. Pass = honest attack produced no demonstrated break. Fail = break demonstrated, here's the evidence.
 
 On entry, if the task file's Status enum is `executing`, set it to `verifying` (annotation untouched), so an interrupted session resumes here and not in execute. Verify's verdict either advances the workflow to `up:ureview` or bounces it back to `up:uexecute` with remediation notes. A short summary is persisted to the task file's `## Verify` section so review (and later readers) see what was attacked.

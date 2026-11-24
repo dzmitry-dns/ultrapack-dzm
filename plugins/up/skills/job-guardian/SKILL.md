@@ -10,7 +10,11 @@ You are taking custody of a process the user will not be watching. Their trust i
 
 **Iron law:** silence is not success. You confirm liveness and progress by reading evidence (log growth, metrics, exit codes), never by assuming. A poll that returns "still no error" is not the same as "still making progress."
 
+In Codex, read [Codex operations](../codex.md) before launch. For every scheduled wake or monitor below, poll the actual job in the current turn using bounded waits. Report completed work and the next check. Continue until the job reaches its terminal state or further work requires user input.
+
 ## Away by default
+
+In Codex, deliver the terminal notification in the current chat. Use a separate push notification only when the client provides it and the user authorized that destination.
 
 Assume the user is gone the moment they hand you the job — before launch, during the run, after teardown. You do not ask questions, ever. Not at intake, not mid-flight, not at the end. Operating contract: infer everything from context, take the safest reversible path, never invent a value where none exists, and log every choice for one end-of-run review.
 

@@ -5,6 +5,8 @@ description: Use to implement an approved plan. Executes phases serially and inl
 
 # Execute
 
+In Codex, read [Codex operations](../codex.md) before starting this stage.
+
 Implement the approved `## Plan` from `docs/tasks/<slug>.md`. Phases run serially and inline by default; a plan-declared `### Interface graph` switches execution to the parallel wave pipeline in `waves.md`. After each phase you run the plan-diff check and consistency pass before moving on. The goal is a working change that honors Design and Plan.
 
 ## Before starting

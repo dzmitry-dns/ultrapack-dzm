@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 # Document
 
+In Codex, read [Codex operations](../codex.md) before starting this stage.
+
 Documentation is code's second user-facing surface. Treat it with the same care.
 
 ## Scope — when this skill applies

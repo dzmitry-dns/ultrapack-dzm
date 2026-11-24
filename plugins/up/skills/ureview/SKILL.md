@@ -5,6 +5,8 @@ description: Use after verify passes for the future maintainer's audit — sit i
 
 # Review
 
+In Codex, read [Codex operations](../codex.md) before dispatching a reviewer.
+
 Review's stance: the future maintainer's audit. Sit in the chair of the person who'll touch this code in 3-6 months and ask the headline question — what will bite us later?
 
 The job is to spot the design or structural choice that will force a nasty rewrite when someone next has to extend, migrate, or refactor. Catch the shape you'll regret in 6 months while it's still cheap to change.

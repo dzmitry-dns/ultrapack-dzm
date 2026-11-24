@@ -36,6 +36,8 @@ Start a new Codex chat and select the `up:codex-make` skill. Pass a task descrip
 
 To use the named helper roles, copy the files from `codex/agents/` into the consuming repository's `.codex/agents/` directory. Keep them under a trusted project configuration. Jira operations use the consuming project's adapter and its configured `atlassian` server.
 
+The long-chat reminder requires Python 3. Open `/hooks` in Codex and review the Ultrapack entries for `PostToolUse`, `Stop`, and `PostCompact`. Trust them to enable the reminder. It appears once at 75% of the current model’s context window. Work continues until you request a handoff. Compaction rearms the reminder.
+
 ## Quickstart
 
 ```
