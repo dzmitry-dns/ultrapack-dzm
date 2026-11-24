@@ -11,3 +11,9 @@ Use these operations wherever the shared instructions refer to a Claude Code too
 - Keep the current Codex model unless an authorized supported model override is available. The shared trivial-phase scope check still applies.
 - Use the available user input action or ask directly at approval pauses. Monitor one-off jobs through bounded background checks in the current chat.
 - Before Jira writes, read the user's Jira rules and follow the project authorization. Use the configured `atlassian` MCP server. Resolve the correct site and issue. If a required action is unavailable, preserve the pending draft and leave its sync state unchanged.
+
+## Keep the make workflow running
+
+- After plan approval, finish step 6 and enter step 8 in the same turn. When the required preliminary checks pass and any temporary setup is cleaned up, record the transition to `executing` as the shared workflow requires, then start the first approved phase in the verified checkout. Give the check result as a progress update.
+- During active work, answer a status question immediately in commentary with the latest confirmed progress. Then resume the pending tool calls in the same turn. If a background check is still running, keep polling it in bounded intervals and start the next authorized check when it finishes.
+- Use a final reply when the workflow finishes, requires approval or other user input, hits a blocker that prevents further authorized work, or receives a stop command. An update about a completed check or a question asking only for status does not end the turn.
