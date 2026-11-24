@@ -1,0 +1,10 @@
+{
+  "name": "ultrapack",
+  "plugins": [
+    {
+      "name": "up",
+      "source": "./plugins/up",
+      "description": "Ultrapack workflows for Codex"
+    }
+  ]
+}

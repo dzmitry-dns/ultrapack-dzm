@@ -21,6 +21,21 @@ This is a fork. If you already have the upstream `ultrapack` marketplace install
 
 The plugin is named `up`; the marketplace is named `ultrapack` (hence `up@ultrapack`). Verify the install by running `/up:make` — if the command is recognized, you're set.
 
+## Install in Codex
+
+From a checkout of this fork, register the repository and install the plugin:
+
+```sh
+codex plugin marketplace add /absolute/path/to/ultrapack-dzm
+codex plugin add up@ultrapack
+```
+
+If `ultrapack` already points to another checkout or the upstream marketplace, inspect it with `codex plugin marketplace list` before changing that registration.
+
+Start a new Codex chat and select the `up:codex-make` skill. Pass a task description to start, or pass an existing `docs/tasks/<task>.md` path to resume. Select `up:codex-summary` to write a handoff. Claude Code continues to use the slash commands below.
+
+To use the named helper roles, copy the files from `codex/agents/` into the consuming repository's `.codex/agents/` directory. Keep them under a trusted project configuration. Jira operations use the consuming project's adapter and its configured `atlassian` server.
+
 ## Quickstart
 
 ```

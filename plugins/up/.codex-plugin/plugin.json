@@ -1,0 +1,6 @@
+{
+  "name": "up",
+  "version": "0.3.66",
+  "description": "Spec-driven Git workflows for Codex.",
+  "skills": "./skills/"
+}
