@@ -46,7 +46,7 @@ def check(payload):
     used, window = usage
     if not isinstance(used, int) or not isinstance(window, int) or window <= 0:
         return
-    limit = min(270_000, window * 3 // 4)
+    limit = window * 3 // 4
     marker = Path(tempfile.gettempdir()) / f"ultrapack-handoff-{os.getuid()}-{session_id}"
     if used < limit:
         with suppress(FileNotFoundError):
