@@ -37,7 +37,9 @@ Before dispatching a subagent (`Agent` tool call) and after it returns, state on
 
 Whoever ends the workflow turn prints one line, once, in the owner's chat language:
 
-`Done: <what>. Left: <what, or nothing>. Close: <task yes/no; Jira yes/no, or no ticket> (<why not, when no>).`
+`Done: <what>. Left: <who will do what and when, or nothing>. Close: <task yes/no; Jira yes/no, or no ticket> (<why not, when no>).`
+
+Before closing, perform any authorized work you can do now and report its result. If permission is the only blocker, ask directly for permission to perform the specific action yourself. If only the owner can act, explain why and ask them directly: name the app, exact action, and visible success condition. For a scheduled or explicitly requested handoff, identify who resumes and what triggers the next action.
 
 When a review ran in the same turn, append `Another review: <no | yes> (<why>).` The line is never a recap of the message above it. This is the single home of the rule; callers only point here.
 
@@ -45,7 +47,7 @@ When a review ran in the same turn, append `Another review: <no | yes> (<why>).`
 
 When the flow waits for the owner and a task file exists, the message ends, after any Closing line, with:
 
-1. The resume prompt of `/up:summary` step 4.
+1. The current client's resume prompt from `/up:summary` step 4, including at design and plan approval.
 2. One line: `Session: can close`, or `Session: wait for <job still running in the background>`. A job counts while this session started it and has not seen it finish.
 
 The waits: the design approval request, the plan approval request, `/up:make` step 12, and any other question that stops the flow. At the two approval requests and at step 12, run `/up:summary` steps 1-3 first when decisions were taken since the latest Handoff block, so the prompt points at a current file. At any other question print only the prompt and the Session line, with no append and no commit; when decisions were taken in chat since the latest Handoff block, the line reads `Session: run /up:summary before closing`, never `can close`. This adds no pause: it rides only waits that already exist. This is the single home of the rule; callers only point here.

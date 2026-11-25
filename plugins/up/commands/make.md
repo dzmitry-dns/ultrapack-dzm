@@ -140,7 +140,7 @@ Order of entry: first sweep stale worktrees: for each entry of `git worktree lis
 
 Invoke `up:uplan`. It populates `## Plan`. Before the approval pause the plan goes through the plan point of `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`, the single home of when it runs. Status → `executing`. If Jira is configured, invoke `up:ujira` at this transition — the start draft rides the plan-approval pause, minus whatever the project set `auto` to, which `up:ujira` has already applied.
 
-Plan-approval gate (single home; `up:uplan` defers to it): `up:uplan` waits for the user's approval unless you tell it, in the invocation, that the task is Small and the plan touches fewer than 3 files, no DB migration, and no new API surface; then it presents the highlights and proceeds. Medium / Large always pause. Trivial skips Plan entirely (step 4). A manual or resumed `up:uplan` has no size and always waits. What counts as approval: `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` → Approval line.
+Plan-approval gate (single home; `up:uplan` defers to it): `up:uplan` waits for the user's approval unless you tell it, in the invocation, that the task is Small and the plan touches fewer than 3 files, no DB migration, and no new API surface; then it presents the entire plan in plain text and proceeds. Medium / Large always pause. Trivial skips Plan entirely (step 4). A manual or resumed `up:uplan` has no size and always waits. What counts as approval: `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` → Approval line.
 
 If the gate does not pause and Jira is configured, `up:ujira` still runs at this transition: auto items post as usual, and anything needing approval is carried to the terminal draft (step 12) instead of a pause the flow no longer has.
 
@@ -214,12 +214,12 @@ Execute only after the user chooses.
 Run this once, after the Goal is confirmed and Status is `done` (step 11) — not after every stage. Scan the project docs and update them if the work surfaced something they should reflect. Cheap, light-touch; not a full doc pass.
 
 Files to scan:
-- `CLAUDE.md` (project-wide agent guidance)
+- The active client's project guidance (`AGENTS.md` in Codex, `CLAUDE.md` in Claude Code). For existing shared sections in Codex, follow `skills/codex.md`.
 - `README.md`
 - `docs/**/*.md` (project documentation, excluding the task file itself and archived tasks)
 
 What to look for:
-- New conventions, invariants, or principles that should be global → update `CLAUDE.md`
+- New conventions, invariants, or principles that should be global → update the active client's project guidance
 - New components, commands, or features the README should mention
 - Stale content contradicted by the stage's work → delete or correct
 - Pointers to the task file if future contributors would benefit

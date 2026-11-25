@@ -85,13 +85,15 @@ Slots, never inside a subsection:
 
 The design and plan approval requests (`up:udesign` and `up:uplan` step 12) open with, in the owner's chat language:
 
-1. A clickable `docs/tasks/<slug>.md:<line>` link to the `## Design` or `## Plan` heading being approved.
-2. One line per design point or plan phase: what it changes, in plain words. Then one line: what users will see change, and what breaks for the business if the change is wrong.
-3. One line on the review before code:
+1. Describe the current behavior, the proposed change, and the consequence for users if it is wrong.
+2. For design approval, explain each design decision and its check. For plan approval, present the entire plan in plain text in the current conversation, including every step, check, dependency, risk and release or rollback condition present in the plan. Use ordinary sentences and line breaks in the owner's language. Keep task-file Markdown internal. Apply the same rule when the owner asks to see the plan again.
+3. Report the review result:
 
    `Review before code: <N rounds, n fixed, m rejected | not run (<reason>)>. Another round: <no | yes> (<reason>).`
 
    Reasons come from this file: design point without a Large signal, Design skipped, skipped by owner, round 1 changed no decision or phase order, 2-round cap.
+
+4. Ask explicitly whether the owner approves this design or this plan. Put the resume prompt after the question.
 
 What counts as approval: approval of the `## Design` or the `## Plan` is a yes in reply to that approval request. It never comes from a choice between options, from "continue" or "do the rest", from a yes that answers another question in the same message (an option pick, a Jira draft, a Scope flag), from an approval of the other section, or from a yes given before the request was shown. The request's own yes still counts when the `up:ujira` draft (`/up:make` step 7) or a Scope flag (Findings above) rides the same message. An unclear reply gets one question that names `## Design` or `## Plan`. Until approval: no Status move past the stage, no branch, no worktree, no code commit. Two cases have no request and need no yes: the plan-approval gate of `/up:make` step 7 lets a Small plan proceed, and a stage skipped at `/up:make` step 4 is never presented. A manual or resumed `up:uplan` always waits.
 
