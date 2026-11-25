@@ -54,7 +54,7 @@ Before writing the Plan, read `${CLAUDE_PLUGIN_ROOT}/skills/_brevity.md`. Apply 
 9. Self-review inline (placeholders, consistency, invariants, spec coverage).
 10. Scope-creep / simpler-way check — see below. This is the last self-check before the review.
 11. Independent review before code: run the plan point of `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`.
-12. Present the entire plan in plain text in the current reply with the Approval line (`${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` → Approval line), end it per `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Handoff at a wait, and wait for approval. The one exception is the plan-approval gate defined in `/up:make` step 7: when `/up:make` told you in this invocation that the task is Small and the plan stays under its threshold, present the entire plan in plain text and proceed. Invoked manually or on resume, you were not told, so you wait. A question to the owner here (an open question, a simpler-way option) follows `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Questions to the owner. Then invoke `up:uexecute`.
+12. Present the entire plan in plain text in the current reply with the Approval line (`${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` → Approval line), end it per `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Handoff at a wait, and wait for approval. The one exception is the plan-approval gate defined in `/up:make` step 7: when `/up:make` told you in this invocation that the task is Small and the plan stays under its threshold, present the entire plan in plain text and proceed. Invoked manually or on resume, you were not told, so you wait. A question to the owner here (an open question, a simpler-way option) follows `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Questions to the owner. When called by /up:make, return to its step 7 so step 6 selects the checkout before step 8 starts execution. For a standalone invocation, invoke up:uexecute after approval.
 </required>
 
 ## Required contents
@@ -185,4 +185,4 @@ If this check surfaces real simplifications, rewrite the plan. Don't stack warni
 
 ## Terminal state
 
-Plan written, self-reviewed, scope-checked, step 11 run (reviewed, skipped, or not applicable). Present the entire plan in plain text, wait for approval unless the step 12 exception applies, invoke `up:uexecute`.
+Plan written, self-reviewed, scope-checked, step 11 run (reviewed, skipped, or not applicable). Present the entire plan in plain text, and follow step 12 for approval and the transition to execution.

@@ -26,9 +26,9 @@ Branch guard, for a resumed task and before step 3's first commit alike: when `g
 
 - Exists: if the header has a `**Worktree:**` line that names a path (`none` or an empty value is no worktree), settle the checkout before reading anything else, because the main branch's copy is frozen at entry. The folder is in `git worktree list` and its PR is not merged (or no PR exists yet) → `EnterWorktree` with that `path` and read the task file there. The PR is merged → stay in the main checkout, run step 12's "Leaving a worktree" step 5 without asking (only when the folder is still listed), and read the copy on the main branch. No worktree path and a `**Branch:**` that is not the default branch and exists (`git branch --list <branch>`, else `git ls-remote --heads origin <branch>`; free text such as `none yet` or a deleted branch is not one) → a plain branch. Its PR merged (`gh pr list --head <branch> --state merged`) → `git switch` to the default branch when the checkout is still on this branch, `git pull --ff-only`, then read the working copy. Not merged → read the task file from the branch, `git show <branch>:<task file path>` (`git fetch origin <branch>` and `origin/<branch>` when only the remote has it), because the copy on the current branch stops at the switch. That read decides how to continue, per the project's rules: `git switch <branch>`, or a worktree when they call for one; after a switch the working copy is the file. Then read `**Status:**` from the header. When the file has `## Owner summary`, the first chat message of the session opens with it, in the owner's chat language, before anything else below; bullets that still hold an `<empty` placeholder are left out, and a file without the section or with only placeholders resumes as before. If the file ends with one or more Handoff blocks (`### Handoff: <date>`, or `### Handoff — <date>` in older files), read the latest one first — it holds what the previous session left uncommitted or undecided, and its first action. If it has an `Owner has not seen` line that is not "none", the first chat message of the session tells the owner those results in plain words, before any question and before any work step. For Status `design` through `validating`: when `**Session:**` names another session that `ListAgents` lists, tell the owner in one line (after the lines above) and send that session an ownership notice (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Notify a running session); then write this session's name into `**Session:**` when it differs, inserting the line under `**Branch:**` when missing. It rides the next task-file commit. A `git switch` above runs step 6's "After a `git switch`". Resume from the next stage:
   - `design` → continue design
-  - `planning` → run `up:uplan`
+  - `planning` → if the current plan records approval or the Small exception from step 7, continue at step 6. Otherwise run `up:uplan`.
   - `executing` → run `up:uexecute`
-  - `verifying` → run `up:uverify` (step 9); the plan is already implemented, do not re-run execute
+  - `verifying` → follow step 9, including recovery from a recorded failure.
   - `reviewing` → run `up:ureview` and tell it `/up:make` invoked it (step 10)
   - `validating` → re-check the Goal with the user (step 11); on confirmation, step 11's `done` path (docs refresh included), then step 12, so the Closing line prints in the session that closes the task. `Reminders:` lines already in `## Conclusion` (events or `declined`) mean step 11's reminder question was answered: do not ask it again
   - `done` / `shipped` → ask the user what they want to do (start a follow-up, re-open, view conclusion)
@@ -114,6 +114,8 @@ Before approval the Design goes through the design point of `${CLAUDE_PLUGIN_ROO
 
 ### 6. Branch decision
 
+On resume, compare the recorded branch and worktree with the actual checkout. Reuse a matching setup and complete only its missing steps. Preserve existing edits. Resolve a mismatch before writing.
+
 Runs at the end of step 7, once the Plan is approved; Trivial (no Plan) runs it right after step 4. Both answers can depend on the plan (what each phase pushes, whether the work outlives the session), so Design and Plan commits before this step go to the current branch.
 
 **Branch?** Stay on the current branch (usually `main`) unless:
@@ -138,21 +140,21 @@ Order of entry: first sweep stale worktrees: for each entry of `git worktree lis
 
 ### 7. Plan stage (unless skipped)
 
-Invoke `up:uplan`. It populates `## Plan`. Before the approval pause the plan goes through the plan point of `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`, the single home of when it runs. Status → `executing`. If Jira is configured, invoke `up:ujira` at this transition — the start draft rides the plan-approval pause, minus whatever the project set `auto` to, which `up:ujira` has already applied.
+Invoke `up:uplan`. It populates `## Plan`. Before the approval pause the plan goes through the plan point of `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md`, the single home of when it runs. Keep Status `planning` until step 8. If Jira is configured, prepare the `up:ujira` start update here — the start draft rides the plan-approval pause, minus whatever the project set `auto` to, which `up:ujira` has already applied.
 
 Plan-approval gate (single home; `up:uplan` defers to it): `up:uplan` waits for the user's approval unless you tell it, in the invocation, that the task is Small and the plan touches fewer than 3 files, no DB migration, and no new API surface; then it presents the entire plan in plain text and proceeds. Medium / Large always pause. Trivial skips Plan entirely (step 4). A manual or resumed `up:uplan` has no size and always waits. What counts as approval: `${CLAUDE_PLUGIN_ROOT}/skills/uplan/review-before-code.md` → Approval line.
 
 If the gate does not pause and Jira is configured, `up:ujira` still runs at this transition: auto items post as usual, and anything needing approval is carried to the terminal draft (step 12) instead of a pause the flow no longer has.
 
-Once the plan is approved (or the gate lets it proceed), run step 6, then step 8.
+Once the plan is approved (or the gate lets it proceed), record the approval or applicable Small exception with that version of the plan. Run step 6, then step 8. A changed plan goes through the approval rule again.
 
 ### 8. Execute stage
 
-Run the context checkpoint (see below). Invoke `up:uexecute`. Implements the plan, commits incrementally.
+Verify the checkout and branch chosen in step 6, then set Status to `executing`. Run the context checkpoint (see below). Invoke `up:uexecute` to implement and commit the approved phases.
 
 ### 9. Verify loop
 
-Status → `verifying` once every plan phase is committed. Run the context checkpoint (see below). Invoke `up:uverify`. On failure: `up:uverify` describes how each failure *should* have worked, control returns to `up:uexecute` (Status stays `verifying`; the plan is implemented, only the fix is pending). Loop until verify passes.
+Set Status to `verifying` once every plan phase is committed. Run the context checkpoint (see below). On resume with a failed result in the latest `## Verify`, enter the repair instructions in `up:uexecute`. Otherwise run `up:uverify`. Each failure returns to those repair instructions. Keep Status `verifying` through repairs and fresh verification.
 
 ### 10. Review stage
 
@@ -163,7 +165,7 @@ Status → `reviewing`. Run the context checkpoint (see below). Invoke `up:urevi
 `done` means the Goal is achieved — not merely that code verified and review cleared. Check the Goal against reality:
 
 - The verified diff already demonstrates the full Goal (verify's smoke exercised the real end state, nothing out-of-band remains) → state the evidence; the Goal is met.
-- The Goal needs steps the agent can't or shouldn't finish alone — a run at full scale, an expensive / remote / paid job, or an outcome only observable in the user's environment ("training works on the dataset") → do what's safely in reach (the small or local proxy, captured in `## Verify`), then list the remaining steps and hand them to the user. Status stays `validating`.
+- Run every available, authorized goal check, including a remote or paid run covered by the approved plan and remaining run count. Monitor it through completion. For a run requiring new authorization, ask to run it yourself under `Costly runs` in `skills/_principles.md`. Follow project approval rules for production. If only the owner has the required access or can observe the outcome, ask for the exact action and visible result. Record any local substitute in `## Verify` and keep Status `validating` until the Goal is confirmed.
 
 Set Status → `done` only once the Goal is confirmed: by the agent's own end-to-end evidence when it could observe it, or by the user when it couldn't. The user's confirmation is his own words that the result is right or that the task closes ("done", "close the task"). An order to build, deploy, comment or "do everything" is not one (2026-11-11 and 11-12: two tasks archived as `done` on such orders while their builds still ran). Never declare `done` off "verified + reviewed" alone.
 
