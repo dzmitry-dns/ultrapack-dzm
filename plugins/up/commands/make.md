@@ -30,7 +30,7 @@ Branch guard, for a resumed task and before step 3's first commit alike: when `g
   - `executing` → run `up:uexecute`
   - `verifying` → follow step 9, including recovery from a recorded failure.
   - `reviewing` → run `up:ureview` and tell it `/up:make` invoked it (step 10)
-  - `validating` → re-check the Goal with the user (step 11); on confirmation, step 11's `done` path (docs refresh included), then step 12, so the Closing line prints in the session that closes the task. `Reminders:` lines already in `## Conclusion` (events or `declined`) mean step 11's reminder question was answered: do not ask it again
+  - `validating` → re-check the Goal with the user (step 11); on confirmation, step 11's `done` path (docs refresh included), then step 12, so step 12 reports the confirmed task outcome. `Reminders:` lines already in `## Conclusion` (events or `declined`) mean step 11's reminder question was answered: do not ask it again
   - `done` / `shipped` → ask the user what they want to do (start a follow-up, re-open, view conclusion)
   - `reference` → not a task — an epic overview; ask which child task the user means
   - anything else → ask the user how to proceed
@@ -179,7 +179,7 @@ Once `done`, run the docs-refresh check (see below).
 
 ### 12. Finish
 
-Print the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closing line), then present options to the user, and end the message per `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Handoff at a wait:
+Open with the Task outcome (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Task outcome), then present options to the user, and end the message per `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Handoff at a wait:
 - Merge / open PR (if on a branch)
 - Move on
 

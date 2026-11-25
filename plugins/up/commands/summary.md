@@ -65,7 +65,7 @@ Resolve the actual task path, including its worktree when recorded. In Codex, us
 
 For either client, preserve the full task path, including an epic subdirectory. Prefix it with the checkout path from `**Worktree:**` when present. The resumed workflow reads the Owner summary and latest Handoff block.
 
-Below the fence, outside the prompt, the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closing line). At a handoff the task is normally not closable; `Left` names the first action. Below it, the Session line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Handoff at a wait).
+Open the handoff with the Task outcome from `${CLAUDE_PLUGIN_ROOT}/skills/_principles.md`. Name the next action and what will start it. Then give the resume prompt. Apply Handoff at a wait from the same file when waiting on a decision.
 
 ## No active task file
 
@@ -81,7 +81,7 @@ Goal: <one sentence>
 - First action: ...
 ```
 
-Same Closing line and Session line below the fence.
+Open with the same Task outcome, then give the inline resume prompt.
 
 ## Rules
 

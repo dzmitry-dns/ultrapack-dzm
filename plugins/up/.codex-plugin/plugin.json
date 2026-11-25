@@ -1,6 +1,6 @@
 {
   "name": "up",
-  "version": "0.3.73",
+  "version": "0.3.74",
   "description": "Spec-driven Git workflows for Codex.",
   "skills": "./skills/",
   "hooks": "./hooks/codex.json"
