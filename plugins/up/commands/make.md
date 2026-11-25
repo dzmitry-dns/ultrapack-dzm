@@ -214,12 +214,12 @@ Execute only after the user chooses.
 Run this once, after the Goal is confirmed and Status is `done` (step 11) — not after every stage. Scan the project docs and update them if the work surfaced something they should reflect. Cheap, light-touch; not a full doc pass.
 
 Files to scan:
-- `CLAUDE.md` (project-wide agent guidance)
+- The active client's project guidance (`AGENTS.md` in Codex, `CLAUDE.md` in Claude Code). For existing shared sections in Codex, follow `skills/codex.md`.
 - `README.md`
 - `docs/**/*.md` (project documentation, excluding the task file itself and archived tasks)
 
 What to look for:
-- New conventions, invariants, or principles that should be global → update `CLAUDE.md`
+- New conventions, invariants, or principles that should be global → update the active client's project guidance
 - New components, commands, or features the README should mention
 - Stale content contradicted by the stage's work → delete or correct
 - Pointers to the task file if future contributors would benefit

@@ -57,13 +57,13 @@ When the task file's `**Session:**` names another session, notify it that its ta
 
 The prompt goes in the same message that reports the handoff, even when the owner already ordered other work next (a build, a merge): that work follows, the prompt is never skipped.
 
-A fenced block so it copies whole:
+Resolve the actual task path, including its worktree when recorded. In Codex, use the prompt from `skills/codex-summary/SKILL.md` with that path. In Claude Code, print the following fenced prompt:
 
 ```
 /up:make docs/tasks/<slug>.md
 ```
 
-Use the file's real path: an epic child lives at `docs/tasks/<epic>/<slug>.md`. When the task file's `**Worktree:**` line names a path, the prompt names that checkout path (a plain branch resumes from the main checkout through `/up:make` step 2): `/up:make <worktree>/docs/tasks/<slug>.md`. The prompt loads `/up:make`, whose step 2 reads the Owner summary and the latest Handoff block on resume, so the one line is enough.
+For either client, preserve the full task path, including an epic subdirectory. Prefix it with the checkout path from `**Worktree:**` when present. The resumed workflow reads the Owner summary and latest Handoff block.
 
 Below the fence, outside the prompt, the Closing line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Closing line). At a handoff the task is normally not closable; `Left` names the first action. Below it, the Session line (`${CLAUDE_PLUGIN_ROOT}/skills/_principles.md` → Handoff at a wait).
 
