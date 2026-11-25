@@ -1,5 +1,5 @@
 ---
-description: End a session so the next one can continue — in one main-session turn, append a dated Handoff block to the active task file and print the one-line `/up:make <task file>` prompt for the next session. Use when the owner asks for a handoff (hands-off, хендзов) or whether the session can be closed.
+description: End a session so the next one can continue. Append a dated Handoff block to the active task file and print the current client's resume prompt. Use when the owner asks for a handoff (hands-off, хендзов) or whether the session can be closed.
 ---
 
 # /up:summary
