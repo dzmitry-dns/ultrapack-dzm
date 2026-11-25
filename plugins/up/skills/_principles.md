@@ -33,26 +33,19 @@ This is the single home of the rule; callers only point here.
 
 Before dispatching a subagent (`Agent` tool call) and after it returns, state one line: what's being dispatched / what it returned. The user sees no tool calls, only text — an unannounced dispatch reads as silence. This is the single home of the rule; callers only point here.
 
-## Closing line
+## Task outcome
 
-Whoever ends the workflow turn prints one line, once, in the owner's chat language:
+Open the final reply with the state of the user's task in the owner's language. When the Goal is confirmed under the project rules, say the task is complete and name the verified result and its environment when applicable. Otherwise name what is verified and where, why the task remains open, and what happens next. A passing stage or completed review alone does not establish completion.
 
-`Done: <what>. Left: <who will do what and when, or nothing>. Close: <task yes/no; Jira yes/no, or no ticket> (<why not, when no>).`
+Perform available authorized work now. During a check report progress and continue monitoring through its result. For each remaining check identify the responsible person or agent, when it starts, and how they will know to start. Distinguish a calendar reminder from a scheduled check. If no one is assigned or no trigger exists, say so and resolve what you can. When only the owner can act, give the exact action and success condition. If an owner message starts a later check, say where and what to send. Ask directly for any missing permission.
 
-Before closing, perform any authorized work you can do now and report its result. If permission is the only blocker, ask directly for permission to perform the specific action yourself. If only the owner can act, explain why and ask them directly: name the app, exact action, and visible success condition. For a scheduled or explicitly requested handoff, identify who resumes and what triggers the next action.
-
-When a review ran in the same turn, append `Another review: <no | yes> (<why>).` The line is never a recap of the message above it. This is the single home of the rule; callers only point here.
+Mention a further review or Jira action when it affects the next step. Discuss closing the chat only when the owner asks or when closing has a concrete consequence, such as interrupting a check this chat monitors or losing unrecorded decisions.
 
 ## Handoff at a wait
 
-For a production write or dispatch that needs owner approval, end the message with one question naming the exact environment and operation. Omit the resume prompt and Session line for this request. Wait for explicit approval of that operation.
+For a production write or dispatch that needs owner approval, end the message with one question naming the exact environment and operation. Omit the resume prompt for this request. Wait for explicit approval of that operation.
 
-For other waits, when a task file exists, the message ends, after any Closing line, with:
-
-1. The current client's resume prompt from `/up:summary` step 4, including at design and plan approval.
-2. One line: `Session: can close`, or `Session: wait for <job still running in the background>`. A job counts while this session started it and has not seen it finish.
-
-The waits: the design approval request, the plan approval request, `/up:make` step 12, and any other question that stops the flow. At the two approval requests and at step 12, run `/up:summary` steps 1-3 first when decisions were taken since the latest Handoff block, so the prompt points at a current file. At any other question print only the prompt and the Session line, with no append and no commit; when decisions were taken in chat since the latest Handoff block, the line reads `Session: run /up:summary before closing`, never `can close`. This adds no pause: it rides only waits that already exist. This is the single home of the rule; callers only point here.
+At design approval, plan approval, step 12 of `/up:make`, and other questions that stop the flow, include the current client's resume prompt from `/up:summary` step 4 when a task file exists. At the two approval requests and at step 12, run `/up:summary` steps 1-3 first if decisions were taken since the latest Handoff block. At another wait, leave the file unchanged. If decisions exist only in chat, explain which decisions would be lost and how to save them with `/up:summary` before closing. This adds no approval pause.
 
 ## Notify a running session
 
@@ -97,7 +90,7 @@ A pointer plus a sentence; the next reader opens the line. Recorded smells are `
 - Commits — `/up:make`, `up:uexecute`, `up:ureview`, `/up:summary` point here for every commit they make.
 - Costly runs — `up:uplan` (Test strategy), `up:uexecute` (When to stop and ask), `up:uverify` (Phase 5), and `/up:make` (Rules) point here.
 - Long waits — `/up:make` (Rules) and `up:uverify` (Phase 2) point here.
-- Closing line — `/up:make` step 12, a manual `up:ureview`, and `/up:summary` print it.
+- Task outcome applies to `/up:make` step 12, a manual `up:ureview`, and `/up:summary`.
 - Handoff at a wait — `up:udesign` and `up:uplan` (step 12), `/up:make` (step 12, Context checkpoint), and `/up:summary` (step 4) point here.
 - Notify a running session — `/up:make` (step 2 resume, step 6 and every `git switch`, step 12 "After `main` moves") and `/up:summary` (step 3) point here.
 - Questions to the owner — `up:udesign` (step 3, Rules) and `up:uplan` (step 12) follow it for every question they ask.
