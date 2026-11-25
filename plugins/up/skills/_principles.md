@@ -37,7 +37,9 @@ Before dispatching a subagent (`Agent` tool call) and after it returns, state on
 
 Whoever ends the workflow turn prints one line, once, in the owner's chat language:
 
-`Done: <what>. Left: <what, or nothing>. Close: <task yes/no; Jira yes/no, or no ticket> (<why not, when no>).`
+`Done: <what>. Left: <who will do what and when, or nothing>. Close: <task yes/no; Jira yes/no, or no ticket> (<why not, when no>).`
+
+Before closing, perform any authorized work you can do now and report its result. If permission is the only blocker, ask directly for permission to perform the specific action yourself. If only the owner can act, explain why and ask them directly: name the app, exact action, and visible success condition. For a scheduled or explicitly requested handoff, identify who resumes and what triggers the next action.
 
 When a review ran in the same turn, append `Another review: <no | yes> (<why>).` The line is never a recap of the message above it. This is the single home of the rule; callers only point here.
 
