@@ -89,7 +89,7 @@ No recipe (or no `- smoke:` line) — infer the shortest full path:
 
 - CLI change → invoke the command with representative input
 - API change → `curl` against a running server
-- UI change → open the page in a browser as the user it is for, click through the feature, and capture what that user sees at the moment the change matters: a screenshot, or frames of the first second for a load, flash or layout-shift bug. A status code, a clean console or a DOM query is not a UI smoke (2026-11-11..12, CATS-1825: four days of "passed" checks while the owner saw a white sidebar after login). Ask the owner once, before the first browser step, for every test account the attacks need; never ask him to switch accounts mid-run.
+- UI change → open the page in a browser as the user it is for, click through the feature, and capture what that user sees at the moment the change matters: a screenshot, or frames of the first second for a load, flash or layout-shift bug. A status code, a clean console or a DOM query is not a UI smoke (2026-11-11..12, CATS-1825: four days of "passed" checks while the owner saw a white sidebar after login). Use the project’s sign-in procedure for the target environment and role. Use available authorized test access yourself. When only the owner can perform a sign-in step, group the required manual actions in one request for that environment.
 - ML change → run a tiny training step or inference call
 
 If smoke fails, that's a demonstrated break — record it. If smoke passes, the change clears the lowest bar; the per-attack hypotheses still need to land or fail to land on their own.

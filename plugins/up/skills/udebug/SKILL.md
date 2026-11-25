@@ -58,7 +58,7 @@ Now and only now do you change production code.
 1. Create a failing reproduction — automated test if possible; one-off script in `tmp/` otherwise. Must fail *now*.
 2. Implement one fix — root cause only. No "while I'm here" refactors.
 3. Verify — reproduction passes; nothing else broke.
-4. If three fixes have failed, stop. This is an architecture problem, not a hypothesis problem. Discuss with the user before a fourth attempt.
+4. If three fixes have failed, stop. Report the observed results, which hypotheses they rule out, and what remains unknown. Attribute the failure to architecture only when the evidence establishes it. Discuss the next investigation with the user before a fourth attempt.
 </required>
 
 ## Condition-based waiting — never use `sleep(N)` for timing bugs

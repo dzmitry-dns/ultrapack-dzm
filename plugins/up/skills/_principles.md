@@ -45,7 +45,9 @@ When a review ran in the same turn, append `Another review: <no | yes> (<why>).`
 
 ## Handoff at a wait
 
-When the flow waits for the owner and a task file exists, the message ends, after any Closing line, with:
+For a production write or dispatch that needs owner approval, end the message with one question naming the exact environment and operation. Omit the resume prompt and Session line for this request. Wait for explicit approval of that operation.
+
+For other waits, when a task file exists, the message ends, after any Closing line, with:
 
 1. The current client's resume prompt from `/up:summary` step 4, including at design and plan approval.
 2. One line: `Session: can close`, or `Session: wait for <job still running in the background>`. A job counts while this session started it and has not seen it finish.
