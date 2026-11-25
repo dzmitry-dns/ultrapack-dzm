@@ -15,7 +15,8 @@ Implement the approved `## Plan` from `docs/tasks/<slug>.md`. Phases run seriall
 1. Read the full task file — Design, Invariants (IV), Principles (PC), Assumptions (AS), Unknowns (UK), Plan. Plan is not optional reading. A Trivial task (`/up:make` step 4) has no Plan: the task description and Goal are the contract, and the Tests block below still applies.
 2. Scan the plan for ambiguity, missing dependencies, or contradictory steps. Raise now, not after writing half the code.
 3. Verify the working copy. Check `git branch --show-current` matches the task file's `**Branch:**` header, and `git rev-parse --show-toplevel` is the repo (or worktree) the user intends. If mismatched: stop and ask.
-4. Build the checklist — one line per plan phase (or per task if phases are coarse), kept in your working notes for this session. The task file's Plan is the durable record; tick nothing there.
+4. For a repair after verification, match each failed check in the latest `## Verify` to its expected behavior. Inspect subsequent commits and pending edits for that specific fix, including for older records with only failure notes. Preserve partial fixes and unrelated edits. Finish only the missing repairs. Leave completed fixes intact. Commit the completed repairs, selecting only their changes. If no repair edits remain, do not create a commit. Once the repairs are committed, return to `up:uverify` for fresh evidence under its rerun and cost rules. Skip the original phase loop on this path.
+5. Otherwise build a checklist with one line per plan phase (or per task if phases are coarse). Keep it in working notes. The task file's Plan is the durable record.
 </required>
 
 ## Brevity

@@ -96,7 +96,7 @@ If smoke fails, that's a demonstrated break — record it. If smoke passes, the 
 
 If you can't run the smoke (infra unavailable), say so explicitly. Do not fabricate success. Do not substitute a unit test for the smoke.
 
-If the smoke only exercises a proxy for the Goal — a small or local stand-in for a full-scale or real-world run (converting 10 files when the Goal is 700GB on a pod) — say so: name what the proxy covered and what real-world validation still stands between here and the Goal. That gap is what `/up:make` step 11 hands to the user.
+If the smoke only exercises a proxy for the Goal — a small or local stand-in for a full-scale or real-world run (converting 10 files when the Goal is 700GB on a pod) — say so: name what the proxy covered and what real-world validation still stands between here and the Goal. Follow `/up:make` step 11 to determine who performs the remaining check.
 
 ## Phase 4 — Write the Verify summary to the task file
 
