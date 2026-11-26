@@ -244,7 +244,7 @@ Stop and ask the user when:
 
 - Size classification is genuinely unclear
 - User has expressed a preference (branch, scope, TDD) that conflicts with the auto-inference
-- Any stage's skill returns a blocker
+- A stage reports a blocker that requires the user's input and prevents all remaining authorized work. If only one check is blocked, report what it needs and continue the independent checks. Keep the blocked step pending and preserve approval pauses.
 
 ## Rules
 
