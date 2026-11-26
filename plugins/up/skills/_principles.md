@@ -1,5 +1,7 @@
 # Global Principles
 
+> Codex: `${CLAUDE_PLUGIN_ROOT}` means the installed plugin root, `~/.codex/plugins/cache/ultrapack/up/<version>/`.
+
 GPC1–GPC8. Apply to every task unless clearly irrelevant. Deviations name the GPC and the reason in one line.
 
 - **GPC1 — Explicit interfaces, no defaults, no hidden config.** Caller passes every argument. Each constant / config / magic value is defined in exactly one place and threaded explicitly to its use site. No reading config behind the caller's back.

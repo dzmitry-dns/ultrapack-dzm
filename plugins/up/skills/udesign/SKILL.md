@@ -3,6 +3,8 @@ name: udesign
 description: Use before any creative work — features, components, behavior changes. Turns an idea into a validated spec with explicit tradeoffs and unknowns, and splits scope into multiple tasks if it's too large. Output is the `## Design` section of the task file.
 ---
 
+> Codex: `${CLAUDE_PLUGIN_ROOT}` means the installed plugin root, `~/.codex/plugins/cache/ultrapack/up/<version>/`.
+
 # Design
 
 In Codex, read [Codex operations](../codex.md) before starting this stage.

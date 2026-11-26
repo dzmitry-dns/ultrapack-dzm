@@ -1,3 +1,4 @@
+model_reasoning_effort = "high"
 name = "up-explorer"
 description = "Trace feature implementations through the codebase and return a compact map — entry points, call chain, 3-5 essential files with file:line references. Dispatched from up:uexecute when a codebase question needs answering."
 sandbox_mode = "read-only"

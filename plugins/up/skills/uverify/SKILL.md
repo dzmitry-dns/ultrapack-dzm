@@ -3,6 +3,8 @@ name: uverify
 description: Use after execute to attack the change and demonstrate how it's broken. Default stance — the change is broken; prove and demonstrate it. Builds an attack checklist (happy-path / negative / invariant / interface hypotheses), runs each freshly, smokes the end-to-end, writes a short summary to the task file's Verify section, loops back to execute on any demonstrated break.
 ---
 
+> Codex: `${CLAUDE_PLUGIN_ROOT}` means the installed plugin root, `~/.codex/plugins/cache/ultrapack/up/<version>/`.
+
 # Verify
 
 In Codex, read [Codex operations](../codex.md) before starting this stage.

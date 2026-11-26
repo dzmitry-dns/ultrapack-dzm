@@ -1,5 +1,7 @@
 # Review before code
 
+> Codex: `${CLAUDE_PLUGIN_ROOT}` means the installed plugin root, `~/.codex/plugins/cache/ultrapack/up/<version>/`.
+
 When, how, and how often an independent `up:plan-reviewer` reviews a task file's Design or Plan before any code is written. This file is the single home of the procedure: `up:udesign` and `up:uplan` run it at their step 11, `/up:make` points here, and none of them restate it.
 
 ## When it runs

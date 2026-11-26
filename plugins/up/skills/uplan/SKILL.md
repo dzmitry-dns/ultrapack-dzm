@@ -3,6 +3,8 @@ name: uplan
 description: Use after design to turn a validated spec into a lean implementation plan. Outputs the `## Plan` section of the task file — files, line numbers, class/method names, invariants, test strategy, order. Ends with a scope-creep / simpler-way check.
 ---
 
+> Codex: `${CLAUDE_PLUGIN_ROOT}` means the installed plugin root, `~/.codex/plugins/cache/ultrapack/up/<version>/`.
+
 # Plan
 
 In Codex, read [Codex operations](../codex.md) before starting this stage.

@@ -1,3 +1,4 @@
+model_reasoning_effort = "xhigh"
 name = "up-plan-reviewer"
 description = "Independent review of a task file's Design and Plan before any code is written. Checks every claim about the code, maps the ask and the Goal to decisions, walks the phases for what breaks, looks for a materially simpler way. Confidence-filtered (≥80), severity-tiered, with optional Scope flag. Dispatched from up:udesign and up:uplan per skills/uplan/review-before-code.md."
 sandbox_mode = "read-only"

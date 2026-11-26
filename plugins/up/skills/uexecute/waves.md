@@ -1,5 +1,7 @@
 # Parallel phase dispatch — interfaces, waves, wiring
 
+> Codex: `${CLAUDE_PLUGIN_ROOT}` means the installed plugin root, `~/.codex/plugins/cache/ultrapack/up/<version>/`.
+
 The optional parallel path for `up:uexecute`, and the declaration format `up:uplan` uses to enable it. Applies only when the task's `## Plan` declares `### Interfaces` and `### Interface graph`; without them, execute runs its serial per-phase loop and this file never applies.
 
 ## Declaring (plan side)

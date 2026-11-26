@@ -3,6 +3,8 @@ name: ureview
 description: Use after verify passes for the future maintainer's audit — sit in the chair of the person who'll touch this code in 3-6 months and ask "what will bite us later?" at the decision level. Surfaces wrong abstractions, load-bearing-but-unobvious shapes, next-change traps, drift from surrounding code; raises a Scope flag if the whole change looks like the wrong call. Dispatches up:reviewer (critical, high-confidence filter; unless Design was skipped, step 1), processes findings fairly, fills the task file's `## Conclusion`.
 ---
 
+> Codex: `${CLAUDE_PLUGIN_ROOT}` means the installed plugin root, `~/.codex/plugins/cache/ultrapack/up/<version>/`.
+
 # Review
 
 In Codex, read [Codex operations](../codex.md) before dispatching a reviewer.

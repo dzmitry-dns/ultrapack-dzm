@@ -36,7 +36,7 @@ Start a new Codex chat and select the `up:codex-make` skill. Pass a task descrip
 
 To use the named helper roles, copy the files from `codex/agents/` into the consuming repository's `.codex/agents/` directory. Keep them under a trusted project configuration. Jira operations use the consuming project's adapter and its configured `atlassian` server.
 
-The long-chat reminder requires Python 3. Open `/hooks` in Codex and review the Ultrapack entries for `PostToolUse`, `Stop`, and `PostCompact`. Trust them to enable the reminder. It appears once at 75% of the current model’s context window. Work continues until you request a handoff. Compaction rearms the reminder.
+Since 0.3.76 the plugin ships no Codex hooks. The plugin registers no `Stop`, `PostToolUse` or `PostCompact` handler, so it cannot block the end of a turn. Watch the `context-remaining` item in the Codex status line and hand off before compaction.
 
 ## Quickstart
 
@@ -101,9 +101,9 @@ Process skills (`u`-prefixed to dodge Claude Code built-ins):
 - `up:ureview` — dispatch an independent reviewer (when Design was skipped, offered instead of dispatched), process its findings fairly, and fill the Conclusion.
 - `up:udebug` — four-phase root-cause investigation (reproduce → pattern-match → hypothesize → fix); no symptom patches.
 - `up:udocument` — discipline for writing docs: lead with why, kill stale content, lists over tables, no aspirational content. Manual-only.
-- `up:ujira` — thin-layer Jira sync at Status transitions. Draft-then-approve by default; a project can opt comments out of the gate with `auto: comment` so they post unattended; description prose always waits for the owner (a project can let mechanical lines, such as the task-file pointer or a "Moved to" line, post unattended with `auto: mechanical-lines`), and ticket transitions are not drafted at all unless the project sets `transitions: propose`. Config lives in the consumer project's CLAUDE.md.
+- `up:ujira` — thin-layer Jira sync at Status transitions. Draft-then-approve by default; a project can opt comments out of the gate with `auto: comment` so they post unattended; description prose always waits for the owner (a project can let mechanical lines, such as the task-file pointer or a "Moved to" line, post unattended with `auto: mechanical-lines`), and ticket transitions are not drafted at all unless the project sets `transitions: propose`. Config lives in the consumer project's AGENTS.md, or its CLAUDE.md in Claude Code.
 
-Discipline skills (manual-only since 0.3.34: `disable-model-invocation: true`, so they cost no context until you type `/up:<name>`; the stage skills read the TDD file directly when Design says `TDD: yes`):
+Discipline skills are manual-only: `disable-model-invocation: true` in Claude Code, `policy.allow_implicit_invocation: false` in each skill's `agents/openai.yaml` in Codex. They cost no context until you invoke them explicitly, `/up:<name>` or `$<name>`. The stage skills read the TDD file directly when Design says `TDD: yes`:
 
 - `up:test-driven-development` — red → green → refactor, with a rule for when TDD actually applies.
 - `up:git-worktrees` — pick and create an isolated worktree, share the environment from main, run a baseline.
@@ -111,7 +111,7 @@ Discipline skills (manual-only since 0.3.34: `disable-model-invocation: true`, s
 
 ## Commands
 
-`/up:make` and `/up:summary` are model-invocable; the other four are manual-only since 0.3.34 (`disable-model-invocation: true`).
+`/up:make` and `/up:summary` are model-invocable. The other four stay manual-only through `disable-model-invocation: true` in Claude Code and `policy.allow_implicit_invocation: false` in Codex.
 
 - `/up:make <description>` — orchestrate the full workflow end to end. Resumes an existing task by its status.
 - `/up:try` — quick manual test of the latest change: one positive case, one negative, run both, report.

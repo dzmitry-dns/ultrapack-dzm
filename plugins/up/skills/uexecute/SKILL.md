@@ -3,6 +3,8 @@ name: uexecute
 description: Use to implement an approved plan. Executes phases serially and inline; a plan-declared `### Interface graph` switches to the parallel wave pipeline in waves.md. Runs plan-diff check and consistency sweep after each commit. Forbids silent fallbacks and mutation of external spec/design docs. Dispatches the planner skill when deviations invalidate the plan.
 ---
 
+> Codex: `${CLAUDE_PLUGIN_ROOT}` means the installed plugin root, `~/.codex/plugins/cache/ultrapack/up/<version>/`.
+
 # Execute
 
 In Codex, read [Codex operations](../codex.md) before starting this stage.

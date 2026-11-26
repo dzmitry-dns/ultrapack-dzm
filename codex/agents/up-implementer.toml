@@ -1,3 +1,4 @@
+model_reasoning_effort = "high"
 name = "up-implementer"
 description = "Implement one phase of an approved plan — code, tests, commit. Default implementer for complex phases (multi-file, new logic, TDD, interface changes). Dispatched per-phase from up:uexecute."
 developer_instructions = """
